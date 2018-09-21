@@ -253,6 +253,9 @@
     <Content Include="Content\modelBox\Modal.css" />
     <Content Include="Content\modelBox\model.js" />
     <Content Include="favicon.ico" />
+    <Content Include="FileManagers\DienAn01\BanDo_A3.jpg" />
+    <Content Include="FileManagers\DienAn02\BanDo_A3.jpg" />
+    <Content Include="FileManagers\Dienban3\BanDo_A3.jpg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -319,6 +322,22 @@
     <Content Include="Content\fonts\VHELVEBI.TTF" />
     <Content Include="Content\fonts\VHELVEI.TTF" />
     <Content Include="Content\fonts\VHELVEN.TTF" />
+    <Content Include="FileManagers\DienAn01\BiaTM.doc" />
+    <Content Include="FileManagers\DienAn01\QD_phe_duyet_ TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn01\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn01\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\DienAn01\To_trinh _TDSXD.doc" />
+    <Content Include="FileManagers\DienAn02\BiaTM.doc" />
+    <Content Include="FileManagers\DienAn02\QD_phe_duyet_ TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn02\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn02\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\DienAn02\To_trinh _TDSXD.doc" />
+    <Content Include="FileManagers\Dienban3\BiaTM.doc" />
+    <Content Include="FileManagers\Dienban3\QD_phe_duyet_ TTDienAn.doc" />
+    <Content Include="FileManagers\Dienban3\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\Dienban3\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\Dienban3\To_trinh _TDSXD.doc" />
+    <None Include="Properties\PublishProfiles\FTP.pubxml" />
     <None Include="Properties\PublishProfiles\QuangNamGIS.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -369,7 +388,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="FileManagers\" />
     <Folder Include="QuanLyHoSo\" />
   </ItemGroup>
   <ItemGroup>
