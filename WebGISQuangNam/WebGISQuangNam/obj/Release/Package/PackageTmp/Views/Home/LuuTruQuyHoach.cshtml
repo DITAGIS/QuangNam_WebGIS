@@ -1,0 +1,170 @@
+﻿@model WebGISQuangNam.Models.HoSoLuuTruModel
+@{
+    ViewBag.Title = "Lưu trữ hồ sơ quy hoạch";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Hồ sơ lưu trữ thông tin quy hoạch</h4>
+            <hr />
+        </div>
+    </div>
+    @using (Html.BeginForm())
+    {
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <div class="input-group">
+                    @Html.TextBox("SearchString", Model.strSearch as string, new { @placeholder = "Tìm theo tên ...", @class = "form-control" })
+                    <span class="input-group-btn">
+                        <button class="btn btn-danger" type="submit">Tìm</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div>
+            <div class="col-md-3">
+                <select id="FillterID" name="FillterID" onchange="this.form.submit();" class="form-control">
+                    <option value="" @(Model.fillterID == "" ? "selected=\"selected\"" : "")>Tìm theo định dạng hồ sơ</option>
+                    @foreach (var fill in ViewBag.LoaiHoSo)
+                    {
+                        <option value="@fill.Value" @(Model.fillterID.ToString() == fill.Value.ToString() ? "selected=\"selected\"" : "")>
+                            @fill.Text
+                        </option>
+                    }
+                </select>
+
+            </div>
+            <div class="col-md-2">
+                <a href="@Url.Action("ThemHoSo","Home")"><input type="button" value="Lưu mới hồ sơ" class="btn btn-primary" /></a>
+
+            </div>
+            <div class="col-md-2">
+
+
+            </div>
+            <div class="col-md-2">
+                <a href="@Url.Action("QuanLyLuuTruQuyHoach","Home")" class="btn btn-warning pull-right"> Trở lại danh mục lưu trữ hồ sơ </a>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12">
+                <table class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>
+                                @Html.ActionLink("Tên hồ sơ", "LuuTruQuyHoach", new
+                           {
+                               SearchString = Model.strSearch,
+                               sortBy = 1,
+                               isAsc = (Model.isAsc ? false : true),
+                               PageSize = Model.PagingInfo.ItemsPerPage,
+                               page = 1
+                           })
+                                @if (Model.isAsc && Model.sort == 1)
+                                {
+                                    <span>
+                                        <img src="/Content/images/arrow_down.png" alt="" />
+                                    </span>
+                                }
+                                @if (!Model.isAsc && Model.sort == 1)
+                                {
+                                    <span>
+                                        <img src="/Content/images/arrow_up.png" alt="" />
+                                    </span>
+                                }
+                            </th>
+                            <th>
+                                @Html.ActionLink("Định dạng", "LuuTruQuyHoach", new
+                           {
+                               SearchString = Model.strSearch,
+                               sortBy = 1,
+                               isAsc = (Model.isAsc ? false : true),
+                               PageSize = Model.PagingInfo.ItemsPerPage,
+                               page = 1
+                           })
+                                @if (Model.isAsc && Model.sort == 1)
+                                {
+                                    <span>
+                                        <img src="/Content/images/arrow_down.png" alt="" />
+                                    </span>
+                                }
+                                @if (!Model.isAsc && Model.sort == 1)
+                                {
+                                    <span>
+                                        <img src="/Content/images/arrow_up.png" alt="" />
+                                    </span>
+                                }
+                            </th>
+                            <th>Ghi chú</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @for (int i = 0; i < Model.HoSoLuuTrus.Count(); i++)
+                        {
+                            int index = i + 1;
+                            string duongdan = ViewBag.link + ""+Model.HoSoLuuTrus.ElementAt(i).DuongDan;
+
+                            <tr>
+                                <td>@index</td>
+                                <td>@Model.HoSoLuuTrus.ElementAt(i).TenHoSo</td>
+                                <td>@Model.HoSoLuuTrus.ElementAt(i).LoaiHoSo</td>
+                                <td>@Model.HoSoLuuTrus.ElementAt(i).GhiChu</td>
+                                <td>
+
+                                    <a href="@duongdan" target="_blank">Mở tài liệu</a> | 
+                                   
+                                    @Html.ActionLink("Xóa tài liệu", "XoaHoSo","Home",new { id = Model.HoSoLuuTrus.ElementAt(i).id },null)
+                                
+                                </td>
+                            </tr>
+
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <nav aria-label="Page navigation">
+                    @if (Model.HoSoLuuTrus.Count() > 0)
+                {
+                        <ul class="pagination">
+                            @Html.Paging(Model.PagingInfo, x => Url.Action("LuuTruQuyHoach", new
+                       {
+                           SearchString = Model.strSearch,
+                           sortBy = Model.sort,
+                           isAsc = Model.isAsc,
+                           PageSize = Model.PagingInfo.ItemsPerPage,
+                           page = x
+                       }))
+                        </ul>
+                    }
+                </nav>
+            </div>
+            <div class="col-md-6">
+                <select id="PageSize" name="PageSize" onchange="this.form.submit();" class="form-control pull-right" style="margin: 20px 0;">
+                    <option value="10" @(Model.PagingInfo.ItemsPerPage == 10 ? "selected=\"selected\"" : "")>10 dòng dữ liệu</option>
+                    <option value="15" @(Model.PagingInfo.ItemsPerPage == 15 ? "selected=\"selected\"" : "")>15 dòng dữ liệu</option>
+                    <option value="20" @(Model.PagingInfo.ItemsPerPage == 20 ? "selected=\"selected\"" : "")>20 dòng dữ liệu</option>
+                    <option value="50" @(Model.PagingInfo.ItemsPerPage == 50 ? "selected=\"selected\"" : "")>50 dòng dữ liệu</option>
+                    <option value="100" @(Model.PagingInfo.ItemsPerPage == 100 ? "selected=\"selected\"" : "")>100 dòng dữ liệu</option>
+                </select>
+
+            </div>
+        </div>
+
+    }
+
+</div>

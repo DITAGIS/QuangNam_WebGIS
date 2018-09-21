@@ -1,0 +1,32 @@
+﻿@model List<WebGISQuangNam.Models.dataHelper.NguoiDungDetails>
+    @{
+        ViewBag.Title = "Quản lý lưu trữ hồ sơ quy hoạch";
+        Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+    }
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Danh mục hồ sơ lưu trữ thông tin quy hoạch</h4>
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+
+            @if (Model != null)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="col-md-2 col-xs-6 col-sm-4">
+
+                        <div class="hosomucluc">
+                            <img src="~/Content/img/Action_Open_32x32.png" />
+                            <div><a href="@Url.Action("LuuTruQuyHoach","Home")"> @Model[i].TenNhomNguoiDung : @Model[i].TenNguoiDung </a> </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+

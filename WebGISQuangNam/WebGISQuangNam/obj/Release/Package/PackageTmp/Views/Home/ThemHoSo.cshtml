@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Thêm mới hồ sơ lưu trữ thông tin quy hoạch";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Thêm mới hồ sơ lưu trữ thông tin quy hoạch</h4>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            <h6>@ViewBag.message </h6>
+        </div>
+
+        <div class="form-horizontal">
+            @using (Html.BeginForm("ThemHoSo", "Home", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label class="col-md-2">Tên hồ sơ</label>
+                    <div class="col-md-10">
+                        <input type="text" name="txtHoSo" id="txtHoSo" class="form-control" />
+                        <input type="file" name="TenDinhDanh" id="TenDinhDanh" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2">Ghi chú</label>
+                    <div class="col-md-10">
+                        <textarea name="txtGhiChu" id="txtGhiChu" class="form-control" maxlength="500"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <button type="submit" value="Thêm mới" class="btn btn-danger" >Thêm mới</button>
+                        <a href="@Url.Action("LuuTruQuyHoach","Home")" class="btn btn-warning"> Trở lại danh sách hồ sơ </a>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,172 @@
+﻿@model WebGISQuangNam.Models.dataHelper.YKienQuyHoach
+@{
+    ViewBag.Title = "Lấy ý kiến người dân";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>PHIẾU ĐÓNG GÓP Ý KIẾN QUY HOẠCH</h4>
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row" style="margin:5px 0;">
+                <label>Xem hồ sơ</label>
+
+                @{
+                    List<WebGISQuangNam.Models.dataHelper.HoSoDoAn> hoSoDoAn = 
+                        (List<WebGISQuangNam.Models.dataHelper.HoSoDoAn>)ViewBag.HoSoDuAn;
+                }
+
+                <select class="form-control" id="listHoSo" style="max-width:300px;display:inline-block;">
+                    <option value="">Xem danh sách hồ sơ</option>
+                  
+                    @if (hoSoDoAn != null)
+                    {
+                        if (hoSoDoAn.Count > 0)
+                        {
+                            for (int i = 0; i < hoSoDoAn.Count; i++)
+                            {
+                                string val = hoSoDoAn[i].MaDoAn + "/" + hoSoDoAn[i].DuongDan;
+                            <option value="@val">@hoSoDoAn[i].TenHoSo</option>
+                            }
+                        }
+                    }
+                </select>
+                <button value="Xem" class="btn btn-danger" id="btViewHoSo" style="padding:2px 5px;"> Xem </button>
+            </div>
+            <iframe id="viewDocFormData" src=""></iframe>
+        </div>
+
+        <div class="col-md-6">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <h5>A. THÔNG TIN VỀ ĐỒ ÁN</h5>
+                    <div class="form-group">
+
+                        @{
+                            WebGISQuangNam.Models.dataHelper.THONGTINDOAN doan = (WebGISQuangNam.Models.dataHelper.THONGTINDOAN)ViewBag.DoAn;
+                        }
+
+                        @Html.LabelFor(model => model.MaDoAn, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-7">
+                            @Html.DisplayFor(model => model.MaDoAn, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.MaDoAn, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Tên đồ án:</label> <div class="col-md-9"> @doan.TenDoAn</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Địa điểm:</label><div class="col-md-9">@doan.DiaDiem</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Chủ đầu tư:</label><div class="col-md-9">@doan.ChuDauTu</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Đơn vị tư vấn:</label>       <div class="col-md-9"></div>
+                    </div>
+
+
+                    <h5>B. THÔNG TIN VỀ ĐƠN VỊ, CÁ NHÂN ĐÓNG GÓP Ý KIẾN</h5>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TenToChu, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.TenToChu, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.TenToChu, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DiaChi, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.DiaChi, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DiaChi, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DienThoai, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.DienThoai, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DienThoai, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NoiDungGopY, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-9">
+                            @Html.EditorFor(model => model.NoiDungGopY, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NoiDungGopY, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12" style="text-align:right;">
+                            @*<a class="btn-danger label pull-left" style="padding:10px;font-size:1em;right:0;top:0;" 
+                               title="" href="@Url.Action("Index")">Quay lại bản đồ</a>*@
+                            <input type="submit" value="Gửi góp ý" class="btn btn-danger" />
+                        </div>
+                    </div>
+                </div>
+                            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h6>Chúng tôi xin trân trọng cảm ơn những ý kiến và sự hợp tác của quý vị!</h6>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#btViewHoSo").click(function () {
+
+                var docfile = $("#listHoSo").val();
+                //alert(docfile);
+
+                typeFile = docfile.split(".");
+
+                var type = typeFile[typeFile.length - 1];
+                var link = "";
+                if (type == "doc" || type == "docx" || type == "pdf") {
+                    link = "http://docs.google.com/gview?url=http://ditagisportal.com:6868/filemanagers/" + docfile + "&embedded=true";
+                }
+                else
+                {
+                    link = "http://ditagisportal.com:6868/filemanagers/" + docfile + "";
+                }
+                $("#viewDocFormData").attr("src", link);
+            });
+
+        });
+
+    </script>
+
+
+}
+

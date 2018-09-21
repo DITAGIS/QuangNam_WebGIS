@@ -1,0 +1,117 @@
+﻿@model WebGISQuangNam.Models.dataHelper.YKienQuyHoach
+
+@{
+    ViewBag.Title = "Xóa ý kiến người dân";
+    Layout = "~/Views/Shared/_LayoutNormal.cshtml";
+}
+
+<div class="container " style="margin-top:25px;">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Xóa ý kiến người dân</h4>
+            <hr />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.MaDoAn)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MaDoAn)
+                </dd>
+
+                <dt>
+                    Tên đồ án
+                </dt>
+
+                <dd>
+                    @ViewBag.Ten
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TenToChu)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TenToChu)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DiaChi)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DiaChi)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DienThoai)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DienThoai)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Email)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Email)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NoiDungGopY)
+                </dt>
+
+                <dd style="border:1px solid #f5f5f5; padding:15px;">
+                    @*@Html.DisplayFor(model => model.NoiDungGopY)*@
+                    @Html.Raw(Model.NoiDungGopY)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NgayLuu)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NgayLuu)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.TrangThai)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.TrangThai)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NoiDungTraLoi)
+                </dt>
+
+                <dd style="border:1px solid #f5f5f5; padding:15px;">
+                    @*@Html.DisplayFor(model => model.NoiDungTraLoi)*@
+                    @Html.Raw(Model.NoiDungTraLoi)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <button type="submit" value="Xóa" class="btn btn-danger">Xóa</button> | @Html.ActionLink("Quay lại", "Index")
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
