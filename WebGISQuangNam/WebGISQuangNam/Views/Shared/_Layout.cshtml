@@ -193,7 +193,6 @@
                                             {
                                                 for (int y = 0; y < listThongtinDoAn.Count; y++)
                                                 {
-                                                    ;
                                                     string madoan = listThongtinDoAn[y].MaDoAn + "#" + listLoaiQuyHoach[i].code;
                                                     string mdoan = listThongtinDoAn[y].MaDoAn;
 
@@ -202,7 +201,7 @@
                                                         <ul class="dropdown-menu hs_menu">
                                                             <li class="dropdown-header">Danh mục hồ sơ</li>
                                                             <li>
-                                                                <a href="#">I. Hồ sơ pháp lý</a>
+                                                                <a href="#">I. Hồ sơ pháp lý 123</a>
                                                                 <ul class="sub_menu3 hs_menu_chil">
                                                                     @{
                                                                         List
@@ -286,17 +285,10 @@
 
                                     <ul class="dropdown-menu menu_c3">
                                         <li class="dropdown-header">Danh mục các đồ án quy hoạch công bố</li>
-
-
-
-
                                         @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
                                         {
                                             <li>
                                                 <a tabindex="-1" href="#@listLoaiQuyHoach[i].code">@listLoaiQuyHoach[i].value</a>
-
-
-
                                                 @{
                                                     listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "CongBo");
                                                     if (listThongtinDoAn.Count > 0)
