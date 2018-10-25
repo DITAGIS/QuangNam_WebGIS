@@ -37,7 +37,7 @@ namespace WebGISQuangNam.Controllers
 
             //
 
-            ViewBag.QuanHuyen = this.gISRepository.getHanhChinhHuyen().OrderBy(qh=>qh.TenQuan).ToList();
+            ViewBag.QuanHuyen = this.gISRepository.getHanhChinhHuyen().OrderBy(qh => qh.TenQuan).ToList();
 
             //List<Domain> quan = this.gISRepository.getDomain("DMHuyenTPThiXa").ToList().OrderBy(dm => dm.value).ToList();
 
@@ -60,93 +60,93 @@ namespace WebGISQuangNam.Controllers
             item = new Domain();
             item.code = "500";
             item.value = "Tỉnh Quảng Nam";
-            quan.Insert(0,item);
-             
+            quan.Insert(0, item);
+
             item = new Domain();
             item.code = "502";
             item.value = "Thành Phố Tam Kỳ";
             quan.Insert(1, item);
-             
+
             item = new Domain();
             item.code = "503";
             item.value = "Thành Phố Hội An";
             quan.Insert(2, item);
-             
+
             item = new Domain();
             item.code = "504";
             item.value = "Huyện Tây Giang";
             quan.Insert(3, item);
-             
+
             item = new Domain();
             item.code = "505";
             item.value = "Huyện Đông Giang";
             quan.Insert(4, item);
-             
+
             item = new Domain();
             item.code = "506";
             item.value = "Huyện Đại Lộc";
             quan.Insert(5, item);
-             
+
             item = new Domain();
             item.code = "507";
             item.value = "Thị Xã Điện Bàn";
             quan.Insert(6, item);
-             
+
             item = new Domain();
             item.code = "508";
             item.value = "Huyện Duy Xuyên";
             quan.Insert(7, item);
-             
+
             item = new Domain();
             item.code = "509";
             item.value = "Huyện Quế Sơn";
             quan.Insert(8, item);
-             
+
             item = new Domain();
             item.code = "510";
             item.value = "Huyện Nam Giang";
             quan.Insert(9, item);
-             
+
             item = new Domain();
             item.code = "511";
             item.value = "Huyện Phước Sơn";
             quan.Insert(10, item);
-             
+
             item = new Domain();
             item.code = "512";
             item.value = "Huyện Hiệp Đức";
             quan.Insert(11, item);
-             
+
             item = new Domain();
             item.code = "513";
             item.value = "Huyện Thăng Bình";
             quan.Insert(12, item);
-             
+
             item = new Domain();
             item.code = "514";
             item.value = "Huyện Tiên Phước";
             quan.Insert(13, item);
-             
+
             item = new Domain();
             item.code = "515";
             item.value = "Huyện Bắc Trà My";
             quan.Insert(14, item);
-             
+
             item = new Domain();
             item.code = "516";
             item.value = "Huyện Nam Trà My";
             quan.Insert(15, item);
-             
+
             item = new Domain();
             item.code = "517";
             item.value = "Huyện Núi Thành";
             quan.Insert(16, item);
-             
+
             item = new Domain();
             item.code = "518";
             item.value = "Huyện Phú Ninh";
             quan.Insert(17, item);
-             
+
             item = new Domain();
             item.code = "519";
             item.value = "Huyện Nông Sơn";
@@ -417,8 +417,8 @@ namespace WebGISQuangNam.Controllers
             }
             return View(login);
         }
-        
-        public ActionResult Logout ()
+
+        public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Index", "Home");
@@ -489,13 +489,13 @@ namespace WebGISQuangNam.Controllers
         ////////////////
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult getThongTinDoAn(string maQuanHuyen = "", string maPhuongXa = "",string LoaiQuyHoach = "", string tendoan = "")
+        public ActionResult getThongTinDoAn(string maQuanHuyen = "", string maPhuongXa = "", string LoaiQuyHoach = "", string tendoan = "")
         {
             List<THONGTINDOAN> listThongtindoan = this.gISRepository.getThongTinDoAn().ToList();
-            
-            if(maQuanHuyen!= null)
+
+            if (maQuanHuyen != null)
             {
-                if(maQuanHuyen.Trim().Length > 0)
+                if (maQuanHuyen.Trim().Length > 0)
                 {
                     listThongtindoan = listThongtindoan.Where(da => da.MaQuanHuyen == maQuanHuyen).ToList();
                 }
@@ -531,11 +531,11 @@ namespace WebGISQuangNam.Controllers
             html = "<table  class='table table-condensed'> <tr> <th>TT</th><th>Tên đồ án</th><th>Địa điểm</th> </tr>";
 
             if (listThongtindoan.Count > 0)
-            {                
+            {
                 for (int i = 0; i < listThongtindoan.Count; i++)
                 {
                     THONGTINDOAN doan = listThongtindoan[i];
-                    html += "<tr> <td>"+ (i+1) +"</td><td><span class='itemSearch' alt='"+ doan.MaDoAn + "#"+ doan.LoaiQuyHoach + "'>" + doan.TenDoAn + "</span></td><td>" + doan.DiaDiem+"</td></tr>";
+                    html += "<tr> <td>" + (i + 1) + "</td><td><span class='itemSearch' alt='" + doan.MaDoAn + "#" + doan.LoaiQuyHoach + "'>" + doan.TenDoAn + "</span></td><td>" + doan.DiaDiem + "</td></tr>";
                 }
             }
             else
@@ -546,11 +546,10 @@ namespace WebGISQuangNam.Controllers
             html += "</table>";
             return Json(html);
         }
-
+        //Anh Tuấn viết
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult getThongTinQHCT(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "",string KiHieuKhuDat="",
-            string KiHieuLoDat = "", string tendoan = "")
+        public ActionResult getThongTinQHCT_Tuan(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuKhuDat = "", string KiHieuLoDat = "", string tendoan = "")
         {
             List<QHCT_SUDUNGDAT> listThongtindoan = this.gISRepository.getQHCT_SUDUNGDAT().ToList();
 
@@ -624,14 +623,89 @@ namespace WebGISQuangNam.Controllers
             }
 
             html += "</table>";
-            return Json(html);
+            return Json(listThongtindoan);
         }
+        [AllowAnonymous]
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult getThongTinQHCT(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuKhuDat = "", string KiHieuLoDat = "", string tendoan = "")
+        {
+            List<QHCT_SUDUNGDAT> listThongtindoan = this.gISRepository.getQHCT_SUDUNGDAT().ToList();
 
+            if (maQuanHuyen != null)
+            {
+                if (maQuanHuyen.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => da.MaQuanHuyen == maQuanHuyen).ToList();
+                }
+            }
 
+            if (maPhuongXa != null)
+            {
+                if (maPhuongXa.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => da.MaPhuongXa == maPhuongXa).ToList();
+                }
+            }
+
+            if (LoaiDat != null)
+            {
+                if (LoaiDat.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => (da.LoaiDat ?? "").Contains(LoaiDat)).ToList();
+                }
+            }
+
+            if (KiHieuKhuDat != null)
+            {
+                if (KiHieuKhuDat.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => (da.KiHieuKhuDat ?? "").Contains(KiHieuKhuDat)).ToList();
+                }
+            }
+
+            if (KiHieuLoDat != null)
+            {
+                if (KiHieuLoDat.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => (da.KiHieuLoDat ?? "").Contains(KiHieuLoDat)).ToList();
+                }
+            }
+
+            if (tendoan != null)
+            {
+                if (tendoan.Trim().Length > 0)
+                {
+                    listThongtindoan = listThongtindoan.Where(da => (da.TenDoAn ?? "").Contains(tendoan)).ToList();
+                }
+            }
+            string html = "";
+            // lấy theo quy hoạch chi tiết 
+
+            html = "<table  class='table table-condensed'> <tr> <th>TT</th><th>K/h lô</th><th>Loại đất</th><th>DT</th> <th>Tên đồ án</th></tr>";
+
+            if (listThongtindoan.Count > 0)
+            {
+                for (int i = 0; i < listThongtindoan.Count; i++)
+                {
+                    QHCT_SUDUNGDAT doan = listThongtindoan[i];
+                    html += "<tr> <td>" + (i + 1) + "</td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.KiHieuLoDat +
+                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.LoaiDat +
+                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.DienTichLoDat +
+                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.TenDoAn + "</span></td></tr>";
+                }
+            }
+            else
+            {
+                html += "<tr> <td colspan='5'><h5 class='mess'>Không có lô đất nào được tìm thấy</h5></td></tr>";
+            }
+
+            html += "</table>";
+            return Json(listThongtindoan);
+        }
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult getThongTinQHPK(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuLoDat = "", int dientichtu = -1,
-            int  dientichden = -1, int kcTu = -1,int kcDen = -1,string sovoi = "")
+            int dientichden = -1, int kcTu = -1, int kcDen = -1, string sovoi = "")
         {
             List<QHPK_SUDUNGDAT> listThongtindoan = this.gISRepository.getQHPK_SUDUNGDAT().ToList();
 
@@ -666,7 +740,7 @@ namespace WebGISQuangNam.Controllers
                     listThongtindoan = listThongtindoan.Where(da => (da.KiHieuKhuDat ?? "").Contains(KiHieuLoDat)).ToList();
                 }
             }
-            
+
             if (dientichtu > -1)
             {
 
@@ -678,15 +752,6 @@ namespace WebGISQuangNam.Controllers
                 listThongtindoan = listThongtindoan.Where(da => da.DienTich <= dientichden).ToList();
             }
 
-             //< option value = "sbDaNang" > Sân bay Đà nẵng </ option >
-     
-             //< option value = "sbChuLai" > Sân bay Chu lai </ option >
-          
-             //< option value = "cangKyHa" > Cảng kỳ Hà </ option >
-               
-             //< option value = "tpHoiAn" > Tp Hội An</ option >
-                    
-             //< option value = "ckNamGiang" > Cửa khẩu Nam Giang </ option >
 
             if (kcTu > -1)
             {
@@ -759,7 +824,7 @@ namespace WebGISQuangNam.Controllers
             }
 
             html += "</table>";
-            return Json(html);
+            return Json(listThongtindoan);
         }
 
 
@@ -784,12 +849,12 @@ namespace WebGISQuangNam.Controllers
                 {
                     HoSoDoAn doan = listHoSoDoAn[i];
                     //
-                    string duongdan = DomainName + "/FileManagers/" + maDoAn.Trim()+ "/" + doan.DuongDan;
+                    string duongdan = DomainName + "/FileManagers/" + maDoAn.Trim() + "/" + doan.DuongDan;
                     if (doan.LoaiHoSo == doman.code)
                     {
                         if (doan.LoaiHoSo == "BanVe")
                         {
-                            phaply += "<span class='item viewLayYKien' title='"+ doan.id +"' alt='" + duongdan + "'>" + doan.TenHoSo + "</span> <a download='" + duongdan + "'  class='download' target='_blank' href='" + duongdan + "' title='Tải tài liệu : " + doan.TenHoSo + "'><i class='fa fa-cloud-download' aria-hidden='true'></i></a>";
+                            phaply += "<span class='item viewLayYKien' title='" + doan.id + "' alt='" + duongdan + "'>" + doan.TenHoSo + "</span> <a download='" + duongdan + "'  class='download' target='_blank' href='" + duongdan + "' title='Tải tài liệu : " + doan.TenHoSo + "'><i class='fa fa-cloud-download' aria-hidden='true'></i></a>";
                         }
                         else
                         {
@@ -809,7 +874,7 @@ namespace WebGISQuangNam.Controllers
         }
 
         /// cong bố
-      
+
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult getThongTinHoSoDoAnCongBo(string maDoAn)
@@ -860,7 +925,7 @@ namespace WebGISQuangNam.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult addYKienNguoiDan(int id,string yKien = "")
+        public ActionResult addYKienNguoiDan(int id, string yKien = "")
         {
             string returnSTR = "";
 
@@ -868,18 +933,18 @@ namespace WebGISQuangNam.Controllers
 
             if (hoso != null)
             {
-                if(yKien == null)
+                if (yKien == null)
                 {
                     yKien = "";
                 }
                 GetCart().AddItem(hoso, yKien);
             }
-            
+
             return Json(returnSTR);
         }
 
         [AllowAnonymous]
-        public ActionResult reviewYKienNguoiDan(string madoan,string loaiDoAn)
+        public ActionResult reviewYKienNguoiDan(string madoan, string loaiDoAn)
         {
 
             if (madoan == null)
@@ -929,9 +994,10 @@ namespace WebGISQuangNam.Controllers
 
             string noiDung = "";
 
-            if(khaoSatNguoiDung != null)
+            if (khaoSatNguoiDung != null)
             {
-                foreach(var line in khaoSatNguoiDung.Lines) {
+                foreach (var line in khaoSatNguoiDung.Lines)
+                {
                     if (line.HoSo.MaDoAn == madoan)
                     {
                         noiDung += "\n" + line.yKien;
@@ -949,14 +1015,14 @@ namespace WebGISQuangNam.Controllers
 
 
             return View(ykien);
-            
+
         }
 
         [AllowAnonymous]
         [HttpPost]
         public ActionResult reviewYKienNguoiDan(YKienQuyHoach ykien)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ykien.NgayLuu = DateTime.Now;
                 ykien.TrangThai = false;
@@ -986,6 +1052,19 @@ namespace WebGISQuangNam.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult GetDanhMucHoSo(String maDoAn)
+        {
+            DataGISContext context = new DataGISContext();
+            List<HoSoDoAn> listHoSoDoAn = context.HoSoDoAns.Where(hs => hs.MaDoAn.Equals(maDoAn)).ToList();
+            return Json(listHoSoDoAn);
+        }
+        [AllowAnonymous]
+        public ActionResult GetDMLoaiQuyHoach(String dmLoaiQuyHoach)
+        {
+            var listDMLoaiQuyHoach = this.gISRepository.getDomain(dmLoaiQuyHoach).ToList();
+            return Json(listDMLoaiQuyHoach);
+        }
         private khaoSatNguoiDung GetCart()
         {
 

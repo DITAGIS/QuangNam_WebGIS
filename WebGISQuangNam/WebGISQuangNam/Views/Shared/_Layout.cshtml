@@ -97,7 +97,7 @@
                                                                 string mdoan = @listThongtinDoAn[y].MaDoAn;
                                                                 <li  class="dropdown-submenu">
                                                                     
-                                                                    <a class="call_bandoquyhoach" href="#" title="@title">@listThongtinDoAn[y].TenDoAn</a>
+                                                                    <a class="call_bandoquyhoach" mdoan="@mdoan" href="#" title="@title">@listThongtinDoAn[y].TenDoAn</a>
                                                                     @*////*@
 
                                                                     <ul class="dropdown-menu hs_menu">
@@ -179,91 +179,34 @@
 
                             @for (int d = 0; d < listQuanHuyen.Count; d++)
                             {
+                             
+                            <li class="dropdown-submenu">
+                                <a class="TTQH_control" alt="@listQuanHuyen[d].code">@listQuanHuyen[d].value</a>
+                                
+                                <ul class="dropdown-menu menu_c3">
+                                    <li class="dropdown-header">Danh mục các đồ án lấy ý kiến</li>
 
-                                <li class="dropdown-submenu">
-                                    <a class="TTQH_control" alt="@listQuanHuyen[d].code">@listQuanHuyen[d].value</a>
-
-                                    <ul class="dropdown-menu menu_c3">
-                                        <li class="dropdown-header">Danh mục các đồ án lấy ý kiến</li>
-                                        
-                                        @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
+                                    @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
+                                    {
+                                        listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "LayYKien");
+                                        if (listThongtinDoAn.Count > 0)
                                         {
-                                            listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "LayYKien");
-                                            if (listThongtinDoAn.Count > 0)
+                                            for (int y = 0; y < listThongtinDoAn.Count; y++)
                                             {
-                                                for (int y = 0; y < listThongtinDoAn.Count; y++)
-                                                {
-                                                    string madoan = listThongtinDoAn[y].MaDoAn + "#" + listLoaiQuyHoach[i].code;
-                                                    string mdoan = listThongtinDoAn[y].MaDoAn;
-
-                                                    <li class="dropdown-submenu">
-                                                        <a tabindex="-1" class="call_bandoquyhoach_layykien" href="#" title="@madoan">@listThongtinDoAn[y].TenDoAn</a>
-                                                        <ul class="dropdown-menu hs_menu">
-                                                            <li class="dropdown-header">Danh mục hồ sơ</li>
-                                                            <li>
-                                                                <a href="#">I. Hồ sơ pháp lý 123</a>
-                                                                <ul class="sub_menu3 hs_menu_chil">
-                                                                    @{
-                                                                        List
-                                                                        <HoSoDoAn>
-                                                                            listHoSoDoAn = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "PhapLy").ToList();
-
-                                                                        for (int h = 0; h < listHoSoDoAn.Count; h++)
-                                                                        {
-                                                                            string duongdan = "https://docs.google.com/gview?url=" + DomainName +"/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn[h].DuongDan + "&embedded=true";
-
-                                                                            <li><span class='viewLayYKien' title="@listHoSoDoAn[h].id" alt='@duongdan'> @listHoSoDoAn[h].TenHoSo </span></li>
-                                                                        }
-                                                                    }
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">II. Bản vẽ</a>
-                                                                <ul class="sub_menu3 hs_menu_chil">
-                                                                    @{
-                                                                        List
-                                                                        <HoSoDoAn>
-                                                                            listHoSoDoAn2 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "BanVe").ToList();
-
-                                                                        for (int h = 0; h < listHoSoDoAn2.Count; h++)
-                                                                        {
-                                                                            string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn2[h].DuongDan + "&embedded=true";
-
-                                                                            <li><span class='viewLayYKien' title="@listHoSoDoAn[h].id" alt='@duongdan'> @listHoSoDoAn[h].TenHoSo </span></li>
-                                                                        }
-                                                                    }
-                                                                </ul>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">III. Thuyết minh</a>
-                                                                <ul class="sub_menu3 hs_menu_chil">
-                                                                    @{
-                                                                        List
-                                                                        <HoSoDoAn>
-                                                                            listHoSoDoAn3 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "ThuyetMinh").ToList();
-
-                                                                        for (int h = 0; h < listHoSoDoAn3.Count; h++)
-                                                                        {
-                                                                            string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn3[h].DuongDan + "&embedded=true";
-
-                                                                            <li><span class='viewLayYKien' title="@listHoSoDoAn3[h].id" alt='@duongdan'> @listHoSoDoAn3[h].TenHoSo </span></li>
-                                                                        }
-
-                                                                        string maCode = madoan + "#" + listLoaiQuyHoach[i].code;
-
-                                                                    }
-                                                                    <li><button class="btn btn-primary openDongGopYKien"  id="" alt="@maCode" style="margin:5px;"> Xem phiếu góp ý </button></li>
-                                                                </ul>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                                                }
-                                                                            }
-                                                                        }
+                                                string madoan = listThongtinDoAn[y].MaDoAn + "#" + listLoaiQuyHoach[i].code;
+                                                string mdoan = listThongtinDoAn[y].MaDoAn;
+                                                string maCode = madoan + "#" + listLoaiQuyHoach[i].code;
+                                                <li>
+                                                    <a tabindex="-1" mdoan="@mdoan" maCode="@maCode" class="call_bandoquyhoach_layykien" href="#" title="@madoan">@listThongtinDoAn[y].TenDoAn</a>
+                                                   
+                                                </li>
+                                            }
+                                        }
+                                    }
 
 
-                                    </ul>
-                                </li>
+                                </ul>
+                            </li>
 
                                                                         }
 
@@ -400,6 +343,7 @@
             </div>
         </div>
     </div>
+   
 
     @RenderBody()
 

@@ -39,7 +39,7 @@ namespace WebGISQuangNam.Models.dataHelper
         List<YKienQuyHoachUser> getYKienQuyHoachUser();
         List<DoAnYKienQuyHoach> getDoAnYKienQuyHoach();
 
-    }
+    }   
     public class EFGISRepository : IGISRepository
     {
         private DataGISContext context = new DataGISContext();
@@ -308,7 +308,6 @@ namespace WebGISQuangNam.Models.dataHelper
             return list;
 
         }
-
 
     }
 

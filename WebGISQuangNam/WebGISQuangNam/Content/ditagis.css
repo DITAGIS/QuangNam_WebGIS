@@ -1,0 +1,42 @@
+
+.left-panel{
+    position: absolute;
+    background-color: #fff;
+    top: 100px;
+    left: 10px;
+    z-index: 999;
+    width: 300px;
+}
+.group-title {
+    padding: 0 10px;
+    font-weight: 600;
+    font-size: 16px;
+}
+.group-heading {
+    background-color: #a5f779;
+    padding: 5px;
+}
+
+button.accordion {
+    background-color: #e4f0f6;
+    color: #17394d;
+    cursor: pointer;
+    padding: 7px 10px;
+    width: 100%;
+    border: solid 1px #ccc;
+    text-align: left;
+    outline: none;
+    transition: 0.4s;
+}
+div.panel-accordion {
+    background-color: white;
+    display: none;
+}
+div.panel-group {
+    border: solid 1px #ccc;
+    color: #fff;
+    margin-bottom: 0;
+}
+button.btn.btn-primary.openDongGopYKien {
+    padding: 6px 12px;
+}
