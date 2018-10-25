@@ -1,6 +1,10 @@
 ﻿require([
-    "dojo/_base/unload", "dojo/cookie", "dojo/json", "esri/IdentityManager", "esri/toolbars/navigation", // 1
-    "dijit/registry", "dojo/on", "esri/map", "esri/dijit/OverviewMap", "esri/layers/FeatureLayer",// 2
+    // ditagis require
+    "ditagis/widgets/Report",
+    "ditagis/configs",
+
+    "esri/toolbars/navigation", // 1
+    "dijit/registry", "dojo/on", "esri/map", "esri/layers/FeatureLayer",// 2
     "esri/dijit/AttributeInspector", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", // 3
     "esri/layers/ImageParameters", "esri/layers/ArcGISTiledMapServiceLayer", "esri/tasks/query", "dojo/query", "dojo/parser", // 4
     "dojo/dom-construct", "dijit/form/Button", "esri/tasks/GeometryService", "esri/geometry/Point", "esri/tasks/ProjectParameters", // 5
@@ -13,10 +17,18 @@
     "esri/dijit/LocateButton", "esri/dijit/BasemapGallery", "esri/layers/Domain",
     "esri/dijit/Search", "esri/SnappingManager", "esri/dijit/Measurement", "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator",
 
-    "esri/toolbars/draw", "dijit/Toolbar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane", "dojo/domReady!" // 12
+    "esri/toolbars/draw", "dijit/Toolbar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
+
+
+    "dojo/domReady!" // 12
+
+
 ], function (
-    baseUnload, cookie, JSON, esriId, Navigation,
-    registry, on, Map, OverviewMap, FeatureLayer,
+    // ditagis function
+    Report, configs,
+
+    Navigation,
+    registry, on, Map, FeatureLayer,
     AttributeInspector, SimpleLineSymbol, SimpleFillSymbol, Color, ArcGISDynamicMapServiceLayer,
     ImageParameters, ArcGISTiledMapServiceLayer, Query, dojoQuery, parser,
     domConstruct, Button, GeometryService, Point, ProjectParameters,
@@ -26,8 +38,11 @@
     keys, array, dom, Grid, Selection,
     Memory, declare, Print, PrintTemplate, esriRequest,
     esriConfig, geometryEngine, InfoTemplate, normalizeUtils,
-    BufferParameters, lang, LocateButton, BasemapGallery, Domain, Search, SnappingManager, Measurement, Menu, MenuItem, MenuSeparator
-) {
+    BufferParameters, lang, LocateButton, BasemapGallery, Domain, Search, SnappingManager, Measurement, Menu, MenuItem, MenuSeparator,
+
+
+
+    ) {
 
 
         parser.parse();
@@ -40,33 +55,11 @@
 
         var imageParameters = new ImageParameters();
         imageParameters.format = "jpeg"; //set the image type to PNG24, note default is PNG8.
-
-        var linkBaseMap = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamBasemap/MapServer";
-
-        var linkGISMap = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamSDD/MapServer";
-
         var printUrl = "https://sawagis.vn/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task";
-
-        //var linkQHCT = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/13";
-        // var linkQHPK = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/13";
-        // var linkThongTinDoAn = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamSDD/MapServer/2";
-
-        var linkQuangNamQHC = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer";
-        var linkQuangNamQHPK = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer";
-        var linkQuangNamQHCT = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer";
-        var linkQuangNamQHV = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer";
-        var linkQuangNamQHNT = "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer";
-
 
         var sr = new SpatialReference({
             "wkt": 'PROJCS["QUANG NAM_VN2000",GEOGCS["GCS_VN_2000",DATUM["D_Vietnam_2000",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",107.75],PARAMETER["Scale_Factor",0.9999],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]'
         });
-
-        //var labels = [12500000, 10000000 , 5000000, 2000000 , 1000000, 500000 ,200000 ,100000 , 70000 ,50000 , 20000 , 10000 , 5000 , 2000 ];
-        //esri.config.defaults.map.sliderLabel = { liderLabels: labels };
-
-        var startExtent = new Extent(425618.68874842953, 1721185.1070699922, 618764.9083742021, 1796062.3401577917,
-            new SpatialReference({ wkid: sr }));
 
         var map = new Map("mapDiv", {
             spatialReference: sr,
@@ -75,119 +68,31 @@
             logo: false,
             basemap: "osm",
             slider: true,
-            // extent: startExtent ,
             sliderPosition: "bottom-right",
             sliderStyle: "small",
             autoResize: true,
             showLabels: true
-            // ,
-            // sliderStyle: "large",
-            // sliderLabels: labels
         });
 
 
-        var baseMap = new ArcGISDynamicMapServiceLayer(linkBaseMap, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ nền"
-        });
+        var layers = [];
+        for (const key in configs.gisMapServerLayers) {
+            let layercf = configs.gisMapServerLayers[key];
+            var arcGISDynamicMapServiceLayer = new ArcGISDynamicMapServiceLayer(layercf.url, {
+                "imageParameters": imageParameters,
+                "id": layercf.id
+            });
+            var layer = {
+                layer: arcGISDynamicMapServiceLayer, // required unless featureCollection.
+                subLayers: true, // optional
+                visibility: true, // optional
+                title: layercf.title
+            };
+            layers.push(layer);
+            map.addLayer(arcGISDynamicMapServiceLayer);
 
-        var gISMap = new ArcGISDynamicMapServiceLayer(linkGISMap, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề"
-        });
-
-
-        var gISMapQuangNamQHC = new ArcGISDynamicMapServiceLayer(linkQuangNamQHC, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề QH Chung"
-        });
-
-        var gISMapQuangNamQHPK = new ArcGISDynamicMapServiceLayer(linkQuangNamQHPK, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề QH Phân Khu"
-        });
-
-        var gISMapQuangNamQHNT = new ArcGISDynamicMapServiceLayer(linkQuangNamQHNT, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề QH Nông Thôn"
-        });
-
-        var gISMapQuangNamQHCT = new ArcGISDynamicMapServiceLayer(linkQuangNamQHCT, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề"
-        });
-
-        var gISMapQuangNamQHV = new ArcGISDynamicMapServiceLayer(linkQuangNamQHV, {
-            "imageParameters": imageParameters,
-            "id": "Bản đồ chuyên đề QH Vùng"
-        });
-
-        var SDD_QuangNamQHCSDD = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/14", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-        var SDD_QuangNamQHCT = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/13", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-        var SDD_QuangNamQHNT = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer/13", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-        var SDD_QuangNamQHPK = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/13", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-        var SDD_QuangNamQHV = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/12", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
-        var ThongTinDoAnQuangNamQHCT = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/14", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
-        var ThongTinDoAnQuangNamQHC = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/15", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
-        var ThongTinDoAnQuangNamQHNT = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer/14", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
-        var ThongTinDoAnQuangNamQHPK = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/14", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
-        var ThongTinDoAnQuangNamQHV = new esri.layers.FeatureLayer("https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/13", { //Feature 1
-            mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-            outFields: ["*"],
-            "opacity": 0.9
-        });
-
-
+        }
+        var featureLayers = [];
         var polySymbolRed = new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_SOLID,
             new SimpleLineSymbol(
@@ -196,34 +101,31 @@
             ),
             new Color([255, 0, 0, 0.25])
         );
+        for (const key in configs.layers) {
+            let layercf = configs.layers[key];
+            let featureLayer = new esri.layers.FeatureLayer(layercf.url, {
+                mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                outFields: ["*"],
+                "opacity": 0.9,
+                id: layercf.id
+            });
+            if(layercf.displayFields){
+                featureLayer.displayFields = layercf.displayFields;
+            }
+            featureLayer.typeSelectFeature = layercf.typeSelectFeature;
+            featureLayer.setSelectionSymbol(polySymbolRed);
+            featureLayers.push(featureLayer);
+            var layer = {
+                layer: featureLayer, // required unless featureCollection.
+                subLayers: true, // optional
+                visibility: true, // optional
+                title: layercf.title
+            };
+            layers.push(layer);
 
 
-        //  var countyLayer = new GraphicsLayer();
-        //  countyLayer.setMaxScale(100000);
-
-        map.addLayer(baseMap);
-        //map.addLayer(countyLayer);
-        map.addLayer(gISMapQuangNamQHV);
-        map.addLayer(gISMapQuangNamQHC);
-        map.addLayer(gISMapQuangNamQHNT);
-        map.addLayer(gISMapQuangNamQHPK);
-        map.addLayer(gISMapQuangNamQHCT);
-
-        ThongTinDoAnQuangNamQHV.setSelectionSymbol(polySymbolRed);
-        ThongTinDoAnQuangNamQHC.setSelectionSymbol(polySymbolRed);
-        ThongTinDoAnQuangNamQHNT.setSelectionSymbol(polySymbolRed);
-        ThongTinDoAnQuangNamQHPK.setSelectionSymbol(polySymbolRed);
-        ThongTinDoAnQuangNamQHCT.setSelectionSymbol(polySymbolRed);
-        SDD_QuangNamQHV.setSelectionSymbol(polySymbolRed);
-        SDD_QuangNamQHCSDD.setSelectionSymbol(polySymbolRed);
-        SDD_QuangNamQHNT.setSelectionSymbol(polySymbolRed);
-        SDD_QuangNamQHPK.setSelectionSymbol(polySymbolRed);
-        SDD_QuangNamQHCT.setSelectionSymbol(polySymbolRed);
-
-        map.addLayers([ThongTinDoAnQuangNamQHV, ThongTinDoAnQuangNamQHC, ThongTinDoAnQuangNamQHNT, ThongTinDoAnQuangNamQHPK, ThongTinDoAnQuangNamQHCT
-            , SDD_QuangNamQHV, SDD_QuangNamQHCSDD, SDD_QuangNamQHNT, SDD_QuangNamQHPK, SDD_QuangNamQHCT]);
-
-
+        }
+        map.addLayers(featureLayers);
         var homeButton = new HomeButton({
             theme: "HomeButton",
             map: map,
@@ -240,129 +142,6 @@
         if (width <= 767) {
             $("#searchButton").css('top', '60px');
         }
-
-        var scalebar = new Scalebar({
-            map: map,
-            scalebarUnit: "metric",
-            attachTo: "bottom-right"
-        });
-
-
-        var layers = [
-            {
-                layer: baseMap, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ nền",// optional
-                title: "Bản đồ nền"
-            },
-            {
-                layer: gISMapQuangNamQHV, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ chuyên đề QH Vùng",// optional
-                title: "Bản đồ chuyên đề QH Vùng"
-            },
-            {
-                layer: gISMapQuangNamQHC, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ chuyên đề QH Chung",// optional
-                title: "Bản đồ chuyên đề QH Chung"
-            },
-            {
-                layer: gISMapQuangNamQHNT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ chuyên đề QH Nông Thôn",// optional
-                title: "Bản đồ chuyên đề QH Nông Thôn"
-            },
-            {
-                layer: gISMapQuangNamQHPK, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ chuyên đề QH Phân Khu",// optional
-                title: "Bản đồ chuyên đề QH Phân Khu"
-            },
-            {
-                layer: gISMapQuangNamQHCT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Bản đồ chuyên đề QH Chi Tiết",// optional
-                title: "Bản đồ chuyên đề QH Chi Tiết"
-            },
-            {
-                layer: ThongTinDoAnQuangNamQHV, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin đồ án QH Vùng",// optional
-                title: "Xem thông tin đồ án QH Vùng"
-            },
-            {
-                layer: ThongTinDoAnQuangNamQHC, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin đồ án QH Chung",// optional
-                title: "Xem thông tin đồ án QH Chung"
-            },
-            {
-                layer: ThongTinDoAnQuangNamQHNT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin đồ án QH Nông Thôn",// optional
-                title: "Xem thông tin đồ án QH Nông Thôn"
-            },
-            {
-                layer: ThongTinDoAnQuangNamQHPK, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin đồ án QH Phân khu",// optional
-                title: "Xem thông tin đồ án QH Phân Khu"
-            },
-            {
-                layer: ThongTinDoAnQuangNamQHCT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin đồ án QH Chi tiết",// optional
-                title: "Xem thông tin đồ án QH Chi tiết"
-            },
-            {
-                layer: SDD_QuangNamQHV, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin QHV Sử dụng đất",// optional
-                title: "Xem thông tin QHV Sử dụng đất"
-            },
-            {
-                layer: SDD_QuangNamQHCSDD, // required unless featureCollection.SDD_QuangNamQHV
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin QHC Sử dụng đất",// optional
-                title: "Xem thông tin QHC Sử dụng đất"
-            },
-            {
-                layer: SDD_QuangNamQHNT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin QHNT Sử dụng đất",// optional
-                title: "Xem thông tin QHNT Sử dụng đất"
-            },
-            {
-                layer: SDD_QuangNamQHPK, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin QHPK Sử dụng đất",// optional
-                title: "Xem thông tin QHPK Sử dụng đất"
-            },
-            {
-                layer: SDD_QuangNamQHCT, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                id: "Xem thông tin QHCT Sử dụng đất",// optional
-                title: "Xem thông tin QHCT Sử dụng đất"
-            }
-
-        ];
 
         var myWidget = new LayerList({
             map: map,
@@ -738,6 +517,8 @@
 
 
         map.on("layers-add-result", initEditor);
+
+
         function initEditor(evt) {
 
             var map = this;
@@ -745,18 +526,6 @@
                 return result.layer;
             });
 
-            //var layerInfo = array.map(evt.layers, function (layer, index) {
-            //    return { layer: layer.layer, title: layer.layer.name };
-            //});
-            //if (layerInfo.length > 0) {
-            //    var legendDijit = new Legend({
-            //        map: map,
-            //        layerInfos: layerInfo
-            //    }, "legendDiv");
-            //    legendDijit.startup();
-            //}
-
-            //$("#legendDiv_panel").slideUp();
 
             //display read-only info window when user clicks on feature 
             var query = new esri.tasks.Query();
@@ -791,13 +560,7 @@
 
                             var inforContent = "";
                             featUpdate = features[0];
-                            if (layer.name == ThongTinDoAnQuangNamQHC.name || layer.name == ThongTinDoAnQuangNamQHCT.name
-                                || layer.name == ThongTinDoAnQuangNamQHNT.name || layer.name == ThongTinDoAnQuangNamQHPK.name
-                                || layer.name == ThongTinDoAnQuangNamQHV.name) {
-
-                                var TrangThaiDoAn = featUpdate.attributes["TrangThaiDoAn"];
-                                //if (TrangThaiDoAn == "ThucTe") {
-
+                            if (layer.typeSelectFeature == "ThongTin") {
                                 inforContent += "<div class='contentPopup' >";
 
                                 inforContent += "<div><span class='lableColName'>Kí hiệu khu vực :</span><span class='lableColValue'> " + featUpdate.attributes["KiHieuKhuVuc"] + "</span></div>";
@@ -813,15 +576,6 @@
 
                                 inforContent += "</div>";
                                 map.infoWindow.setTitle("Kết quả tra cứu");
-
-                                //}
-                                //if (TrangThaiDoAn == "LayYKien" || TrangThaiDoAn == "CongBo") {
-                                //    inforContent += "<div id=''><h4 id='messageBoxContent' class='messageBoxInforh4'>Bản đồ đang trong thời gian cập nhật</h4> </div>";
-
-                                //    map.infoWindow.setTitle("<h3 class='panel-title messageBoxInforh3'>Bản đồ GIS</h3>");
-                                //}
-
-
                             }
                             else {
                                 inforContent = getInforPopup(layer, featUpdate);
@@ -853,19 +607,11 @@
             map.on("mouse-move", function (evt) {
             });
 
-            map.infoWindow.on("hide", function (evt) {
-
-                SDD_QuangNamQHCSDD.clearSelection();
-                SDD_QuangNamQHCT.clearSelection();
-                SDD_QuangNamQHNT.clearSelection();
-                SDD_QuangNamQHPK.clearSelection();
-                SDD_QuangNamQHV.clearSelection();
-
-                ThongTinDoAnQuangNamQHV.clearSelection();
-                ThongTinDoAnQuangNamQHC.clearSelection();
-                ThongTinDoAnQuangNamQHNT.clearSelection();
-                ThongTinDoAnQuangNamQHPK.clearSelection();
-                ThongTinDoAnQuangNamQHCT.clearSelection();
+            map.infoWindow.on("hide", (evt) => {
+                for (const featureLayer of featureLayers) {
+                    featureLayer.clearSelection();
+                }
+               
             });
         }
 
@@ -1012,12 +758,13 @@
                 }
             });
         });
-
-        $("#LuaChonDiaDiemDauTu_tim").click(function () {
+        var report = new Report(map);
+        $("#LuaChonDiaDiemDauTu_tim").click(() => {
             $("#loadingpageDiv").css("display", "inline-block");
             var url = "/Home/getThongTinQHPK";
-            var html = "";
-
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "SDD_QuangNamQHPK"
+            });
             var maQuanHuyen = "", maPhuongXa = "", LoaiDat = "", KiHieuLoDat = "", dientichtu = -1,
                 dientichden = -1, kcTu = -1, kcDen = -1, sovoi = "";
 
@@ -1039,7 +786,6 @@
                 return;
             }
 
-            $("#ResultDataSearchContent").html("");
             $("#ResultDataSearchContentType").val("QHPK");
             $("#titleTimKiem").html("Lựa chọn địa điểm đầu tư");
             $.ajax({
@@ -1051,9 +797,9 @@
                     kcTu: kcTu, kcDen: kcDen, sovoi: sovoi
                 },
                 cache: false,
-                success: function (results) {
-                    console.log(results);
-                    $("#ResultDataSearchContent").html(results);
+                success: (results) => {
+                    report.showTable(featureLayer, results);
+                    // $("#ResultDataSearchContent").html(results);
                     $(".panel_control").slideUp();
                     $("#ResultDataSearch").toggle("slide");
                     $("#loadingpageDiv").css("display", "none");
@@ -1092,16 +838,12 @@
             var fields = featureLayer.fields
             var col;
 
-            if (featureLayer.name == SDD_QuangNamQHPK.name || featureLayer.name == SDD_QuangNamQHCSDD.name ||
-                featureLayer.name == SDD_QuangNamQHCT.name || featureLayer.name == SDD_QuangNamQHNT.name ||
-                featureLayer.name == SDD_QuangNamQHV.name) {
+            if (layer.typeSelectFeature == "SDD") {
                 col = ["KiHieuKhuDat", "KiHieuLoDat", "LoaiDat", "DienTichKhuDat", "GiaiDoanQuyHoach", "TangCao", "MatDoXayDung", "KhoangLuiChinh",
                     "KhoangLuiBien", "HeSoSuDungDat"];
             }
 
-            if (featureLayer.name == ThongTinDoAnQuangNamQHV.name || featureLayer.name == ThongTinDoAnQuangNamQHC.name ||
-                featureLayer.name == ThongTinDoAnQuangNamQHNT.name ||
-                featureLayer.name == ThongTinDoAnQuangNamQHPK.name || featureLayer.name == ThongTinDoAnQuangNamQHCT.name) {
+            if (layer.typeSelectFeature == "ThongTin") {
                 col = ["MaDoAn", "TenDoAn", "TrangThaiDoAn", "ChuDauTu", "CoQuanPheDuyet", "NgayPheDuyet", "SoQuyetDinhPheDuyet",
                     "DiaDiem", "DienTich", "DonViCapNhat", "DonViQuanLy", "KiHieuKhuVuc", "LoaiQuyHoach", "MaPhuongXa", "MaQuanHuyen",
                     "NgayCapNhat", "NguoiCapNhat", "GhiChu"];
@@ -1282,7 +1024,10 @@
             }
 
             if (loaimada === "QHCT") {
-                ThongTinDoAnQuangNamQHCT.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+                var featureLayer = featureLayers.find(function (element) {
+                    return element.id == "ThongTinDoAnQuangNamQHCT"
+                });
+                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
 
                         var statesLayer = results[0].geometry;
@@ -1295,8 +1040,10 @@
             }
 
             if (loaimada === "QHPK") {
-
-                ThongTinDoAnQuangNamQHPK.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+                var featureLayer = featureLayers.find(function (element) {
+                    return element.id == "ThongTinDoAnQuangNamQHPK"
+                });
+                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
 
                         var statesLayer = results[0].geometry;
@@ -1309,8 +1056,10 @@
             }
 
             if (loaimada === "QHC") {
-
-                ThongTinDoAnQuangNamQHC.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+                var featureLayer = featureLayers.find(function (element) {
+                    return element.id == "ThongTinDoAnQuangNamQHC"
+                });
+                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
 
                     if (results.length > 0) {
 
@@ -1324,8 +1073,10 @@
             }
 
             if (loaimada === "QHNT") {
-
-                ThongTinDoAnQuangNamQHNT.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+                var featureLayer = featureLayers.find(function (element) {
+                    return element.id == "ThongTinDoAnQuangNamQHNT"
+                });
+                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
 
                         var statesLayer = results[0].geometry;
@@ -1338,8 +1089,10 @@
             }
 
             if (loaimada === "QHV") {
-
-                ThongTinDoAnQuangNamQHV.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+                var featureLayer = featureLayers.find(function (element) {
+                    return element.id == "ThongTinDoAnQuangNamQHV"
+                });
+                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
 
                         var statesLayer = results[0].geometry;
@@ -1353,17 +1106,6 @@
         }
 
         function zoomData(geometryData) {
-            var graPhicData = new Graphic(geometryData, polySymbolRed);
-
-            //countyLayer.clear();
-            //countyLayer.add(graPhicData);
-
-            //ThongTinDoAnQuangNamQHV.clearSelection();
-            //ThongTinDoAnQuangNamQHPK.clearSelection();
-            //ThongTinDoAnQuangNamQHC.clearSelection();
-            //ThongTinDoAnQuangNamQHCT.clearSelection();
-            //ThongTinDoAnQuangNamQHNT.clearSelection();
-
             var stateExtent = geometryData.getExtent().expand(1.0);
             map.setExtent(stateExtent);
         }
@@ -1379,7 +1121,10 @@
             if (map.infoWindow.isShowing) {
                 map.infoWindow.hide();
             }
-            SDD_QuangNamQHCT.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "SDD_QuangNamQHCT"
+            });
+            featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                 if (results.length > 0) {
                     var statesLayer = results[0].geometry;
                     var stateExtent = results[0].geometry.getExtent().expand(2.0);
@@ -1405,7 +1150,10 @@
             if (map.infoWindow.isShowing) {
                 map.infoWindow.hide();
             }
-            SDD_QuangNamQHPK.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "SDD_QuangNamQHPK"
+            });
+            featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                 if (results.length > 0) {
                     var statesLayer = results[0].geometry;
                     var stateExtent = results[0].geometry.getExtent().expand(5.0);

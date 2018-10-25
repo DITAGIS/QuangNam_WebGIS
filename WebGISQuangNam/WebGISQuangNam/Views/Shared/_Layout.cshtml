@@ -10,6 +10,9 @@
     <link rel="shorcut icon" type="image/x-ico" href="~/Content/logo.ico" />
     <link rel="stylesheet" href="https://js.arcgis.com/3.22/dijit/themes/claro/claro.css">
     <link rel="stylesheet" href="https://js.arcgis.com/3.22/esri/css/esri.css">
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.material.mobile.min.css" />
     <link href="~/Content/fancyBox/jquery.fancybox.min.css" rel="stylesheet" />
     <link href="~/Content/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/dropdown_menu.css" rel="stylesheet" />
@@ -349,6 +352,10 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        var URL_SCRIPTS = "@Url.Content("~/Scripts")";
+    </script>
+  
     <script src="~/Content/fancyBox/jquery.fancybox.min.js"></script>
     <script type="text/javascript">
         var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
@@ -358,10 +365,14 @@
                 location: package_path + '/bootstrap-map-js/src/js'
             }]
         };
-    </script>
+    </script> 
+    <script src="~/Scripts/dojoConfig.js"></script>
+    
+    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js"></script>
+
     <script src="https://js.arcgis.com/3.22/"></script>
-    @*
-        <script src="~/bootstrap-map-js/src/js/bootstrapmap.js"></script>*@
     @RenderSection("scripts", required: false)
 
 

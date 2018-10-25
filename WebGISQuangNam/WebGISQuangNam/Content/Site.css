@@ -466,7 +466,7 @@ li.sidebar-brand a {
     top: 100px;
     right: 35px;
     z-index: 999;
-    width: 300px;
+    /* width: 300px; */
 }
 
 .dropdown-header {
