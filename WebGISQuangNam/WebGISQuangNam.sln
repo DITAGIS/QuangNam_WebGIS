@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGISQuangNam", "WebGISQuangNam\WebGISQuangNam.csproj", "{E62B3328-C969-4350-BF21-16EE0F3037A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGISQuangNam.DataProvider", "WebGISQuangNam.DataProvider\WebGISQuangNam.DataProvider.csproj", "{231102FA-26FA-433A-9C04-19E0372B0701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebGISQuangNam.IO", "WebGISQuangNam.IO\WebGISQuangNam.IO.csproj", "{5CD38884-9A2A-4CBB-A562-A60E00DCC2EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +19,19 @@ Global
 		{E62B3328-C969-4350-BF21-16EE0F3037A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E62B3328-C969-4350-BF21-16EE0F3037A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E62B3328-C969-4350-BF21-16EE0F3037A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{231102FA-26FA-433A-9C04-19E0372B0701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{231102FA-26FA-433A-9C04-19E0372B0701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{231102FA-26FA-433A-9C04-19E0372B0701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{231102FA-26FA-433A-9C04-19E0372B0701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CD38884-9A2A-4CBB-A562-A60E00DCC2EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CD38884-9A2A-4CBB-A562-A60E00DCC2EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CD38884-9A2A-4CBB-A562-A60E00DCC2EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CD38884-9A2A-4CBB-A562-A60E00DCC2EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7A232C00-D11A-42D1-880B-AA0986080CA7}
 	EndGlobalSection
 EndGlobal

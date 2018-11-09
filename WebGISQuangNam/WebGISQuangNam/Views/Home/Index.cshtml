@@ -51,7 +51,7 @@
         <div class="panel panel-info panel_control" id="measurementDiv_panel">
             <div class="panel-heading">
                 <h3 class="panel-title">Công cụ đo đạc</h3>
-                <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
+                <span id="close-measure" class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
             </div>
             <div class="panel-body">
                 <div id="measurementDiv"></div>
@@ -237,19 +237,12 @@
         </div>
 
         <div class="panel panel-info panel_control" id="ResultDataSearch">
-            <div class="panel-heading">
-                <h3 class="panel-title">Kết quả tra cứu</h3>
-                <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
-                <div style="display:none;" id="titleTimKiem"></div>
-                <input type="text" id="ResultDataSearchContentType" hidden />
-            </div>
             <div class="panel-body" id="ResultDataSearchContent">
-
             </div>
         </div>
 
         <!-- Left panel -->
-    <div class="panel left-panel" id="ykiendoan_QHC" style="display: none;">
+    <div class="panel left-panel" id="panel_QHC" style="display: none;">
         <div class="group-heading">
             <div class="group-title">Danh mục hồ sơ</div>
             <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>

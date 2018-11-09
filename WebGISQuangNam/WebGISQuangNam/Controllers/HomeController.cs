@@ -7,6 +7,7 @@ using System.Web.Configuration;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
+using WebGISQuangNam.DataProvider.GIS;
 using WebGISQuangNam.Models;
 using WebGISQuangNam.Models.dataHelper;
 
@@ -486,145 +487,7 @@ namespace WebGISQuangNam.Controllers
         }
 
 
-        ////////////////
-        [AllowAnonymous]
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult getThongTinDoAn(string maQuanHuyen = "", string maPhuongXa = "", string LoaiQuyHoach = "", string tendoan = "")
-        {
-            List<THONGTINDOAN> listThongtindoan = this.gISRepository.getThongTinDoAn().ToList();
-
-            if (maQuanHuyen != null)
-            {
-                if (maQuanHuyen.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => da.MaQuanHuyen == maQuanHuyen).ToList();
-                }
-            }
-
-            if (maPhuongXa != null)
-            {
-                if (maPhuongXa.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => da.MaPhuongXa == maPhuongXa).ToList();
-                }
-            }
-
-            if (LoaiQuyHoach != null)
-            {
-                if (LoaiQuyHoach.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => da.LoaiQuyHoach == LoaiQuyHoach).ToList();
-                }
-            }
-
-            if (tendoan != null)
-            {
-                if (tendoan.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => (da.TenDoAn ?? "").Contains(tendoan)).ToList();
-                }
-            }
-
-            string html = "";
-            // lấy theo quy hoạch chi tiết 
-
-            html = "<table  class='table table-condensed'> <tr> <th>TT</th><th>Tên đồ án</th><th>Địa điểm</th> </tr>";
-
-            if (listThongtindoan.Count > 0)
-            {
-                for (int i = 0; i < listThongtindoan.Count; i++)
-                {
-                    THONGTINDOAN doan = listThongtindoan[i];
-                    html += "<tr> <td>" + (i + 1) + "</td><td><span class='itemSearch' alt='" + doan.MaDoAn + "#" + doan.LoaiQuyHoach + "'>" + doan.TenDoAn + "</span></td><td>" + doan.DiaDiem + "</td></tr>";
-                }
-            }
-            else
-            {
-                html += "<tr> <td colspan='3'><h5 class='mess'>Không có đồ án nào được tìm thấy</h5></td></tr>";
-            }
-
-            html += "</table>";
-            return Json(html);
-        }
         //Anh Tuấn viết
-        [AllowAnonymous]
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult getThongTinQHCT_Tuan(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuKhuDat = "", string KiHieuLoDat = "", string tendoan = "")
-        {
-            List<QHCT_SUDUNGDAT> listThongtindoan = this.gISRepository.getQHCT_SUDUNGDAT().ToList();
-
-            if (maQuanHuyen != null)
-            {
-                if (maQuanHuyen.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => da.MaQuanHuyen == maQuanHuyen).ToList();
-                }
-            }
-
-            if (maPhuongXa != null)
-            {
-                if (maPhuongXa.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => da.MaPhuongXa == maPhuongXa).ToList();
-                }
-            }
-
-            if (LoaiDat != null)
-            {
-                if (LoaiDat.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => (da.LoaiDat ?? "").Contains(LoaiDat)).ToList();
-                }
-            }
-
-            if (KiHieuKhuDat != null)
-            {
-                if (KiHieuKhuDat.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => (da.KiHieuKhuDat ?? "").Contains(KiHieuKhuDat)).ToList();
-                }
-            }
-
-            if (KiHieuLoDat != null)
-            {
-                if (KiHieuLoDat.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => (da.KiHieuLoDat ?? "").Contains(KiHieuLoDat)).ToList();
-                }
-            }
-
-            if (tendoan != null)
-            {
-                if (tendoan.Trim().Length > 0)
-                {
-                    listThongtindoan = listThongtindoan.Where(da => (da.TenDoAn ?? "").Contains(tendoan)).ToList();
-                }
-            }
-
-            string html = "";
-            // lấy theo quy hoạch chi tiết 
-
-            html = "<table  class='table table-condensed'> <tr> <th>TT</th><th>K/h lô</th><th>Loại đất</th><th>DT</th> <th>Tên đồ án</th></tr>";
-
-            if (listThongtindoan.Count > 0)
-            {
-                for (int i = 0; i < listThongtindoan.Count; i++)
-                {
-                    QHCT_SUDUNGDAT doan = listThongtindoan[i];
-                    html += "<tr> <td>" + (i + 1) + "</td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.KiHieuLoDat +
-                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.LoaiDat +
-                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.DienTichLoDat +
-                        "</span></td><td><span class='itemSearch' alt='" + doan.OBJECTID + "'>" + doan.TenDoAn + "</span></td></tr>";
-                }
-            }
-            else
-            {
-                html += "<tr> <td colspan='5'><h5 class='mess'>Không có lô đất nào được tìm thấy</h5></td></tr>";
-            }
-
-            html += "</table>";
-            return Json(listThongtindoan);
-        }
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult getThongTinQHCT(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuKhuDat = "", string KiHieuLoDat = "", string tendoan = "")
@@ -678,6 +541,7 @@ namespace WebGISQuangNam.Controllers
                     listThongtindoan = listThongtindoan.Where(da => (da.TenDoAn ?? "").Contains(tendoan)).ToList();
                 }
             }
+
             string html = "";
             // lấy theo quy hoạch chi tiết 
 
@@ -702,6 +566,7 @@ namespace WebGISQuangNam.Controllers
             html += "</table>";
             return Json(listThongtindoan);
         }
+        
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult getThongTinQHPK(string maQuanHuyen = "", string maPhuongXa = "", string LoaiDat = "", string KiHieuLoDat = "", int dientichtu = -1,
@@ -1077,7 +942,5 @@ namespace WebGISQuangNam.Controllers
             return cart;
         }
 
-
-        // End Class //
     }
 }

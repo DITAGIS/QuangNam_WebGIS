@@ -466,7 +466,7 @@ li.sidebar-brand a {
     top: 100px;
     right: 35px;
     z-index: 999;
-    /* width: 300px; */
+    width: 500px;
 }
 
 .dropdown-header {
@@ -534,7 +534,7 @@ a.item {
 }
 
 .sub_menu3 {
-    /*list-style: none;*/
+    list-style: none;
 }
 
 

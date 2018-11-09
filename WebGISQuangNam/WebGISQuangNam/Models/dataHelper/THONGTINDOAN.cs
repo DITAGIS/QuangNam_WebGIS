@@ -8,6 +8,7 @@ namespace WebGISQuangNam.Models.dataHelper
     
     public class THONGTINDOAN
     {
+        public string OBEJCTID { get; set; }
         public string MaDoAn { get; set; }
         public string TenDoAn { get; set; }
         public string DiaDiem { get; set; }

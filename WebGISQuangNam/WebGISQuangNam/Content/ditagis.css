@@ -1,7 +1,6 @@
 
 .left-panel{
     position: absolute;
-    background-color: #fff;
     top: 100px;
     left: 10px;
     z-index: 999;
@@ -13,7 +12,8 @@
     font-size: 16px;
 }
 .group-heading {
-    background-color: #a5f779;
+    background-color: rgb(0,172,236);
+    color: #fff;
     padding: 5px;
 }
 
@@ -39,4 +39,42 @@ div.panel-group {
 }
 button.btn.btn-primary.openDongGopYKien {
     padding: 6px 12px;
+}
+
+
+
+
+
+
+
+/* Kendo css */
+.k-grid td {
+    padding: .4em .6em;
+}
+a.k-button.k-button-icontext.k-grid-close {
+    float: right;
+    background-color: #d9534f;
+    border-color: #fff; 
+}
+a.k-button.k-button-icontext.k-grid-close:hover {
+    background-color: #c9302c;
+    border-color: #fff; 
+}
+.k-header{
+    background-color: #188822;
+}
+a.k-button.k-button-icontext.k-grid-custom {
+    background-color: #188822;
+    border-color: #fff; 
+}
+a.k-button.k-button-icontext.k-grid-custom:hover {
+    background-color: #188822;
+    border-color: #b6ff00; 
+    color: #b6ff00;
+}
+
+
+a.k-button.k-button-icontext.btn-download.k-grid- {
+    width: auto;
+    min-width: 0;
 }

@@ -13,7 +13,7 @@ define(["require", "exports"], function (require, exports) {
             // },
             QuangNamQHC: {
                 title: "Bản đồ chuyên đề QH Chung",
-                id: 'QuangNamQHC',
+                id: 'QHC',
                 url: 'https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer'
             },
             QuangNamQHPK: {
@@ -39,67 +39,75 @@ define(["require", "exports"], function (require, exports) {
         },
 
         layers: {
-            SDD_QuangNamQHCSDD: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/14",
-                id: "SDD_QuangNamQHCSDD",
-                title: "QHC_Sử dụng đất",
+            ThongTinDoAn: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamSDD/MapServer/2",
+                id: "ThongTinDoAn",
+                title: "Thông tin đồ án",
+                displayFields:['TenDoAn','DiaDiem']
+            },
+            ThongTinDoAn_QHV: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/13",
+                id: "ThongTinDoAn_QHV",
+                title: "Xem thông tin đồ án QH Vùng",
+                typeSelectFeature:"ThongTin"
+            },
+            ThongTinDoAn_QHPK: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/14",
+                id: "ThongTinDoAn_QHPK",
+                title: "Xem thông tin đồ án QH Phân Khu",
+                typeSelectFeature:"ThongTin"
+            },
+            ThongTinDoAn_QHNT: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer/14",
+                id: "ThongTinDoAn_QHNT",
+                title: "Xem thông tin đồ án QH Nông Thôn",
+                typeSelectFeature:"ThongTin"
+            },
+            ThongTinDoAn_QHC: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/15",
+                id: "ThongTinDoAn_QHC",
+                title: "Xem thông tin đồ án QH Chung",
+                typeSelectFeature:"ThongTin",
+                displayFields:['TenDoAn','DiaDiem']
+            },
+            ThongTinDoAn_QHCT: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/14",
+                id: "ThongTinDoAn_QHCT",
+                title: "Xem thông tin đồ án QH Chi tiết",
+                typeSelectFeature:"ThongTin",
+            },
+            SDD_QHV: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/12",
+                id: "SDD_QHV",
+                title: "Xem thông tin QHV Sử dụng đất",
                 typeSelectFeature:"SDD"
             },
-            SDD_QuangNamQHCT: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/13",
-                id: "SDD_QuangNamQHCT",
-                title: "Xem thông tin QHCT Sử dụng đất",
-                typeSelectFeature:"SDD"
-            },
-            SDD_QuangNamQHNT: {
+            SDD_QHNT: {
                 url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer/13",
-                id: "SDD_QuangNamQHNT",
+                id: "SDD_QHNT",
                 title: "Xem thông tin QHNT Sử dụng đất",
                 typeSelectFeature:"SDD"
             },
-            SDD_QuangNamQHPK: {
+            SDD_QHC: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/14",
+                id: "SDD_QHC",
+                title: "QHC_Sử dụng đất",
+                typeSelectFeature:"SDD"
+            },
+            SDD_QHPK: {
                 url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/13",
-                id: "SDD_QuangNamQHPK",
+                id: "SDD_QHPK",
                 title: "Xem thông tin QHPK Sử dụng đất",
                 typeSelectFeature:"SDD",
                 displayFields:['TenDoAn','LoaiDat','DienTich','KiHieuKhuDat']
             },
-            SDD_QuangNamQHV: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/12",
-                id: "SDD_QuangNamQHV",
-                title: "Xem thông tin QHV Sử dụng đất",
-                typeSelectFeature:"SDD"
+            SDD_QHCT: {
+                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/13",
+                id: "SDD_QHCT",
+                title: "Xem thông tin QHCT Sử dụng đất",
+                typeSelectFeature:"SDD",
+                displayFields:['TenDoAn','KiHieuLoDat','LoaiDat','DienTichLoDat']
             },
-            ThongTinDoAnQuangNamQHCT: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHCT/MapServer/14",
-                id: "ThongTinDoAnQuangNamQHCT",
-                title: "Xem thông tin đồ án QH Chi tiết",
-                typeSelectFeature:"ThongTin"
-            },
-            ThongTinDoAnQuangNamQHC: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHC/MapServer/15",
-                id: "ThongTinDoAnQuangNamQHC",
-                title: "Xem thông tin đồ án QH Chung",
-                typeSelectFeature:"ThongTin"
-            },
-            ThongTinDoAnQuangNamQHNT: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHNT/MapServer/14",
-                id: "ThongTinDoAnQuangNamQHNT",
-                title: "Xem thông tin đồ án QH Nông Thôn",
-                typeSelectFeature:"ThongTin"
-            },
-            ThongTinDoAnQuangNamQHPK: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHPK/MapServer/14",
-                id: "ThongTinDoAnQuangNamQHPK",
-                title: "Xem thông tin đồ án QH Phân Khu",
-                typeSelectFeature:"ThongTin"
-            },
-            ThongTinDoAnQuangNamQHV: {
-                url: "https://sawagis.vn/arcgis/rest/services/QuangNam/QuangNamQHV/MapServer/13",
-                id: "ThongTinDoAnQuangNamQHV",
-                title: "Xem thông tin đồ án QH Vùng",
-                typeSelectFeature:"ThongTin"
-            }
         },
         tables: {
         },

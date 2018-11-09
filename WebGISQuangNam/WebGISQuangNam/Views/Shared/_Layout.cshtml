@@ -96,69 +96,10 @@
                                                         <ul class="sub_menu3">
                                                             @for (int y = 0; y < listThongtinDoAn.Count; y++)
                                                             {
-                                                                string title = @listThongtinDoAn[y].MaDoAn + "#" +listLoaiQuyHoach[i].code;
+                                                                string maCode = @listThongtinDoAn[y].MaDoAn + "#" +listLoaiQuyHoach[i].code;
                                                                 string mdoan = @listThongtinDoAn[y].MaDoAn;
-                                                                <li  class="dropdown-submenu">
-                                                                    
-                                                                    <a class="call_bandoquyhoach" mdoan="@mdoan" href="#" title="@title">@listThongtinDoAn[y].TenDoAn</a>
-                                                                    @*////*@
-
-                                                                    <ul class="dropdown-menu hs_menu">
-                                                                        <li class="dropdown-header">Danh mục hồ sơ</li>
-                                                                        <li>
-                                                                            <a href="#">I. Hồ sơ pháp lý</a>
-                                                                            <ul class="sub_menu3 hs_menu_chil">
-                                                                                @{
-                                                                                    List
-                                                                                    <HoSoDoAn>
-                                                                                        listHoSoDoAn = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "PhapLy").ToList();
-
-                                                                                    for (int h = 0; h < listHoSoDoAn.Count; h++)
-                                                                                    {
-                                                                                        string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn[h].DuongDan + "&embedded=true";
-
-                                                                                        <li><span class='item_congbo' title="@listHoSoDoAn[h].id" alt='@duongdan'> @listHoSoDoAn[h].TenHoSo </span></li>
-                                                                                    }
-                                                                                }
-                                                                            </ul>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#">II. Bản vẽ</a>
-                                                                            <ul class="sub_menu3 hs_menu_chil">
-                                                                                @{
-                                                                                    List
-                                                                                    <HoSoDoAn>
-                                                                                        listHoSoDoAn2 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "BanVe").ToList();
-
-                                                                                    for (int h = 0; h < listHoSoDoAn2.Count; h++)
-                                                                                    {
-                                                                                        string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn2[h].DuongDan + "&embedded=true";
-
-                                                                                        <li><span class='item_congbo' title="@listHoSoDoAn[h].id" alt='@duongdan'> @listHoSoDoAn[h].TenHoSo </span></li>
-                                                                                    }
-                                                                                }
-                                                                            </ul>
-                                                                        </li>
-                                                                        <li>
-                                                                            <a href="#">III. Thuyết minh</a>
-                                                                            <ul class="sub_menu3 hs_menu_chil">
-                                                                                @{
-                                                                                    List
-                                                                                    <HoSoDoAn>
-                                                                                        listHoSoDoAn3 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "ThuyetMinh").ToList();
-
-                                                                                    for (int h = 0; h < listHoSoDoAn3.Count; h++)
-                                                                                    {
-                                                                                        string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn3[h].DuongDan + "&embedded=true";
-
-                                                                                        <li><span class='item_congbo' title="@listHoSoDoAn3[h].id" alt='@duongdan'> @listHoSoDoAn3[h].TenHoSo </span></li>
-                                                                                    }
-                                                                                    
-                                                                                }</ul>
-                                                                        </li>
-                                                                    </ul>
-
-                                                                    @*/////*@
+                                                                <li>
+                                                                    <a class="call_bandoquyhoach" mdoan="@mdoan" href="#" title="@maCode">@listThongtinDoAn[y].TenDoAn</a>
                                                                 </li>
                                                             }
                                                         </ul>
@@ -196,11 +137,10 @@
                                         {
                                             for (int y = 0; y < listThongtinDoAn.Count; y++)
                                             {
-                                                string madoan = listThongtinDoAn[y].MaDoAn + "#" + listLoaiQuyHoach[i].code;
                                                 string mdoan = listThongtinDoAn[y].MaDoAn;
-                                                string maCode = madoan + "#" + listLoaiQuyHoach[i].code;
+                                                string maCode = mdoan + "#" + listLoaiQuyHoach[i].code;
                                                 <li>
-                                                    <a tabindex="-1" mdoan="@mdoan" maCode="@maCode" class="call_bandoquyhoach_layykien" href="#" title="@madoan">@listThongtinDoAn[y].TenDoAn</a>
+                                                    <a tabindex="-1" mdoan="@mdoan" maCode="@maCode" class="call_bandoquyhoach_layykien" href="#" title="@maCode">@listThongtinDoAn[y].TenDoAn</a>
                                                    
                                                 </li>
                                             }
@@ -239,73 +179,13 @@
                                                     listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "CongBo");
                                                     if (listThongtinDoAn.Count > 0)
                                                     {
-                                                        <ul class="">
+                                                        <ul class="sub_menu3">
                                                             @for (int y = 0; y < listThongtinDoAn.Count; y++)
                                                             {
-                                                                string madoan = listThongtinDoAn[y].MaDoAn + "#"+ listLoaiQuyHoach[i].code;
                                                                 string mdoan = listThongtinDoAn[y].MaDoAn;
-                                                                <li class="dropdown-submenu">
-                                                                    <a class="call_bandoquyhoach_congbo" href="#" title="@madoan">@listThongtinDoAn[y].TenDoAn</a>
-                                                                    @*<ul class="sub_menu3">
-                                                                        <li class="dropdown-submenu">*@
-                                                                            <ul class="dropdown-menu hs_menu">
-                                                                                <li class="dropdown-header">Danh mục hồ sơ</li>
-                                                                                <li>
-                                                                                    <a href="#">I. Hồ sơ pháp lý</a>
-                                                                                    <ul class="sub_menu3 hs_menu_chil">
-                                                                                        @{
-                                                                                            List
-                                                                                            <HoSoDoAn>
-                                                                                                listHoSoDoAn = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "PhapLy").ToList();
-
-                                                                                            for (int h = 0; h < listHoSoDoAn.Count; h++)
-                                                                                            {
-                                                                                                string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn[h].DuongDan + "&embedded=true";
-
-                                                                                                <li><span class='item_congbo' alt='@duongdan'> @listHoSoDoAn[h].TenHoSo </span></li>
-                                                                                            }
-                                                                                        }
-                                                                                    </ul>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">II. Bản vẽ</a>
-                                                                                    <ul class="sub_menu3 hs_menu_chil">
-                                                                                        @{
-                                                                                            List
-                                                                                            <HoSoDoAn>
-                                                                                                listHoSoDoAn2 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "BanVe").ToList();
-
-                                                                                            for (int h = 0; h < listHoSoDoAn2.Count; h++)
-                                                                                            {
-                                                                                                string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn2[h].DuongDan + "&embedded=true";
-
-                                                                                                <li><span class='item_congbo' alt='@duongdan'> @listHoSoDoAn2[h].TenHoSo </span></li>
-                                                                                            }
-                                                                                        }
-                                                                                    </ul>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#">III. Thuyết minh</a>
-                                                                                    <ul class="sub_menu3 hs_menu_chil">
-                                                                                        @{
-                                                                                            List
-                                                                                            <HoSoDoAn>
-                                                                                                listHoSoDoAn3 = gISRepository.getHoSoDoAn().Where(hs => hs.MaDoAn == mdoan && hs.LoaiHoSo == "ThuyetMinh").ToList();
-
-                                                                                            for (int h = 0; h < listHoSoDoAn.Count; h++)
-                                                                                            {
-                                                                                                string duongdan = "https://docs.google.com/gview?url=" + DomainName + "/FileManagers/" + mdoan.Trim() + "/" + listHoSoDoAn3[h].DuongDan + "&embedded=true";
-
-                                                                                                <li><span  class='item_congbo' alt='@duongdan'> @listHoSoDoAn3[h].TenHoSo </span></li>
-                                                                                            }
-                                                                                        }
-                                                                                        <li><button class="btn btn-primary openGisCongBo" alt="@madoan" style="margin:5px;"> Xem bản đồ GIS </button></li>
-                                                                                    </ul>
-                                                                                </li>
-                                                                            </ul>
-                                                                        @*</li>
-                                                                    </ul>*@
-
+                                                                string maCode = mdoan + "#" + listLoaiQuyHoach[i].code;
+                                                                <li>
+                                                                    <a class="call_bandoquyhoach_congbo" href="#" mdoan="@mdoan" maCode="@maCode">@listThongtinDoAn[y].TenDoAn</a>
                                                                 </li>
                                                             }
                                                         </ul>

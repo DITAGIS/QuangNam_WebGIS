@@ -2,6 +2,7 @@
     // ditagis require
     "ditagis/widgets/Report",
     "ditagis/configs",
+    "ditagis/api/TimKiemThongTin",
 
     "esri/toolbars/navigation", // 1
     "dijit/registry", "dojo/on", "esri/map", "esri/layers/FeatureLayer",// 2
@@ -25,7 +26,7 @@
 
 ], function (
     // ditagis function
-    Report, configs,
+    Report, configs, TimKiemThongTin,
 
     Navigation,
     registry, on, Map, FeatureLayer,
@@ -60,6 +61,20 @@
         var sr = new SpatialReference({
             "wkt": 'PROJCS["QUANG NAM_VN2000",GEOGCS["GCS_VN_2000",DATUM["D_Vietnam_2000",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["False_Easting",500000.0],PARAMETER["False_Northing",0.0],PARAMETER["Central_Meridian",107.75],PARAMETER["Scale_Factor",0.9999],PARAMETER["Latitude_Of_Origin",0.0],UNIT["Meter",1.0]]'
         });
+
+        var loaiHoSo = [
+            {
+                Name: "I. Hồ sơ pháp lý",
+                ID: "PhapLy"
+            },
+            {
+                Name: "II. Bản vẽ",
+                ID: "BanVe"
+            },
+            {
+                Name: "III. Thuyết minh",
+                ID: "ThuyetMinh"
+            }];
 
         var map = new Map("mapDiv", {
             spatialReference: sr,
@@ -109,7 +124,7 @@
                 "opacity": 0.9,
                 id: layercf.id
             });
-            if(layercf.displayFields){
+            if (layercf.displayFields) {
                 featureLayer.displayFields = layercf.displayFields;
             }
             featureLayer.typeSelectFeature = layercf.typeSelectFeature;
@@ -314,34 +329,25 @@
             $(".panel_control").slideUp();
             $(".left-panel").slideUp();
         });
-
-        // công bố
-
-        $(".call_bandoquyhoach_congbo").on("click", function () {
-            var alt = $(this).attr('title');
-            if (alt) {
-                zoomThongTinDoAn(alt);
-            }
+        $("#close-measure").on("click", function () {
+            measurement.clearResult();
+            measurement.setTool("distance", false);
         });
-
-        $(".openGisCongBo").on("click", function () {
-            var alt = $(this).attr('alt');
-            if (alt) {
-                zoomThongTinDoAn(alt);
-            }
-        });
-
-        /// end công bố
 
         /// thông tin quy hoạch ////
-
-        $(".call_bandoquyhoach").on("click", function () {
-            // $(".panel_control").slideUp();
-            var maDoAn = $(this).attr('title');
-            //alert(maDoAn);
-            if (maDoAn) {
-                zoomThongTinDoAn(maDoAn);
+        $(".call_bandoquyhoach_congbo").on("click", function () {
+            $("#panel_QHC").slideDown();
+            var mdoan = $(this).attr('mdoan');
+            var maCode = $(this).attr('maCode');
+            if (maCode) {
+                zoomThongTinDoAn(maCode);
             }
+            getHoSoDoAn(mdoan);
+        });
+        $(".call_bandoquyhoach").on("click", function () {
+            $("#panel_QHC").slideDown();
+            var mdoan = $(this).attr('mdoan');
+            getHoSoDoAn(mdoan);
         });
 
         /// end thông tin quy hoạch ///
@@ -349,15 +355,10 @@
         /// công bố lấy ý kiến
 
         $(".call_bandoquyhoach_layykien").on("click", function () {
-            $("#ykiendoan_QHC").slideDown();
+            $("#panel_QHC").slideDown();
             var maCode = $(this).attr('maCode');
             var mdoan = $(this).attr('mdoan');
-            getThongTinDoAn(mdoan, maCode);
-            var alt = $(this).attr('title');
-            if (alt) {
-                zoomThongTinDoAn(alt);
-            }
-
+            getHoSoDoAn(mdoan, maCode);
         });
 
 
@@ -401,7 +402,6 @@
             map: map
         }, dom.byId("measurementDiv"));
         measurement.startup();
-
         $("#measurementDiv_panel").slideUp();
 
 
@@ -530,8 +530,9 @@
             //display read-only info window when user clicks on feature 
             var query = new esri.tasks.Query();
 
-            dojo.forEach(layers, function (layer) {
-                dojo.connect(layer, "onClick", function (evt) {
+            dojo.forEach(layers, (layer) => {
+                dojo.connect(layer, "onClick", (evt) => {
+                    if (measurement.getTool()) return;
                     if (map.infoWindow.isShowing) {
                         map.infoWindow.hide();
                     }
@@ -598,20 +599,11 @@
 
                 });
             });
-
-            map.on("click", function (evt) {
-                map.graphics.clear();
-            });
-
-
-            map.on("mouse-move", function (evt) {
-            });
-
             map.infoWindow.on("hide", (evt) => {
                 for (const featureLayer of featureLayers) {
                     featureLayer.clearSelection();
                 }
-               
+
             });
         }
 
@@ -677,60 +669,56 @@
 
         $("#TraCuuDoAnQuyHoach_tim").click(function () {
             $("#loadingpageDiv").css("display", "inline-block");
-            var url = "/Home/getThongTinDoAn";
-            var html = "";
 
-            var maQuanHuyen, maPhuongXa, LoaiQuyHoach, tendoan;
+            
+
+            var maQuanHuyen, maPhuongXa, loaiQuyHoach, tenDoAn;
 
             maQuanHuyen = $("#TraCuuDoAnQuyHoach_quanhuyen").val();
             maPhuongXa = $("#TraCuuDoAnQuyHoach_phuongxa").val();
-            LoaiQuyHoach = $("#TraCuuDoAnQuyHoach_loaiquyhoach").val();
-            tendoan = $("#TraCuuDoAnQuyHoach_tendoan").val();
+            loaiQuyHoach = $("#TraCuuDoAnQuyHoach_loaiquyhoach").val();
+            tenDoAn = $("#TraCuuDoAnQuyHoach_tendoan").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + LoaiQuyHoach.trim() + tendoan.trim();
+            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiQuyHoach.trim() + tenDoAn.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
                 $("#loadingpageDiv").css("display", "none");
                 return;
             }
-            $("#ResultDataSearchContent").html("");
             $("#ResultDataSearchContentType").val("ThongTinDoAn");
             $("#titleTimKiem").html("Đồ án quy hoạch");
-
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: { maQuanHuyen: maQuanHuyen, maPhuongXa: maPhuongXa, LoaiQuyHoach: LoaiQuyHoach, tendoan: tendoan },
-                cache: false,
-                success: function (results) {
-                    $("#ResultDataSearchContent").html(results);
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "ThongTinDoAn"
+            });
+            TimKiemThongTin.ThongTinDoAn(maQuanHuyen, maPhuongXa, loaiQuyHoach, tenDoAn)
+                .then((results) => {
+                    report.showTable(featureLayer, results);
                     $(".panel_control").slideUp();
                     $("#ResultDataSearch").toggle("slide");
                     $("#loadingpageDiv").css("display", "none");
-                },
-                error: function (reponse) {
-                    alert("error : " + reponse.responseText);
+                })
+                .catch(function (reponse) {
+                    alert("error : " + reponse);
                     $("#loadingpageDiv").css("display", "none");
-                }
-            });
+                });
         });
 
         $("#TraCuuHoTroCapPhep_tim").click(function () {
             $("#loadingpageDiv").css("display", "inline-block");
-            var url = "/Home/getThongTinQHCT";
-            var html = "";
-
-            var maQuanHuyen, maPhuongXa, LoaiDat, KiHieuKhuDat, KiHieuLoDat, tendoan;
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "SDD_QHCT"
+            });
+            var maQuanHuyen, maPhuongXa, loaiDat, kiHieuKhuDat, kiHieuLoDat, tenDoAn;
 
             maQuanHuyen = $("#TraCuuHoTroCapPhep_quanhuyen").val();
             maPhuongXa = $("#TraCuuHoTroCapPhep_phuongxa").val();
-            tendoan = $("#TraCuuHoTroCapPhep_tendoan").val();
-            LoaiDat = $("#TraCuuHoTroCapPhep_LoaiDat").val();
-            KiHieuKhuDat = $("#TraCuuHoTroCapPhep_kyhieukhudat").val();
-            KiHieuLoDat = $("#TraCuuHoTroCapPhep_kyhieulodat").val();
+            tenDoAn = $("#TraCuuHoTroCapPhep_tendoan").val();
+            loaiDat = $("#TraCuuHoTroCapPhep_LoaiDat").val();
+            kiHieuKhuDat = $("#TraCuuHoTroCapPhep_kyhieukhudat").val();
+            kiHieuLoDat = $("#TraCuuHoTroCapPhep_kyhieulodat").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + LoaiDat.trim() + KiHieuKhuDat.trim() + KiHieuLoDat.trim() + tendoan.trim();
+            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiDat.trim() + kiHieuKhuDat.trim() + kiHieuLoDat.trim() + tenDoAn.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
@@ -738,47 +726,40 @@
                 return;
             }
 
-            $("#ResultDataSearchContent").html("");
             $("#ResultDataSearchContentType").val("QHCT");
             $("#titleTimKiem").html("Hỗ trợ xin/cấp phép xây dựng");
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: { maQuanHuyen: maQuanHuyen, maPhuongXa: maPhuongXa, LoaiDat: LoaiDat, KiHieuKhuDat: KiHieuKhuDat, KiHieuLoDat: KiHieuLoDat, tendoan: tendoan },
-                cache: false,
-                success: function (results) {
-                    $("#ResultDataSearchContent").html(results);
+            TimKiemThongTin.ThongTinQHCT(maQuanHuyen, maPhuongXa, loaiDat, kiHieuKhuDat, tenDoAn)
+                .then((results) => {
+                    report.showTable(featureLayer, results);
                     $(".panel_control").slideUp();
                     $("#ResultDataSearch").toggle("slide");
                     $("#loadingpageDiv").css("display", "none");
-                },
-                error: function (reponse) {
-                    alert("error : " + reponse.responseText);
+                })
+                .catch(function (reponse) {
+                    alert("error : " + reponse);
                     $("#loadingpageDiv").css("display", "none");
-                }
-            });
+                });
         });
         var report = new Report(map);
         $("#LuaChonDiaDiemDauTu_tim").click(() => {
             $("#loadingpageDiv").css("display", "inline-block");
-            var url = "/Home/getThongTinQHPK";
             var featureLayer = featureLayers.find(function (element) {
-                return element.id == "SDD_QuangNamQHPK"
+                return element.id == "SDD_QHPK"
             });
-            var maQuanHuyen = "", maPhuongXa = "", LoaiDat = "", KiHieuLoDat = "", dientichtu = -1,
-                dientichden = -1, kcTu = -1, kcDen = -1, sovoi = "";
+            var maQuanHuyen = "", maPhuongXa = "", loaiDat = "", kiHieuLoDat = "", dienTichTu = -1,
+                dienTichDen = -1, kcTu = -1, kcDen = -1, soVoi = "";
 
             maQuanHuyen = $("#LuaChonDiaDiemDauTu_quanhuyen").val();
             maPhuongXa = $("#LuaChonDiaDiemDauTu_phuongxa").val();
-            LoaiDat = $("#LuaChonDiaDiemDauTu_loaidat").val();
-            KiHieuLoDat = $("#LuaChonDiaDiemDauTu_kyhieulodat").val();
-            dientichtu = $("#LuaChonDiaDiemDauTu_dientichtu").val();
-            dientichden = $("#LuaChonDiaDiemDauTu_dientichden").val();
+            loaiDat = $("#LuaChonDiaDiemDauTu_loaidat").val();
+            kiHieuLoDat = $("#LuaChonDiaDiemDauTu_kyhieulodat").val();
+            dienTichTu = $("#LuaChonDiaDiemDauTu_dientichtu").val();
+            dienTichDen = $("#LuaChonDiaDiemDauTu_dientichden").val();
             kcTu = $("#LuaChonDiaDiemDauTu_khoangcachtu").val();
             kcDen = $("#LuaChonDiaDiemDauTu_khoangcachden").val();
-            sovoi = $("#LuaChonDiaDiemDauTu_sovoi").val();
+            soVoi = $("#LuaChonDiaDiemDauTu_sovoi").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + LoaiDat.trim() + KiHieuLoDat.trim() + dientichtu.trim() + dientichden.trim() + kcTu.trim() + kcDen.trim() + sovoi.trim();
+            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiDat.trim() + kiHieuLoDat.trim() + dienTichTu.trim() + dienTichDen.trim() + kcTu.trim() + kcDen.trim() + soVoi.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
@@ -788,27 +769,20 @@
 
             $("#ResultDataSearchContentType").val("QHPK");
             $("#titleTimKiem").html("Lựa chọn địa điểm đầu tư");
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    maQuanHuyen: maQuanHuyen, maPhuongXa: maPhuongXa, LoaiDat: LoaiDat,
-                    KiHieuLoDat: KiHieuLoDat, dientichtu: dientichtu, dientichden: dientichden,
-                    kcTu: kcTu, kcDen: kcDen, sovoi: sovoi
-                },
-                cache: false,
-                success: (results) => {
+            TimKiemThongTin.ThongTinQHPK(maQuanHuyen, maPhuongXa, loaiDat,
+                kiHieuLoDat, dienTichTu, dienTichDen,
+                kcTu, kcDen, soVoi)
+                .then((results) => {
                     report.showTable(featureLayer, results);
-                    // $("#ResultDataSearchContent").html(results);
                     $(".panel_control").slideUp();
                     $("#ResultDataSearch").toggle("slide");
                     $("#loadingpageDiv").css("display", "none");
-                },
-                error: function (reponse) {
-                    alert("error : " + reponse.responseText);
+                })
+                .catch(function (reponse) {
+                    alert("error : " + reponse);
                     $("#loadingpageDiv").css("display", "none");
-                }
-            });
+                });
+
         });
 
 
@@ -927,30 +901,12 @@
 
 
         }
-        function getThongTinDoAn(maDoAn, maCode) {
-            var url = "/Home/GetDanhMucHoSo";
-            var domain = $(this)[0].origin;
-            var loaiHoSo = [
-                {
-                    Name: "I. Hồ sơ pháp lý",
-                    ID: "PhapLy"
-                },
-                {
-                    Name: "II. Bản vẽ",
-                    ID: "BanVe"
-                },
-                {
-                    Name: "III. Thuyết minh",
-                    ID: "ThuyetMinh"
-                }]
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: {
-                    maDoAn: maDoAn
-                },
-                cache: false,
-                success: (results) => {
+        function getHoSoDoAn(maDoAn, maCode) {
+            if (maCode) {
+                zoomThongTinDoAn(maCode);
+            }
+            TimKiemThongTin.HoSoDoAn(maDoAn)
+                .then((results) => {
                     var qhc = $("#QHC");
                     while (qhc[0].firstChild) {
                         qhc[0].firstChild.remove();
@@ -968,7 +924,7 @@
                     }
 
                     for (const item of results) {
-                        var link = "https://docs.google.com/gview?url=" + domain + "/FileManagers/" + item.MaDoAn + "/" + item.DuongDan + "&embedded=true";
+                        var link = "https://docs.google.com/gview?url=" + item.DuongDan + "&embedded=true";
                         var panel_group = qhc.find("#" + item.LoaiHoSo);
                         var li = $('<li/>', {
                             class: "list-group-item"
@@ -988,26 +944,31 @@
 
                     }
                     var panel_group = qhc.find("#ThuyetMinh");
-                    var li_phieugopy = $('<li/>', {
-                        class: "list-group-item"
-                    }).appendTo(panel_group);
-                    var btn_openDongGopYKien = $('<button/>', {
-                        class: "btn btn-primary openDongGopYKien",
-                        text: "Xem phiếu góp ý"
-                    }).appendTo(li_phieugopy);
-                    btn_openDongGopYKien.click(function () {
-                        var maDoAn = maCode.split("#")[0];
-                        var loaiDoAn = maCode.split("#")[1];
-                        var link = "/Home/reviewYKienNguoiDan?madoan=" + maDoAn + "&loaiDoAn=" + loaiDoAn;
-                        $("#loadIdealReviewFormData").attr("src", link);
-                        $("#loadIdealReviewForm").css("display", "block");
-                    });
+                    if(maCode){
+                        var li_phieugopy = $('<li/>', {
+                            class: "list-group-item"
+                        }).appendTo(panel_group);
+                        var btn_openDongGopYKien = $('<button/>', {
+                            class: "btn btn-primary openDongGopYKien",
+                            text: "Xem phiếu góp ý"
+                        }).appendTo(li_phieugopy);
+                        btn_openDongGopYKien.click(function () {
+                            var maDoAn = maCode.split("#")[0];
+                            var loaiDoAn = maCode.split("#")[1];
+                            var link = "/Home/reviewYKienNguoiDan?madoan=" + maDoAn + "&loaiDoAn=" + loaiDoAn;
+                            $("#loadIdealReviewFormData").attr("src", link);
+                            $("#loadIdealReviewForm").css("display", "block");
+                        });
+                    }
+                    
+                })
+                .catch(function (reponse) {
+                    alert("error : " + reponse);
+                    $("#loadingpageDiv").css("display", "none");
+                });
 
-                },
-                error: function (reponse) {
-                }
-            });
         }
+
         function zoomThongTinDoAn(maDoAn) {
 
             var mada = maDoAn.split('#')[0];
@@ -1025,7 +986,7 @@
 
             if (loaimada === "QHCT") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQuangNamQHCT"
+                    return element.id == "ThongTinDoAnQHCT"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
@@ -1041,7 +1002,7 @@
 
             if (loaimada === "QHPK") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQuangNamQHPK"
+                    return element.id == "ThongTinDoAn_QHPK"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
@@ -1057,7 +1018,7 @@
 
             if (loaimada === "QHC") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQuangNamQHC"
+                    return element.id == "ThongTinDoAn_QHC"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
 
@@ -1074,7 +1035,7 @@
 
             if (loaimada === "QHNT") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQuangNamQHNT"
+                    return element.id == "ThongTinDoAn_QHNT"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
@@ -1090,7 +1051,7 @@
 
             if (loaimada === "QHV") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQuangNamQHV"
+                    return element.id == "ThongTinDoAn_QHV"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
@@ -1122,7 +1083,7 @@
                 map.infoWindow.hide();
             }
             var featureLayer = featureLayers.find(function (element) {
-                return element.id == "SDD_QuangNamQHCT"
+                return element.id == "SDD_QHCT"
             });
             featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                 if (results.length > 0) {
@@ -1151,7 +1112,7 @@
                 map.infoWindow.hide();
             }
             var featureLayer = featureLayers.find(function (element) {
-                return element.id == "SDD_QuangNamQHPK"
+                return element.id == "SDD_QHPK"
             });
             featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                 if (results.length > 0) {

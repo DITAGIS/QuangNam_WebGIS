@@ -56,25 +56,96 @@ define(["dojo/dom-construct",
                         }
                     });
                 }
-                else if(layer.displayFields){
+                else if (layer.displayFields) {
                     for (const displayField of layer.displayFields) {
                         for (const field of layer.fields) {
-                            if(displayField == field.name){
-                                columns.push({ title: field.alias, field: field.name });
+                            if (displayField == field.name) {
+                                if (displayField == "TenDoAn") {
+                                    columns.push({ width: 100, title: field.alias, field: field.name });
+                                }
+                                else
+                                    columns.push({ width: 40, title: field.alias, field: field.name });
                             }
                         }
                     }
                 }
-                else{
+                else {
                     for (const field of layer.fields) {
                         if (field.name != "SHAPE" && field.name != "SHAPE.STArea()" && field.name != "SHAPE.STLength()")
                             columns.push({ title: field.alias, field: field.name });
                     }
                 }
+                columns.push({
+                    command: {
+                        text: " ",
+                        click: downloadFiles,
+                        iconClass: "fa fa-download",
+                        className: "btn-download"
+                    }, title: "Xuất TT Đ/A",
+                    width: 40,
+                });
+                function downloadFiles(e) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', `/ThongTinDoAn/XuatPhieu`, true);
+                    xhr.setRequestHeader('Content-type', 'application/json');
+                    xhr.responseType = 'arraybuffer';
+                    xhr.onload = function () {
+                        if (this.status === 200) {
+                            var filename = "";
+                            var disposition = xhr.getResponseHeader('Content-Disposition');
+                            if (disposition && disposition.indexOf('attachment') !== -1) {
+                                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                var matches = filenameRegex.exec(disposition);
+                                if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                            }
+                            var type = xhr.getResponseHeader('Content-Type');
 
+                            var blob = typeof File === 'function'
+                                ? new File([this.response], filename, { type: type })
+                                : new Blob([this.response], { type: type });
+                            if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                                // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                                window.navigator.msSaveBlob(blob, filename);
+                            } else {
+                                var URL = window.URL || window.webkitURL;
+                                var downloadUrl = URL.createObjectURL(blob);
+
+                                if (filename) {
+                                    // use HTML5 a[download] attribute to specify filename
+                                    var a = document.createElement("a");
+                                    // safari doesn't support this yet
+                                    if (typeof a.download === 'undefined') {
+                                        window.location = downloadUrl;
+                                    } else {
+                                        a.href = downloadUrl;
+                                        a.download = filename;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                    }
+                                } else {
+                                    window.location = downloadUrl;
+
+                                }
+
+                                setTimeout(function () {
+                                    URL.revokeObjectURL(downloadUrl);
+                                    $("#loaderInvoice").addClass("d-none");
+                                }, 100); // cleanup
+                            }
+                        }
+                    };
+                    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    xhr.send(JSON.stringify({a:"abc"}));
+                }
+                var export_columns = [];
+                for (const field of layer.fields) {
+                    if (field.name != "SHAPE" && field.name != "SHAPE.STArea()" && field.name != "SHAPE.STLength()")
+                        export_columns.push({ title: field.alias, field: field.name });
+                }
                 let kendoData = this.convertAttributes(fields, attributes);
                 this.kendoGrid = $('#table-report').empty().kendoGrid({
-                    toolbar: [{ name: "excel", text: "Xuất báo cáo" }],
+                    toolbar: [{ name: "custom", text: "Xuất báo cáo" },
+                    { name: "close", text: "" }],
                     resizable: true,
                     excel: {
                         allPages: true,
@@ -103,23 +174,72 @@ define(["dojo/dom-construct",
                     change: (e) => {
                         let selectedRows = e.sender.select();
                         let objectID = e.sender.dataItem(selectedRows)['OBJECTID'];
+                        console.log(e.sender.dataItem(selectedRows));
+                        var featureLayer;
+                        if(layer.id == "ThongTinDoAn"){
+                            let loaiQuyHoach = e.sender.dataItem(selectedRows)['LoaiQuyHoach'];
+                            featureLayer = this.map._layers['ThongTinDoAn_' + loaiQuyHoach];
+                        }
+                        else{
+                            featureLayer = layer;
+                        }
                         if (layer.geometryType == "esriGeometryPoint") {
-                            this.zoomRowPoint(objectID, layer);
+                            this.zoomRowPoint(objectID, featureLayer);
                         }
                         else if (layer.geometryType == "esriGeometryPolygon") {
-                            this.zoomRowPolygon(objectID, layer);
+                            this.zoomRowPolygon(objectID, featureLayer);
                         }
                         else if (layer.geometryType == "esriGeometryPolyline") {
-                            this.zoomRowPolygon(objectID, layer);
-                        }
-                    },
-                    excelExport: (e) => {
-                        if (e.data) {
-                            for (const item of e.data) {
-                            }
+                            
+                            this.zoomRowPolygon(objectID, featureLayer);
                         }
                     }
                 });
+                this.kendoGrid.find(".k-grid-toolbar").on("click", ".k-grid-custom", (e) => {
+                    this.exportExcel(attributes, export_columns);
+                });
+                this.kendoGrid.find(".k-grid-toolbar").on("click", ".k-grid-close", (e) => {
+                    $(".panel_control").slideUp();
+                });
+                $(".k-grid-close").addClass('fa fa-times');
+            }
+            exportExcel(attributes, export_columns) {
+                var cells = [];
+                for (const column of export_columns) {
+                    var cell = {
+                        value: column.title
+                    }
+                    cells.push(cell);
+                }
+                var rows = [{
+                    cells: cells
+                }];
+                for (const attribute of attributes) {
+                    let cells = [];
+                    for (const column of export_columns) {
+                        var cell = {
+                            value: attribute[column.field]
+                        }
+                        cells.push(cell);
+                    }
+                    rows.push({
+                        cells: cells
+                    })
+                }
+                //using fetch, so we can process the data when the request is successfully completed
+                var workbook = new kendo.ooxml.Workbook({
+                    sheets: [
+                        {
+                            columns: [
+                                // Column settings (width)
+                                { autoWidth: true },
+                                { autoWidth: true },
+                            ],
+                            rows: rows
+                        }
+                    ]
+                });
+                kendo.saveAs({ dataURI: workbook.toDataURL(), fileName: "Thống kê dữ liệu.xlsx" });
             }
             zoomRowPoint(id, layerClass) {
                 this.map.graphics.clear();
@@ -134,7 +254,7 @@ define(["dojo/dom-construct",
                             if (pt) {
                                 var extent = new Extent((point.x + 10), (point.y + 10), (point.x - 10), (point.y - 10), this.map.spatialReference);
                                 layerClass.selectFeatures(features[0]);
-                                var stateExtent = extent.expand(5.0);
+                                var stateExtent = extent;
                                 this.map.setExtent(stateExtent);
                             }
                         }
@@ -151,7 +271,7 @@ define(["dojo/dom-construct",
                 layerClass.selectFeatures(query, FeatureLayer.SELECTION_NEW, (features) => {
                     //zoom to the selected feature
                     layerClass.selectFeatures[features[0]];
-                    var stateExtent = features[0].geometry.getExtent().expand(10);
+                    var stateExtent = features[0].geometry.getExtent();
                     this.map.setExtent(stateExtent);
                 });
             }

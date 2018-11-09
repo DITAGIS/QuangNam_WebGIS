@@ -116,7 +116,7 @@ namespace WebGISQuangNam.Models.dataHelper
         public List<THONGTINDOAN> getThongTinDoAn()
         {
 
-            string query = "select MaDoAn,TenDoAn,DiaDiem,DienTich,NgayCapNhat,NguoiCapNhat,DonViCapNhat,DonViQuanLy,GhiChu,KiHieuKhuVuc,ChuDauTu,SoQuyetDinhPheDuyet,NgayPheDuyet,CoQuanPheDuyet,MaQuanHuyen,MaPhuongXa,LoaiQuyHoach,TrangThaiDoAn FROM [sde].[ThongTinDoAn_Chung]";
+            string query = "select * FROM [sde].[ThongTinDoAn_Chung]";
 
             List<THONGTINDOAN> list = this.context.Database.SqlQuery<THONGTINDOAN>(query).ToList();
 
