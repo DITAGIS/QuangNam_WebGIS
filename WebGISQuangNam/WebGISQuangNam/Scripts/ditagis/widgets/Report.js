@@ -78,71 +78,28 @@ define(["dojo/dom-construct",
                 columns.push({
                     command: {
                         text: " ",
-                        click: downloadFiles,
+                        click: (e) => {
+                            var grid = $("#table-report").data('kendoGrid');
+                            var model = grid.dataItem($(e.currentTarget).closest("tr"));
+                            var ngayPheDuyet = model.NgayPheDuyet;
+                            if (ngayPheDuyet)
+                                model.NgayPheDuyet = this.getDate(ngayPheDuyet);
+                            this.inBaoCao(model);
+                        },
                         iconClass: "fa fa-download",
                         className: "btn-download"
                     }, title: "Xuất TT Đ/A",
                     width: 40,
                 });
-                function downloadFiles(e) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', `/ThongTinDoAn/XuatPhieu`, true);
-                    xhr.setRequestHeader('Content-type', 'application/json');
-                    xhr.responseType = 'arraybuffer';
-                    xhr.onload = function () {
-                        if (this.status === 200) {
-                            var filename = "";
-                            var disposition = xhr.getResponseHeader('Content-Disposition');
-                            if (disposition && disposition.indexOf('attachment') !== -1) {
-                                var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-                                var matches = filenameRegex.exec(disposition);
-                                if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
-                            }
-                            var type = xhr.getResponseHeader('Content-Type');
-
-                            var blob = typeof File === 'function'
-                                ? new File([this.response], filename, { type: type })
-                                : new Blob([this.response], { type: type });
-                            if (typeof window.navigator.msSaveBlob !== 'undefined') {
-                                // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
-                                window.navigator.msSaveBlob(blob, filename);
-                            } else {
-                                var URL = window.URL || window.webkitURL;
-                                var downloadUrl = URL.createObjectURL(blob);
-
-                                if (filename) {
-                                    // use HTML5 a[download] attribute to specify filename
-                                    var a = document.createElement("a");
-                                    // safari doesn't support this yet
-                                    if (typeof a.download === 'undefined') {
-                                        window.location = downloadUrl;
-                                    } else {
-                                        a.href = downloadUrl;
-                                        a.download = filename;
-                                        document.body.appendChild(a);
-                                        a.click();
-                                    }
-                                } else {
-                                    window.location = downloadUrl;
-
-                                }
-
-                                setTimeout(function () {
-                                    URL.revokeObjectURL(downloadUrl);
-                                    $("#loaderInvoice").addClass("d-none");
-                                }, 100); // cleanup
-                            }
-                        }
-                    };
-                    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    xhr.send(JSON.stringify({a:"abc"}));
-                }
                 var export_columns = [];
                 for (const field of layer.fields) {
                     if (field.name != "SHAPE" && field.name != "SHAPE.STArea()" && field.name != "SHAPE.STLength()")
                         export_columns.push({ title: field.alias, field: field.name });
                 }
                 let kendoData = this.convertAttributes(fields, attributes);
+                if ($("#table-report").data('kendoGrid')) {
+                    $("#table-report").data("kendoGrid").destroy();
+                }
                 this.kendoGrid = $('#table-report').empty().kendoGrid({
                     toolbar: [{ name: "custom", text: "Xuất báo cáo" },
                     { name: "close", text: "" }],
@@ -176,11 +133,11 @@ define(["dojo/dom-construct",
                         let objectID = e.sender.dataItem(selectedRows)['OBJECTID'];
                         console.log(e.sender.dataItem(selectedRows));
                         var featureLayer;
-                        if(layer.id == "ThongTinDoAn"){
+                        if (layer.id == "ThongTinDoAn") {
                             let loaiQuyHoach = e.sender.dataItem(selectedRows)['LoaiQuyHoach'];
                             featureLayer = this.map._layers['ThongTinDoAn_' + loaiQuyHoach];
                         }
-                        else{
+                        else {
                             featureLayer = layer;
                         }
                         if (layer.geometryType == "esriGeometryPoint") {
@@ -190,7 +147,7 @@ define(["dojo/dom-construct",
                             this.zoomRowPolygon(objectID, featureLayer);
                         }
                         else if (layer.geometryType == "esriGeometryPolyline") {
-                            
+
                             this.zoomRowPolygon(objectID, featureLayer);
                         }
                     }
@@ -259,7 +216,6 @@ define(["dojo/dom-construct",
                             }
                         }
                     }
-
                 });
             }
 
@@ -274,6 +230,74 @@ define(["dojo/dom-construct",
                     var stateExtent = features[0].geometry.getExtent();
                     this.map.setExtent(stateExtent);
                 });
+            }
+            getDate(value) {
+                let date = value.substring(6, value.length - 2);
+                var datetime = new Date(parseInt(date));
+                var dd = datetime.getDate();
+                var mm = datetime.getMonth() + 1; //January is 0!
+
+                var yyyy = datetime.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd;
+                }
+                if (mm < 10) {
+                    mm = '0' + mm;
+                }
+                var day = dd + '/' + mm + '/' + yyyy;
+                return day;
+            }
+            inBaoCao(model) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', `/ThongTinDoAn/XuatPhieu`, true);
+                xhr.setRequestHeader('Content-type', 'application/json');
+                xhr.responseType = 'arraybuffer';
+                xhr.onload = function () {
+                    if (this.status === 200) {
+                        var filename = "";
+                        var disposition = xhr.getResponseHeader('Content-Disposition');
+                        if (disposition && disposition.indexOf('attachment') !== -1) {
+                            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                            var matches = filenameRegex.exec(disposition);
+                            if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                        }
+                        var type = xhr.getResponseHeader('Content-Type');
+
+                        var blob = typeof File === 'function'
+                            ? new File([this.response], filename, { type: type })
+                            : new Blob([this.response], { type: type });
+                        if (typeof window.navigator.msSaveBlob !== 'undefined') {
+                            // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed."
+                            window.navigator.msSaveBlob(blob, filename);
+                        } else {
+                            var URL = window.URL || window.webkitURL;
+                            var downloadUrl = URL.createObjectURL(blob);
+
+                            if (filename) {
+                                // use HTML5 a[download] attribute to specify filename
+                                var a = document.createElement("a");
+                                // safari doesn't support this yet
+                                if (typeof a.download === 'undefined') {
+                                    window.location = downloadUrl;
+                                } else {
+                                    a.href = downloadUrl;
+                                    a.download = filename;
+                                    document.body.appendChild(a);
+                                    a.click();
+                                }
+                            } else {
+                                window.location = downloadUrl;
+
+                            }
+                            setTimeout(function () {
+                                URL.revokeObjectURL(downloadUrl);
+                                $("#loaderInvoice").addClass("d-none");
+                            }, 100); // cleanup
+                        }
+                    }
+                };
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send(JSON.stringify(model));
             }
         }
         return Report;

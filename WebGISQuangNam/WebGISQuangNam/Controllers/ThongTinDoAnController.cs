@@ -34,10 +34,9 @@ namespace WebGISQuangNam.Controllers
         [AllowAnonymous]
         public ActionResult XuatPhieu(ThongTinQHXD model)
         {
+            
             var io = new ExlThongTinQHXD();
-
-
-            var path = HostingEnvironment.ApplicationPhysicalPath + @"/Resources/MauPhieu/Mau Phieu TT - QH - GIS - QN.xlsx";
+            var path = HostingEnvironment.ApplicationPhysicalPath + @"/Resources/MauPhieu/MauPhieuThongTin_GIS.xlsx";
             HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
             return File(io.Build(path, model), System.Net.Mime.MediaTypeNames.Application.Octet, "report.xlsx");
         }
