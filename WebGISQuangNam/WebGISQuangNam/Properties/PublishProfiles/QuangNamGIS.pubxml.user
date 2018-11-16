@@ -7,6 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>E:\DITAGIS_WEB\WebGISQuangNam\QuangNamGIS</_PublishTargetUrl>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAATgmFFFutDUyHvBm/ThjQPAAAAAACAAAAAAAQZgAAAAEAACAAAADVEsV1gIw/DCjcLrO/UAIuW9lduLP3yQfK9FUXoEjKmAAAAAAOgAAAAAIAACAAAAB9lOnAkJNr1K8n28HNBECB8QIpXtLdp6aa0EmYZVgJ9yAAAAAE1EFJyHMfvAE1VsSdUsrlh9PIaPy1NIRf3Y9FVrwB7EAAAACj05vgp71vr95/rQvtXGKM0V+vd9uQp5PnB8OedD5P+0KUhC8UvJ+HeZImNej9R7eJ6I3540OxK9zg1OtYht3y</EncryptedPassword>
   </PropertyGroup>
   <ItemGroup>
     <File Include="ApplicationInsights.config">
