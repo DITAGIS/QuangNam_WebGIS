@@ -58,6 +58,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebGISQuangNam.DataProvider\WebGISQuangNam.DataProvider.csproj">
+      <Project>{231102FA-26FA-433A-9C04-19E0372B0701}</Project>
+      <Name>WebGISQuangNam.DataProvider</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

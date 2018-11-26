@@ -49,6 +49,36 @@ namespace WebGISQuangNam.DataProvider.GIS
 
             }
         }
+        public THONGTINDOAN TimKiemThongTinDoAn(int objectID)
+        {
+            using (var context = new GISEntities())
+            {
+                var shape = context.QHCT_SUDUNGDAT.Where(f => f.OBJECTID == objectID).Select(s=>s.SHAPE).First();
+                var thongTinDoAn = context.QHCT_THONGTINDOAN.FirstOrDefault(f => f.SHAPE.Contains(shape));
+                return  new THONGTINDOAN
+                {
+                    OBJECTID = thongTinDoAn.OBJECTID,
+                    MaDoAn = thongTinDoAn.MaDoAn,
+                    TenDoAn = thongTinDoAn.TenDoAn,
+                    DiaDiem = thongTinDoAn.DiaDiem,
+                    DienTich = thongTinDoAn.DienTich,
+                    NgayCapNhat = thongTinDoAn.NgayCapNhat,
+                    NguoiCapNhat = thongTinDoAn.NguoiCapNhat,
+                    DonViCapNhat = thongTinDoAn.DonViCapNhat,
+                    DonViQuanLy = thongTinDoAn.DonViQuanLy,
+                    GhiChu = thongTinDoAn.GhiChu,
+                    KiHieuKhuVuc = thongTinDoAn.KiHieuKhuVuc,
+                    ChuDauTu = thongTinDoAn.ChuDauTu,
+                    SoQuyetDinhPheDuyet = thongTinDoAn.SoQuyetDinhPheDuyet,
+                    NgayPheDuyet = thongTinDoAn.NgayPheDuyet,
+                    CoQuanPheDuyet = thongTinDoAn.CoQuanPheDuyet,
+                    MaQuanHuyen = thongTinDoAn.MaQuanHuyen,
+                    MaPhuongXa = thongTinDoAn.MaPhuongXa,
+                    LoaiQuyHoach = thongTinDoAn.LoaiQuyHoach,
+                    TrangThaiDoAn = thongTinDoAn.TrangThaiDoAn
+                }; 
+            }
+        }
 
     }
 }

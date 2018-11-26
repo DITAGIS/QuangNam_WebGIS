@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using WebAPI.IO;
 using WebAPI.IO.Models;
 using WebGISQuangNam.DataProvider.GIS;
+using WebGISQuangNam.DataProvider.EF;
 using static WebGISQuangNam.DataProvider.GIS.Models.Model;
 
 namespace WebGISQuangNam.Controllers
@@ -16,6 +17,7 @@ namespace WebGISQuangNam.Controllers
     public class ThongTinDoAnController : Controller
     {
         private ThongTinDoAnDB context = new ThongTinDoAnDB();
+        private ThongTinQHCTDB thongTinQHCTDB = new ThongTinQHCTDB();
         [AllowAnonymous]
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult TimKiem(string maQuanHuyen, string maPhuongXa, string loaiQuyHoach, string tenDoAn)
@@ -32,13 +34,15 @@ namespace WebGISQuangNam.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult XuatPhieu(ThongTinQHXD model)
+        public ActionResult XuatPhieu(ThongTinQHXD thongTinQHXD,QHCT_SUDUNGDAT quyHoachChiTietSDD, THONGTINDOAN thongTinDoAn, ImageQHXD imageQHXD)
         {
-            
+            thongTinQHXD.ThongTinDoAn = thongTinDoAn;
+            thongTinQHXD.QuyHoachChiTietSDD = quyHoachChiTietSDD;
+            thongTinQHXD.ImageQHXD = imageQHXD;
             var io = new ExlThongTinQHXD();
             var path = HostingEnvironment.ApplicationPhysicalPath + @"/Resources/MauPhieu/MauPhieuThongTin_GIS.xlsx";
             HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            return File(io.Build(path, model), System.Net.Mime.MediaTypeNames.Application.Octet, "report.xlsx");
+            return File(io.Build(path, thongTinQHXD), System.Net.Mime.MediaTypeNames.Application.Octet, "report.xlsx");
         }
 
     }

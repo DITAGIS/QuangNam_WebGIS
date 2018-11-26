@@ -75,22 +75,27 @@ define(["dojo/dom-construct",
                             columns.push({ title: field.alias, field: field.name });
                     }
                 }
-                columns.push({
-                    command: {
-                        text: " ",
-                        click: (e) => {
-                            var grid = $("#table-report").data('kendoGrid');
-                            var model = grid.dataItem($(e.currentTarget).closest("tr"));
-                            var ngayPheDuyet = model.NgayPheDuyet;
-                            if (ngayPheDuyet)
-                                model.NgayPheDuyet = this.getDate(ngayPheDuyet);
-                            this.inBaoCao(model);
-                        },
-                        iconClass: "fa fa-download",
-                        className: "btn-download"
-                    }, title: "Xuất TT Đ/A",
-                    width: 40,
-                });
+                if (layer.id == "SDD_QHCT") {
+                    columns.push({
+                        command: {
+                            text: " ",
+                            click: (e) => {
+                                var grid = $("#table-report").data('kendoGrid');
+                                var quyHoachChiTietSDD = grid.dataItem($(e.currentTarget).closest("tr"));
+                                // var ngayPheDuyet = quyHoachChiTietSDD.NgayPheDuyet;
+                                // if (ngayPheDuyet)
+                                //     quyHoachChiTietSDD.NgayPheDuyet = this.getDate(ngayPheDuyet);
+                                // // this.inBaoCao(model);
+
+                                this.excute(quyHoachChiTietSDD, layer);
+                            },
+                            iconClass: "fa fa-download",
+                            className: "btn-download"
+                        }, title: "Xuất TT Đ/A",
+                        width: 40,
+                    });
+                }
+
                 var export_columns = [];
                 for (const field of layer.fields) {
                     if (field.name != "SHAPE" && field.name != "SHAPE.STArea()" && field.name != "SHAPE.STLength()")
@@ -147,7 +152,6 @@ define(["dojo/dom-construct",
                             this.zoomRowPolygon(objectID, featureLayer);
                         }
                         else if (layer.geometryType == "esriGeometryPolyline") {
-
                             this.zoomRowPolygon(objectID, featureLayer);
                         }
                     }
@@ -218,6 +222,49 @@ define(["dojo/dom-construct",
                     }
                 });
             }
+            queryFeature_DoAnQuyHoach(geometry) {
+                var featureLayer = this.map._layers['ThongTinDoAn_QHCT'];
+                var query = new Query();
+                query.geometry = geometry;
+                return featureLayer.queryFeatures(query);
+            }
+            async excute(quyHoachChiTietSDD, layer) {
+                var objectID = quyHoachChiTietSDD.OBJECTID;
+                var rs = await this.queryFeature(objectID, layer);
+                var feature = rs.features[0];
+                var ft_DoAn = await this.queryFeature_DoAnQuyHoach(feature.geometry);
+                var thongTinDoAn = ft_DoAn.features[0].attributes;
+                var stateExtent = ft_DoAn.features[0].geometry.getExtent();
+                var model = {};
+                for (var key in quyHoachChiTietSDD) {
+                    var value = quyHoachChiTietSDD[key];
+                    if (!model[key])
+                        model[key] = value;
+                }
+                for (var key in thongTinDoAn) {
+                    var value = thongTinDoAn[key];
+                    if (!model[key])
+                        model[key] = value;
+                }
+                for (var key in stateExtent) {
+                    var value = stateExtent[key];
+                    if (!model[key])
+                        model[key] = value;
+                }
+                var ImageLayer = this.map._layers['QuangNamQHCT'];
+                model.url = ImageLayer.url;
+                if (thongTinDoAn["NgayPheDuyet"]) {
+                    model["NgayPheDuyet"] = this.getDate(thongTinDoAn["NgayPheDuyet"]);
+                }
+
+                this.inBaoCao(model);
+                console.log(model);
+            }
+            queryFeature(objectID, layer) {
+                var query = new Query();
+                query.objectIds = [objectID];
+                return layer.queryFeatures(query);
+            }
 
             zoomRowPolygon(id, layerClass) {
                 layerClass.clearSelection();
@@ -232,8 +279,7 @@ define(["dojo/dom-construct",
                 });
             }
             getDate(value) {
-                let date = value.substring(6, value.length - 2);
-                var datetime = new Date(parseInt(date));
+                var datetime = new Date(parseInt(value));
                 var dd = datetime.getDate();
                 var mm = datetime.getMonth() + 1; //January is 0!
 
@@ -248,6 +294,7 @@ define(["dojo/dom-construct",
                 return day;
             }
             inBaoCao(model) {
+
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', `/ThongTinDoAn/XuatPhieu`, true);
                 xhr.setRequestHeader('Content-type', 'application/json');
