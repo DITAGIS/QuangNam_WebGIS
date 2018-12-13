@@ -111,6 +111,9 @@ define(["require", "exports"], function (require, exports) {
         },
         tables: {
         },
+        fields:{
+            hidden:['SHAPE','SHAPE.STArea()','SHAPE.STLength()','OBJECTID']
+        }
         // zoom: 10,
         // center: [106.6843694, 11.158752270428375]
     };

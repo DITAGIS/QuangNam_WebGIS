@@ -13,6 +13,7 @@ namespace WebGISQuangNam.Models.dataHelper
     public interface IGISRepository
     {
         IQueryable<HANHCHINHHUYEN> getHanhChinhHuyen();
+        
         List<HANHCHINHXA> getHanhChinhXa();
         IQueryable<NhomNguoiDung> getNhomNguoiDung();
         IQueryable<NguoiDung> getNguoiDung();
@@ -38,6 +39,7 @@ namespace WebGISQuangNam.Models.dataHelper
         
         List<YKienQuyHoachUser> getYKienQuyHoachUser();
         List<DoAnYKienQuyHoach> getDoAnYKienQuyHoach();
+        List<String> getListTenDoAn();
 
     }   
     public class EFGISRepository : IGISRepository
@@ -309,6 +311,17 @@ namespace WebGISQuangNam.Models.dataHelper
 
         }
 
+        public List<string> getListTenDoAn()
+        {
+            string query = "select TenDoAn from sde.QHC_THONGTINDOAN UNION ALL " +
+                           "select TenDoAn from sde.QHCT_THONGTINDOAN UNION ALL " +
+                           "select TenDoAn from sde.QHV_THONGTINDOAN UNION ALL " +
+                           "select TenDoAn from sde.QHNT_THONGTINDOAN UNION ALL " +
+                           "select TenDoAn from sde.KHAC_THONGTINDOAN UNION ALL " +
+                           "select TenDoAn from sde.QHPK_THONGTINDOAN";
+            return this.context.Database.SqlQuery<String>(query).ToList();
+
+        }
     }
 
     public class NinjectControllerFactory : DefaultControllerFactory

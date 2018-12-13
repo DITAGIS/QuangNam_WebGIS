@@ -39,6 +39,7 @@ namespace WebGISQuangNam.Controllers
             //
 
             ViewBag.QuanHuyen = this.gISRepository.getHanhChinhHuyen().OrderBy(qh => qh.TenQuan).ToList();
+            ViewBag.TenDoAn = this.gISRepository.getListTenDoAn().ToList();
 
             //List<Domain> quan = this.gISRepository.getDomain("DMHuyenTPThiXa").ToList().OrderBy(dm => dm.value).ToList();
 
@@ -811,6 +812,7 @@ namespace WebGISQuangNam.Controllers
         [AllowAnonymous]
         public ActionResult reviewYKienNguoiDan(string madoan, string loaiDoAn)
         {
+            khaoSatNguoiDung khaoSatNguoiDung = GetCart();
 
             if (madoan == null)
             {
@@ -855,7 +857,7 @@ namespace WebGISQuangNam.Controllers
 
             ViewBag.DoAn = doan;
 
-            khaoSatNguoiDung khaoSatNguoiDung = GetCart();
+            //khaoSatNguoiDung khaoSatNguoiDung = GetCart();
 
             string noiDung = "";
 

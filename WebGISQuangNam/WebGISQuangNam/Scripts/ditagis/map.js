@@ -16,7 +16,8 @@
     "dojo/store/Memory", "dojo/_base/declare", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/request", "esri/config", // 10
     "esri/geometry/geometryEngine", "esri/InfoTemplate", "esri/geometry/normalizeUtils", "esri/tasks/BufferParameters", "dojo/_base/lang",
     "esri/dijit/LocateButton", "esri/dijit/BasemapGallery", "esri/layers/Domain",
-    "esri/dijit/Search", "esri/SnappingManager", "esri/dijit/Measurement", "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator",
+    "esri/dijit/Search", "esri/SnappingManager", "esri/dijit/Measurement", "esri/units",
+    "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator",
 
     "esri/toolbars/draw", "dijit/Toolbar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
 
@@ -39,7 +40,7 @@
     keys, array, dom, Grid, Selection,
     Memory, declare, Print, PrintTemplate, esriRequest,
     esriConfig, geometryEngine, InfoTemplate, normalizeUtils,
-    BufferParameters, lang, LocateButton, BasemapGallery, Domain, Search, SnappingManager, Measurement, Menu, MenuItem, MenuSeparator,
+    BufferParameters, lang, LocateButton, BasemapGallery, Domain, Search, SnappingManager, Measurement, Units, Menu, MenuItem, MenuSeparator,
 
 
 
@@ -91,6 +92,7 @@
 
 
         var layers = [];
+
         for (const key in configs.gisMapServerLayers) {
             let layercf = configs.gisMapServerLayers[key];
             var arcGISDynamicMapServiceLayer = new ArcGISDynamicMapServiceLayer(layercf.url, {
@@ -347,7 +349,8 @@
         $(".call_bandoquyhoach").on("click", function () {
             $("#panel_QHC").slideDown();
             var mdoan = $(this).attr('mdoan');
-            getHoSoDoAn(mdoan);
+            var maCode = $(this).attr('maCode');
+            getHoSoDoAn(mdoan, maCode);
         });
 
         /// end thông tin quy hoạch ///
@@ -399,7 +402,9 @@
         });
 
         var measurement = new Measurement({
-            map: map
+            map: map,
+            defaultLengthUnit: Units.METERS,
+            defaultAreaUnit: Units.SQUARE_METERS,
         }, dom.byId("measurementDiv"));
         measurement.startup();
         $("#measurementDiv_panel").slideUp();
@@ -419,10 +424,6 @@
             // Creates right-click context menu for map
             ctxMenuForMap = new Menu({
                 onOpen: function (box) {
-                    //// Lets calculate the map coordinates where user right clicked.
-                    //// We'll use this to create the graphic when the user clicks
-                    //// on the menu item to "Add Point"
-                    //currentLocation = getMapPointFromMenuPosition(box);
                 }
             });
 
@@ -445,25 +446,6 @@
             ctxMenuForMap.bindDomNode(map.container);
         }
 
-        // Helper Methods
-        function getMapPointFromMenuPosition(box) {
-            var x = box.x, y = box.y;
-            switch (box.corner) {
-                case "TR":
-                    x += box.w;
-                    break;
-                case "BL":
-                    y += box.h;
-                    break;
-                case "BR":
-                    x += box.w;
-                    y += box.h;
-                    break;
-            }
-
-            var screenPoint = new Point(x - map.position.x, y - map.position.y);
-            return map.toMap(screenPoint);
-        }
 
 
 
@@ -531,66 +513,26 @@
             var query = new esri.tasks.Query();
 
             dojo.forEach(layers, (layer) => {
-                dojo.connect(layer, "onClick", (evt) => {
+                dojo.connect(layer, "onClick", (feature) => {
                     if (measurement.getTool()) return;
                     if (map.infoWindow.isShowing) {
                         map.infoWindow.hide();
                     }
-
-                    var layerInfos = [{
-                        'featureLayer': layer,
-                        'isEditable': false,
-                        'showDeleteButton': false
-                    }];
-
-                    var attInspector = new esri.dijit.AttributeInspector({
-                        layerInfos: layerInfos
-                    }, dojo.create("div"));
-
-                    if (evt.graphic) {
-                        query.objectIds = [evt.graphic.attributes["OBJECTID"]];
+                    if (feature.graphic) {
+                        query.objectIds = [feature.graphic.attributes["OBJECTID"]];
                     }
                     else {
                         return;
                     }
 
-                    //alert(layer.name);
-
                     layer.selectFeatures(query, esri.layers.FeatureLayer.SELECTION_NEW, function (features) {
                         if (features.length > 0) {
-
-                            var inforContent = "";
                             featUpdate = features[0];
-                            if (layer.typeSelectFeature == "ThongTin") {
-                                inforContent += "<div class='contentPopup' >";
-
-                                inforContent += "<div><span class='lableColName'>Kí hiệu khu vực :</span><span class='lableColValue'> " + featUpdate.attributes["KiHieuKhuVuc"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Mã đồ án :</span><span class='lableColValue'> " + featUpdate.attributes["MaDoAn"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Tên đồ án :</span><span class='lableColValue'> " + featUpdate.attributes["TenDoAn"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Địa điểm : </span><span class='lableColValue'>" + featUpdate.attributes["DiaDiem"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Diện tích :</span><span class='lableColValue'> " + featUpdate.attributes["DienTich"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Chủ đầu tư :</span><span class='lableColValue'> " + featUpdate.attributes["ChuDauTu"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Số quyết định phê duyệt :</span><span class='lableColValue'> " + featUpdate.attributes["SoQuyetDinhPheDuyet"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Ngày phê duyệt :</span><span class='lableColValue'> " + getDateStringFormat(getDateStringData(featUpdate, "NgayPheDuyet")) + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Cơ quan phê duyệt :</span><span class='lableColValue'> " + featUpdate.attributes["CoQuanPheDuyet"] + "</span></div>";
-                                inforContent += "<div><span class='lableColName'>Ghi chú :</span> <span class='lableColValue'>" + featUpdate.attributes["GhiChu"] + "</span></div>";
-
-                                inforContent += "</div>";
-                                map.infoWindow.setTitle("Kết quả tra cứu");
-                            }
-                            else {
-                                inforContent = getInforPopup(layer, featUpdate);
-                                map.infoWindow.setTitle("Kết quả tra cứu");
-                            }
-
-                            ///
-
-                            inforContent = inforContent.replace(/null/g, " Chưa có thông tin ");
-
+                            var inforContent = getInforPopup(layer, featUpdate);
+                            map.infoWindow.setTitle("Kết quả tra cứu");
                             map.infoWindow.setContent(inforContent);
                             map.infoWindow.resize(310, 300);
-                            map.infoWindow.show(evt.screenPoint, map.getInfoWindowAnchor(evt.screenPoint));
-                            ////
+                            map.infoWindow.show(feature.screenPoint, map.getInfoWindowAnchor(feature.screenPoint));
                         }
                         else {
                             map.infoWindow.hide();
@@ -608,30 +550,6 @@
         }
 
 
-        function getNumberString(feature, field) {
-            if (feature.attributes[field] !== null) {
-                return new Number(feature.attributes[field]);
-            }
-        };
-
-        function getDateStringFormat(dateObj) {
-            if (dateObj) {
-                return [
-                    dateObj.getUTCDate().toString(),
-                    (dateObj.getUTCMonth() + 1).toString(),
-                    dateObj.getUTCFullYear().toString()
-                ].join("/");
-            }
-            else {
-                return "";
-            }
-        }
-
-        function getDateStringData(feature, field) {
-            if (feature.attributes[field] !== null) {
-                return new Date(feature.attributes[field]);
-            }
-        };
 
         $(".closePanelmessageBox").on("click", function () {
             $("#messageBox").css("display", "none");
@@ -651,6 +569,7 @@
 
 
         $("#TraCuuDoAnQuyHoach_quanhuyen").change(function () {
+
             var dID = $(this).val();
             getHanhChinhXa(dID, "TraCuuDoAnQuyHoach_phuongxa");
         });
@@ -670,7 +589,7 @@
         $("#TraCuuDoAnQuyHoach_tim").click(function () {
             $("#loadingpageDiv").css("display", "inline-block");
 
-            
+
 
             var maQuanHuyen, maPhuongXa, loaiQuyHoach, tenDoAn;
 
@@ -679,7 +598,7 @@
             loaiQuyHoach = $("#TraCuuDoAnQuyHoach_loaiquyhoach").val();
             tenDoAn = $("#TraCuuDoAnQuyHoach_tendoan").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiQuyHoach.trim() + tenDoAn.trim();
+            var check = maQuanHuyen.trim() + loaiQuyHoach.trim() + tenDoAn.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
@@ -718,7 +637,7 @@
             kiHieuKhuDat = $("#TraCuuHoTroCapPhep_kyhieukhudat").val();
             kiHieuLoDat = $("#TraCuuHoTroCapPhep_kyhieulodat").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiDat.trim() + kiHieuKhuDat.trim() + kiHieuLoDat.trim() + tenDoAn.trim();
+            var check = maQuanHuyen.trim() + loaiDat.trim() + kiHieuKhuDat.trim() + kiHieuLoDat.trim() + tenDoAn.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
@@ -728,7 +647,7 @@
 
             $("#ResultDataSearchContentType").val("QHCT");
             $("#titleTimKiem").html("Hỗ trợ xin/cấp phép xây dựng");
-            TimKiemThongTin.ThongTinQHCT(maQuanHuyen, maPhuongXa, loaiDat, kiHieuKhuDat, tenDoAn)
+            TimKiemThongTin.ThongTinQHCT(maQuanHuyen, maPhuongXa, loaiDat, kiHieuKhuDat, kiHieuLoDat, tenDoAn)
                 .then((results) => {
                     report.showTable(featureLayer, results);
                     $(".panel_control").slideUp();
@@ -759,7 +678,7 @@
             kcDen = $("#LuaChonDiaDiemDauTu_khoangcachden").val();
             soVoi = $("#LuaChonDiaDiemDauTu_sovoi").val();
 
-            var check = maQuanHuyen.trim() + maPhuongXa.trim() + loaiDat.trim() + kiHieuLoDat.trim() + dienTichTu.trim() + dienTichDen.trim() + kcTu.trim() + kcDen.trim() + soVoi.trim();
+            var check = maQuanHuyen.trim() + loaiDat.trim() + kiHieuLoDat.trim() + dienTichTu.trim() + dienTichDen.trim() + kcTu.trim() + kcDen.trim() + soVoi.trim();
 
             if (check.trim().length == 0) {
                 alert("Vui lòng chọn điều kiện tìm kiếm");
@@ -806,100 +725,59 @@
 
         /////////////////////////////////////////////////////////////////////////////////////////
 
-
         function getInforPopup(featureLayer, feature) {
             var html = "<div class='contentPopup' >";
-            var fields = featureLayer.fields
-            var col;
-
-            if (layer.typeSelectFeature == "SDD") {
-                col = ["KiHieuKhuDat", "KiHieuLoDat", "LoaiDat", "DienTichKhuDat", "GiaiDoanQuyHoach", "TangCao", "MatDoXayDung", "KhoangLuiChinh",
-                    "KhoangLuiBien", "HeSoSuDungDat"];
-            }
-
-            if (layer.typeSelectFeature == "ThongTin") {
-                col = ["MaDoAn", "TenDoAn", "TrangThaiDoAn", "ChuDauTu", "CoQuanPheDuyet", "NgayPheDuyet", "SoQuyetDinhPheDuyet",
-                    "DiaDiem", "DienTich", "DonViCapNhat", "DonViQuanLy", "KiHieuKhuVuc", "LoaiQuyHoach", "MaPhuongXa", "MaQuanHuyen",
-                    "NgayCapNhat", "NguoiCapNhat", "GhiChu"];
-            }
-
-
-            if (col) {
-                for (var yi = 0; yi < col.length; yi++) {
-
-                    var nameCol = col[yi];
-
-                    for (var i = 0; i < fields.length; i++) {
-                        var field = fields[i];
-                        var name = field.name;
-                        if (name.startsWith(nameCol) == true) {
-
-                            if (field.domain != null) {
-                                var domain = field.domain;
-                                var domainData = domain.toJson();
-                                var codedValues = domainData.codedValues;
-                                var strVal = "";
-                                var id = feature.attributes[field.name];
-                                for (var x = 0; x < codedValues.length; x++) {
-                                    var code = codedValues[x].code;
-                                    if (code == id) {
-                                        strVal = codedValues[x].name;
-                                        break;
-                                    }
-                                }
-                                ////alert(strVal);
-                                html += "<div> <span class='lableColName'> " + field.alias +
-                                    " : </span><span class='lableColValue' > " + strVal + "</span></div>";
-                            }
-                            else {
-
-                                html += "<div> <span class='lableColName'> " + field.alias +
-                                    " : </span><span class='lableColValue' > " + feature.attributes[field.name] + "</span></div>";
-                            }
-                        }
+            var fields = featureLayer.fields;
+            var hiddenFields = configs.fields['hidden'];
+            for (const field of fields) {
+                var name = field.name;
+                var isHiddenField = false;
+                for (const hiddenField of hiddenFields) {
+                    if (name == hiddenField) {
+                        isHiddenField = true;
+                        break;
                     }
                 }
-            }
-            else {
-                for (var i = 0; i < fields.length; i++) {
-                    var field = fields[i];
-                    var name = field.name;
-                    if (name.startsWith("SHAPE") == false) {
-                        if (name.startsWith("OBJECTID") == false) {
-
-                            if (field.domain != null) {
-                                var domain = field.domain;
-                                var domainData = domain.toJson();
-                                var codedValues = domainData.codedValues;
-                                var strVal = "";
-                                var id = feature.attributes[field.name];
-                                for (var x = 0; x < codedValues.length; x++) {
-                                    var code = codedValues[x].code;
-                                    if (code == id) {
-                                        strVal = codedValues[x].name;
-                                        break;
-                                    }
-                                }
-                                ////alert(strVal);
-                                html += "<div> <span class='lableColName'> " + field.alias +
-                                    " : </span><span class='lableColValue' > " + strVal + "</span></div>";
-                            }
-                            else {
-                                html += "<div> <span class='lableColName'> " + field.alias +
-                                    " : </span><span class='lableColValue' > " + feature.attributes[field.name] + "</span></div>";
-                            }
-                        }
+                if (!isHiddenField) {
+                    let value = feature.attributes[name];
+                    if (field.domain != null) {
+                        var domain = field.domain;
+                        value = getValueDomain(domain, value);
                     }
+                    if (field.type == "esriFieldTypeDate") {
+                        value = getDate(value);
+                    }
+                    if (value)
+                        html += "<div> <span class='lableColName'> " + field.alias +
+                            " : </span><span class='lableColValue' > " + value + "</span></div>";
                 }
             }
-
             html += "</div>";
-
-            html = html.replace(/null/g, " Chưa có thông tin");
-
             return html;
+        }
+        function getDate(value) {
+            var date = new Date(value);
+            var dd = date.getDate();
+            var mm = date.getMonth() + 1;
 
-
+            var yyyy = date.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            return dd + '/' + mm + '/' + yyyy;
+        }
+        function getValueDomain(domain, code) {
+            var domainData = domain.toJson();
+            var codedValues = domainData.codedValues;
+            for (var i = 0; i < codedValues.length; i++) {
+                if (codedValues[i].code == code) {
+                    return codedValues[i].name;
+                }
+            }
+            return null;
         }
         function getHoSoDoAn(maDoAn, maCode) {
             if (maCode) {
@@ -939,12 +817,13 @@
                             var link = $(this).attr("alt");
                             idDoc = $(this).attr("title");
                             $("#viewDocFormData").attr("src", link);
+                            $("#viewDocFormData").attr("idDoc", idDoc);
                             $("#loadIdealForm").css("display", "block");
                         });
 
                     }
                     var panel_group = qhc.find("#ThuyetMinh");
-                    if(maCode){
+                    if (maCode) {
                         var li_phieugopy = $('<li/>', {
                             class: "list-group-item"
                         }).appendTo(panel_group);
@@ -957,10 +836,14 @@
                             var loaiDoAn = maCode.split("#")[1];
                             var link = "/Home/reviewYKienNguoiDan?madoan=" + maDoAn + "&loaiDoAn=" + loaiDoAn;
                             $("#loadIdealReviewFormData").attr("src", link);
-                            $("#loadIdealReviewForm").css("display", "block");
+                            kendo.ui.progress($("#qhc"), true);
+                            $('#loadIdealReviewFormData').load(function(){
+                                $("#loadIdealReviewForm").css("display", "block");
+                                kendo.ui.progress($("#qhc"), false);
+                            });
                         });
                     }
-                    
+
                 })
                 .catch(function (reponse) {
                     alert("error : " + reponse);
@@ -969,6 +852,7 @@
 
         }
 
+
         function zoomThongTinDoAn(maDoAn) {
 
             var mada = maDoAn.split('#')[0];
@@ -976,7 +860,7 @@
             var loaimada = maDoAn.split('#')[1];
 
             var query = new Query();
-            query.where = " MaDoAn = '" + mada + "'";
+            query.where = "MaDoAn = N'" + mada + "'";
 
             map.graphics.clear();
 
@@ -986,7 +870,7 @@
 
             if (loaimada === "QHCT") {
                 var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAnQHCT"
+                    return element.id == "ThongTinDoAn_QHCT"
                 });
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
@@ -1134,28 +1018,36 @@
 
 
         function getHanhChinhXa(maQuanHuyen, cbb) {
-
             $("#loadingpageDiv").css("display", "inline-block");
             var url = "/Home/getXaByQuanHuyen";
-            var html = "<option value=''>Phường / Xã / Thị trấn</option>";
             $.ajax({
                 type: "POST",
                 url: url,
                 data: { maQuanHuyen: maQuanHuyen },
                 cache: false,
                 success: function (results) {
-
-                    //alert(results);
-
                     if (results) {
+                        var data = [];
                         for (var i = 0; i < results.length; i++) {
-                            html += "<option value='" + results[i].IDHanhChinh + "'>" + results[i].TenHanhChinh + "</option>";
+                            var xa = {
+                                text: results[i].TenHanhChinh,
+                                value: results[i].IDHanhChinh
+                            }
+                            data.push(xa);
                         }
-                        $("#" + cbb + "").html(html);
-                    }
-                    else {
-                        html = "<option value=''>Phường / Xã / Thị trấn</option>";
-                        $("#" + cbb + "").html(html);
+                        if (data.length > 0) {
+                            $(`#${cbb}`).kendoDropDownList({
+                                optionLabel: "Xã, phường, thị trấn",
+                                dataTextField: "text",
+                                dataValueField: "value",
+                                dataSource: data,
+                            });
+                        }
+                        else {
+                            $(`#${cbb}`).kendoDropDownList({
+                                dataSource: data
+                            }).data("kendoDropDownList").select(0);
+                        }
                     }
                     $("#loadingpageDiv").css("display", "none");
                 },
