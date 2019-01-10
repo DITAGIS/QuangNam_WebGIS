@@ -2,6 +2,7 @@ define(["require", "exports"], function (require, exports) {
     "use strict";
     var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
     return {
+        urlQHVT: baseurl + '/QuangNamQHV_Tinh/FeatureServer/',
         gisMapServerLayers: {
             basemap: {
                 title: 'Bản đồ nền',
@@ -114,6 +115,12 @@ define(["require", "exports"], function (require, exports) {
                 typeSelectFeature: "SDD",
                 displayFields: ['TenDoAn', 'KiHieuLoDat', 'LoaiDat', 'DienTichLoDat']
             },
+            // KhoangSan_2020: {
+            //     url: baseurl + "/QuangNamQHV_Tinh/MapServer/3",
+            //     id: "KhoangSan_2020",
+            //     title: "Quy hoạch vùng tỉnh - Khoảng sản",
+            // },
+           
         },
         tables: {
         },

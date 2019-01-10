@@ -6,8 +6,8 @@
 
     "esri/toolbars/navigation", // 1
     "dijit/registry", "dojo/on", "esri/map", "esri/layers/FeatureLayer",// 2
-    "esri/dijit/AttributeInspector", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", // 3
-    "esri/layers/ImageParameters", "esri/layers/ArcGISTiledMapServiceLayer", "esri/tasks/query", "dojo/query", "dojo/parser", // 4
+    "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", // 3
+    "esri/layers/ImageParameters", "esri/tasks/query", "dojo/query", "dojo/parser", // 4
     "dojo/dom-construct", "dijit/form/Button", "esri/tasks/GeometryService", "esri/geometry/Point", "esri/tasks/ProjectParameters", // 5
     "esri/SpatialReference", "esri/tasks/QueryTask", "esri/layers/GraphicsLayer", "esri/geometry/Extent", "esri/geometry/Polygon", // 6
     "esri/dijit/HomeButton", "esri/symbols/SimpleMarkerSymbol", "esri/graphic", "esri/dijit/Scalebar", "esri/arcgis/utils", // 7
@@ -31,8 +31,8 @@
 
     Navigation,
     registry, on, Map, FeatureLayer,
-    AttributeInspector, SimpleLineSymbol, SimpleFillSymbol, Color, ArcGISDynamicMapServiceLayer,
-    ImageParameters, ArcGISTiledMapServiceLayer, Query, dojoQuery, parser,
+    SimpleLineSymbol, SimpleFillSymbol, Color, ArcGISDynamicMapServiceLayer,
+    ImageParameters, Query, dojoQuery, parser,
     domConstruct, Button, GeometryService, Point, ProjectParameters,
     SpatialReference, QueryTask, GraphicsLayer, Extent, Polygon,
     HomeButton, SimpleMarkerSymbol, Graphic, Scalebar, arcgisUtils,
@@ -92,7 +92,6 @@
 
 
         var layers = [];
-
         for (const key in configs.gisMapServerLayers) {
             let layercf = configs.gisMapServerLayers[key];
             var arcGISDynamicMapServiceLayer = new ArcGISDynamicMapServiceLayer(layercf.url, {
@@ -108,7 +107,9 @@
             layers.push(layer);
             map.addLayer(arcGISDynamicMapServiceLayer);
 
+
         }
+
         var featureLayers = [];
         var polySymbolRed = new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_SOLID,
@@ -142,7 +143,66 @@
 
 
         }
+        var qhvt_layers = [];
+        for (var index = 18; index >= 0; index--) {
+            let featureLayer = new esri.layers.FeatureLayer(configs.urlQHVT + index, {
+                mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                outFields: ["*"],
+                "opacity": 0.9,
+            });
+            featureLayer.setSelectionSymbol(polySymbolRed);
+            featureLayers.push(featureLayer);
+            var layer = {
+                layer: featureLayer, // required unless featureCollection.
+                subLayers: true, // optional
+                visibility: true, // optional
+            };
+            qhvt_layers.push(layer);
+        }
         map.addLayers(featureLayers);
+        var widget_qhvt = new LayerList({
+            map: map,
+            layers: qhvt_layers,
+            showLegend: true,
+        }, "listLayer_QHVT");
+        widget_qhvt.startup();
+        on(widget_qhvt, 'load', function (evtWidget) {
+            $("#toogleLayerList_QHVT").attr('checked', 'checked');
+            $("#toogleLayerList_QHVT").change(function () {
+                var isVisileLayer = this.checked;
+                var layers = evtWidget.detail.widget.layers;
+                for (const index in layers) {
+                    layers[index].layer.setVisibility(isVisileLayer)
+                }
+            });
+            $("#listLayer_QHVT").toggleClass("hidden");
+            $(".toggle-qhvt").click((evt) => {
+                $("#listLayer_QHVT").toggleClass("hidden");
+                $("#open-layer-list-qhvt").toggleClass("esri-icon-down esri-icon-right");
+            });
+        })
+        var widget_layerlist = new LayerList({
+            map: map,
+            layers: layers,
+            showLegend: true,
+        }, "listLayer");
+        widget_layerlist.startup();
+
+        on(widget_layerlist, 'load', function (evtWidget) {
+            $("#toogleLayerList").attr('checked', 'checked');
+            $("#toogleLayerList").click((evt) => {
+                var isVisileLayer = evt.currentTarget.checked;
+                var layers = evtWidget.detail.widget.layers;
+                for (const index in layers) {
+                    layers[index].layer.setVisibility(isVisileLayer)
+                }
+                $("#toogleLayerList_QHVT").prop("checked", isVisileLayer);
+                var qhvt_layers = widget_qhvt.layers;
+                for (const index in qhvt_layers) {
+                    qhvt_layers[index].layer.setVisibility(isVisileLayer)
+                }
+            });
+        })
         var homeButton = new HomeButton({
             theme: "HomeButton",
             map: map,
@@ -160,12 +220,6 @@
             $("#searchButton").css('top', '60px');
         }
 
-        var myWidget = new LayerList({
-            map: map,
-            layers: layers,
-            showLegend: true
-        }, "listLayer");
-        myWidget.startup();
 
         if (layers.length > 0) {
             var legendDijit = new Legend({
@@ -335,6 +389,12 @@
             measurement.clearResult();
             measurement.setTool("distance", false);
         });
+        map.on("key-down", function (evt) {
+            if(evt.code == "Escape"){
+                measurement.clearResult();
+                measurement.setTool("distance", false);
+            }
+        });
 
         /// thông tin quy hoạch ////
         $(".call_bandoquyhoach_congbo").on("click", function () {
@@ -349,8 +409,12 @@
         $(".call_bandoquyhoach").on("click", function () {
             $("#panel_QHC").slideDown();
             var mdoan = $(this).attr('mdoan');
+            // var maCode = $(this).attr('maCode'); Bỏ maCode ( bỏ nút xem phiếu góp ý)
             var maCode = $(this).attr('maCode');
-            getHoSoDoAn(mdoan, maCode);
+            if (maCode) {
+                zoomThongTinDoAn(maCode);
+            }
+            getHoSoDoAn(mdoan);
         });
 
         /// end thông tin quy hoạch ///
@@ -361,6 +425,9 @@
             $("#panel_QHC").slideDown();
             var maCode = $(this).attr('maCode');
             var mdoan = $(this).attr('mdoan');
+            if (maCode) {
+                zoomThongTinDoAn(maCode);
+            }
             getHoSoDoAn(mdoan, maCode);
         });
 
@@ -507,8 +574,6 @@
             var layers = array.map(evt.layers, function (result) {
                 return result.layer;
             });
-
-
             //display read-only info window when user clicks on feature 
             var query = new esri.tasks.Query();
 
@@ -780,9 +845,6 @@
             return null;
         }
         function getHoSoDoAn(maDoAn, maCode) {
-            if (maCode) {
-                zoomThongTinDoAn(maCode);
-            }
             TimKiemThongTin.HoSoDoAn(maDoAn)
                 .then((results) => {
                     var qhc = $("#QHC");
@@ -819,6 +881,14 @@
                             $("#viewDocFormData").attr("src", link);
                             $("#viewDocFormData").attr("idDoc", idDoc);
                             $("#loadIdealForm").css("display", "block");
+                            if (maCode) {
+                                $("#viewDocFormData").css({ "position": "inherit" });
+                                $(".yKienGroup").css("display", "block");
+                            }
+                            else {
+                                $(".yKienGroup").css("display", "none");
+                                $("#viewDocFormData").css({ "position": "absolute" });
+                            }
                         });
 
                     }
@@ -837,7 +907,7 @@
                             var link = "/Home/reviewYKienNguoiDan?madoan=" + maDoAn + "&loaiDoAn=" + loaiDoAn;
                             $("#loadIdealReviewFormData").attr("src", link);
                             kendo.ui.progress($("#qhc"), true);
-                            $('#loadIdealReviewFormData').load(function(){
+                            $('#loadIdealReviewFormData').load(function () {
                                 $("#loadIdealReviewForm").css("display", "block");
                                 kendo.ui.progress($("#qhc"), false);
                             });

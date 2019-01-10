@@ -177,6 +177,7 @@
     <Compile Include="Controllers\HoSoDoAnController.cs" />
     <Compile Include="Controllers\QuanLyController.cs" />
     <Compile Include="Controllers\ThongTinDoAnController.cs" />
+    <Compile Include="Controllers\ThongTinQHController.cs" />
     <Compile Include="Controllers\ThongTinQHCTController.cs" />
     <Compile Include="Controllers\ThongTinQHPKController.cs" />
     <Compile Include="Global.asax.cs">
@@ -268,6 +269,13 @@
     <Content Include="Content\modelBox\Modal.css" />
     <Content Include="Content\modelBox\model.js" />
     <Content Include="favicon.ico" />
+    <Content Include="FileManagers\BienBan01\QD_phe_duyet_NV_DT.doc" />
+    <Content Include="FileManagers\DienAn01\BanDo_A3.jpg" />
+    <Content Include="FileManagers\DienAn01\BiaTM.doc" />
+    <Content Include="FileManagers\DienAn01\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn01\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\DienAn02\BanDo_A3.jpg" />
+    <Content Include="FileManagers\Dienban3\BanDo_A3.jpg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -339,6 +347,22 @@
     <Content Include="Content\fonts\VHELVEBI.TTF" />
     <Content Include="Content\fonts\VHELVEI.TTF" />
     <Content Include="Content\fonts\VHELVEN.TTF" />
+    <Content Include="FileManagers\DienAn02\BiaTM.doc" />
+    <Content Include="FileManagers\DienAn02\QD_phe_duyet_ TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn02\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\DienAn02\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\DienAn02\To_trinh _TDSXD.doc" />
+    <Content Include="FileManagers\Dienban3\BiaTM.doc" />
+    <Content Include="FileManagers\Dienban3\QD_phe_duyet_ TTDienAn.doc" />
+    <Content Include="FileManagers\Dienban3\Quy_dinh_quan_ly_TTDienAn.doc" />
+    <Content Include="FileManagers\Dienban3\Thuyet_minh_KDC_DienAn.docx" />
+    <Content Include="FileManagers\Dienban3\To_trinh _TDSXD.doc" />
+    <Content Include="FileManagers\DienAn01\QD_phe_duyet_TT_Dien_An.docx" />
+    <Content Include="FileManagers\DienAn01\To_trinh _TDSXD.docx" />
+    <Content Include="FileManagers\ĐB_QHPK_PHUONGAN\TM_QHPK_Phuong_An.docx" />
+    <Content Include="FileManagers\BienBan01\QD_phe_duyet_NV_DT.docx" />
+    <Content Include="FileManagers\BienBan01\Thuyet_minh_KDC_DienAn.docx" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FTP.pubxml" />
     <None Include="Properties\PublishProfiles\QuangNamGIS.pubxml" />
     <Content Include="Resources\MauPhieu\MauPhieuThongTin_GIS.xlsx" />
@@ -395,6 +419,7 @@
     <Folder Include="Views\HoSoDoAn\" />
     <Folder Include="Views\ThongTinQHCT\" />
     <Folder Include="Views\ThongTinQHPK\" />
+    <Folder Include="Views\ThongTinQH\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
