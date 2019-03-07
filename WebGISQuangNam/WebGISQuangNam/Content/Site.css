@@ -33,7 +33,7 @@ body {
     }
 
     #headerTop .small_h1 {
-        font-size: 1em;
+        /* font-size: 1em; */
         text-shadow: 1px 1px #fff;
     }
 
@@ -782,7 +782,18 @@ input.esriCheckbox.list_item {
 .esriPopup .pointer.top, .esriPopup .pointer.topLeft, .esriPopup .pointer.topRight {
     background-color: #56EA1F;
 }
-
+@media only screen and (min-width: 1000px) and (max-width: 1400px){
+    .small_h1 {
+        font-size: 0.7em;
+        text-shadow: 0.5px 0.5px #fff;
+    }
+}
+@media only screen and (min-width: 700px) and (max-width: 1000px){
+    .small_h1 {
+        font-size: 0.8em;
+        text-shadow: 0.5px 0.5px #fff;
+    }
+}
 @media only screen and (max-width: 1000px) {
 
     #headerTop {
@@ -805,12 +816,6 @@ input.esriCheckbox.list_item {
     #headerTop_right{
         height:50px;
     }
-
-    .small_h1 {
-        font-size: 0.4em;
-        text-shadow: 0.5px 0.5px #fff;
-    }
-
     .logo_right {
         width: 65%;
         float: left;
@@ -897,13 +902,6 @@ input.esriCheckbox.list_item {
         height: 100%;
         /*margin-top: -16px;*/
     }
-
-    .small_h1 {
-        font-size: 01em;
-        text-shadow: 0.5px 0.5px #fff;
-    }
-
-
     .logo_right {
         width: 55%;
         float: left;

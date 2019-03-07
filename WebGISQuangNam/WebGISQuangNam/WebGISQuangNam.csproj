@@ -273,13 +273,7 @@
     <Content Include="FileManagers\BienBan01\PHAPLY\Quyết định phê duyệt NV-DT QHC ĐT Điện Bàn.doc" />
     <Content Include="FileManagers\BienBan01\THUYETMINH\Thuyết minh QHC Điện Bàn.doc" />
     <Content Include="FileManagers\BienBan01\THUYETMINH\Thuyết minh QHC Điện Bàn.pdf" />
-    <Content Include="FileManagers\DienAn01\BanDo_A3.jpg" />
     <Content Include="FileManagers\DienAn01\BANVE\3. Bản vẽ QHCT KDC TT Điện An.jpg" />
-    <Content Include="FileManagers\DienAn01\BiaTM.doc" />
-    <Content Include="FileManagers\DienAn01\QD_phe_duyet_TT_Dien_An.docx" />
-    <Content Include="FileManagers\DienAn01\Quy_dinh_quan_ly_TTDienAn.doc" />
-    <Content Include="FileManagers\DienAn01\Thuyet_minh_KDC_DienAn.docx" />
-    <Content Include="FileManagers\DienAn01\To_trinh _TDSXD.docx" />
     <Content Include="FileManagers\NamGiang01\BANVE\Bản vẽ QHC kinh tế cửa khẩu Nam Giang.jpg" />
     <Content Include="FileManagers\QHNTM_DM\BANVE\Bản vẽ NTM Điện Minh.jpg" />
     <Content Include="FileManagers\QHV01\BANVE\Bản vẽ QHV tỉnh Quảng Nam.jpg" />
@@ -371,6 +365,12 @@
     <Content Include="FileManagers\ĐB_QHPK_PHUONGAN\PHAPLY\Quyết định phê duyệt QHPK Phương An.doc" />
     <Content Include="FileManagers\ĐB_QHPK_PHUONGAN\THUYETMINH\Thuyết minh QHPK khu đô thị Phương An.doc" />
     <Content Include="FileManagers\NamGiang01\PHAPLY\Quyết định phê duyệt QHC khu kinh tế cửa khẩu Nam Giang.doc" />
+    <Content Include="FileManagers\QHNTM_DM\THUYETMINH\Thuyết minh QH NTM xã Điện Minh.pdf" />
+    <Content Include="FileManagers\ĐB_QHPK_PHUONGAN\THUYETMINH\Thuyết minh QHPK khu đô thị Phương An.pdf" />
+    <Content Include="FileManagers\NamGiang01\THUYETMINH\Thuyết minh QHC Khu kinh tế cửa khẩu Nam Giang.pdf" />
+    <Content Include="FileManagers\QHV01\THUYETMINH\Thuyết minh QHV tỉnh.pdf" />
+    <Content Include="FileManagers\VenBien01\THUYETMINH\Thuyết minh QHC khu vực ven biển từ TX Điện Bàn đến TP Hội An.pdf" />
+    <Content Include="FileManagers\DienAn01\THUYETMINH\4. Thuyết minh QHCT KDC TT Điện An.pdf" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FTP.pubxml" />
     <None Include="Properties\PublishProfiles\QuangNamGIS.pubxml" />
@@ -419,7 +419,6 @@
     <Content Include="Views\QuanLy\Details.cshtml" />
     <Content Include="Views\QuanLy\Edit.cshtml" />
     <Content Include="Views\QuanLy\Index.cshtml" />
-    <Content Include="Views\Shared\_Layout - Copy.cshtml" />
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>

@@ -138,12 +138,12 @@
                 mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
                 outFields: ["*"],
                 "opacity": 0.9,
-                id: layercf.id
+                id: layercf.id,
             });
+            featureLayer.setVisibility(false);
             if (layercf.displayFields) {
                 featureLayer.displayFields = layercf.displayFields;
             }
-            featureLayer.setSelectionSymbol(selectionSymbol);
             featureLayers.push(featureLayer);
         }
         map.addLayers(featureLayers);
