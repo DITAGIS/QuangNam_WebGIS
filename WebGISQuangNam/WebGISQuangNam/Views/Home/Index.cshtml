@@ -74,17 +74,14 @@
             </div>
             <div class="panel-body">
                 <div class="esriLayerList">
-                    <input type='checkbox' class='esriCheckbox list_item' id='toogleLayerList' value=0 />
-                    <label class="esriLabel" for="toogleLayerList">Ẩn/ hiển thị tất cả các lớp dữ liệu</label>
+                    <label class="esriLabel" for="toogleLayerList">
+                        <input type='checkbox' class='esriCheckbox list_item' id='toogleLayerList' value=0 />
+                        Ẩn/ hiển thị tất cả các lớp dữ liệu
+                    </label>
                 </div>
-                <div class="esriLayerList">
-                    <input type='checkbox' class='esriCheckbox list_item' id='toogleLayerList_QHVT' value=0 />
-                    <div tabindex="0" id="open-layer-list-qhvt" role="button" data-layer-index="5" title="Mở rộng" class="esriToggleButton esri-icon-right toggle-qhvt"></div>
-                    <label class="esriLabel" for="toogleLayerList_QHVT">Xem thông tin QHV-Tỉnh</label>
-                    <div id="listLayer_QHVT">
-                    </div>  
+                <div id="basemap">
                 </div>
-                <div id="listLayer">
+                <div id="layerList">
                 </div>
             </div>
         </div>
@@ -280,7 +277,7 @@
 <div id="loadIdealForm" style="display:none;">
     <div class="container-fluid">
         <div class="row">
-            <iframe id="viewDocFormData" src=""></iframe>
+            <div id="viewDocFormData"></div>
         </div>
         <div class="row yKienGroup">
             <div class="">

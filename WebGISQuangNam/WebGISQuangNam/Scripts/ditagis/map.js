@@ -1,59 +1,41 @@
 ﻿require([
     // ditagis require
     "ditagis/widgets/Report",
+    "ditagis/widgets/LayerList",
     "ditagis/configs",
     "ditagis/api/TimKiemThongTin",
 
-    "esri/toolbars/navigation", // 1
-    "dijit/registry", "dojo/on", "esri/map", "esri/layers/FeatureLayer",// 2
-    "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color", "esri/layers/ArcGISDynamicMapServiceLayer", // 3
-    "esri/layers/ImageParameters", "esri/tasks/query", "dojo/query", "dojo/parser", // 4
-    "dojo/dom-construct", "dijit/form/Button", "esri/tasks/GeometryService", "esri/geometry/Point", "esri/tasks/ProjectParameters", // 5
-    "esri/SpatialReference", "esri/tasks/QueryTask", "esri/layers/GraphicsLayer", "esri/geometry/Extent", "esri/geometry/Polygon", // 6
-    "esri/dijit/HomeButton", "esri/symbols/SimpleMarkerSymbol", "esri/graphic", "esri/dijit/Scalebar", "esri/arcgis/utils", // 7
-    "esri/dijit/LayerList", "esri/dijit/editing/TemplatePicker", "esri/dijit/Legend", "esri/dijit/editing/Editor", "dojo/i18n!esri/nls/jsapi",// 8
-    "dojo/keys", "dojo/_base/array", "dojo/dom", "dgrid/OnDemandGrid", "dgrid/Selection", // 9
-    "dojo/store/Memory", "dojo/_base/declare", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/request", "esri/config", // 10
-    "esri/geometry/geometryEngine", "esri/InfoTemplate", "esri/geometry/normalizeUtils", "esri/tasks/BufferParameters", "dojo/_base/lang",
-    "esri/dijit/LocateButton", "esri/dijit/BasemapGallery", "esri/layers/Domain",
-    "esri/dijit/Search", "esri/SnappingManager", "esri/dijit/Measurement", "esri/units",
-    "dijit/Menu", "dijit/MenuItem", "dijit/MenuSeparator",
-
-    "esri/toolbars/draw", "dijit/Toolbar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane",
-
-
-    "dojo/domReady!" // 12
+    "esri/toolbars/navigation", "dijit/registry", "dojo/on",//1
+    "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ImageParameters",// 2
+    "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color",  // 3
+    "esri/tasks/query", "dojo/parser", "esri/tasks/GeometryService", // 4
+    "esri/SpatialReference", "esri/dijit/HomeButton", "esri/dijit/Legend",//5
+    "dojo/_base/array", "dojo/dom", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/config", // 6
+    "esri/dijit/LocateButton", "esri/dijit/BasemapGallery",//7
+    "esri/dijit/Measurement", "esri/units", "dijit/Menu", "dijit/MenuItem",//8
+    "esri/toolbars/draw", "dijit/Toolbar", "dijit/layout/BorderContainer", "dijit/layout/ContentPane",//9
+    "dojo/domReady!" // 10
 
 
 ], function (
     // ditagis function
-    Report, configs, TimKiemThongTin,
+    Report, LayerList, configs, TimKiemThongTin,
 
-    Navigation,
-    registry, on, Map, FeatureLayer,
-    SimpleLineSymbol, SimpleFillSymbol, Color, ArcGISDynamicMapServiceLayer,
-    ImageParameters, Query, dojoQuery, parser,
-    domConstruct, Button, GeometryService, Point, ProjectParameters,
-    SpatialReference, QueryTask, GraphicsLayer, Extent, Polygon,
-    HomeButton, SimpleMarkerSymbol, Graphic, Scalebar, arcgisUtils,
-    LayerList, TemplatePicker, Legend, Editor, jsapiBundle,
-    keys, array, dom, Grid, Selection,
-    Memory, declare, Print, PrintTemplate, esriRequest,
-    esriConfig, geometryEngine, InfoTemplate, normalizeUtils,
-    BufferParameters, lang, LocateButton, BasemapGallery, Domain, Search, SnappingManager, Measurement, Units, Menu, MenuItem, MenuSeparator,
-
-
-
+    Navigation, registry, on,//1
+    Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
+    SimpleLineSymbol, SimpleFillSymbol, Color,//3
+    Query, parser, GeometryService,//4
+    SpatialReference, HomeButton, Legend,//5
+    array, dom, Print, PrintTemplate, esriConfig,//6
+    LocateButton, BasemapGallery,//7
+    Measurement, Units, Menu, MenuItem,//8
     ) {
-
-
         parser.parse();
         // refer to "Using the Proxy Page" for more information:  https://developers.arcgis.com/javascript/jshelp/ags_proxy.html
         esriConfig.defaults.io.proxyUrl = "~/DotNet/proxy.ashx";
         esriConfig.defaults.io.alwaysUseProxy = false;
         //This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications
         esriConfig.defaults.geometryService = new GeometryService("http://112.78.4.175:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer");
-
 
         var imageParameters = new ImageParameters();
         imageParameters.format = "jpeg"; //set the image type to PNG24, note default is PNG8.
@@ -89,29 +71,23 @@
             autoResize: true,
             showLabels: true
         });
+        var layerGroups = [];
 
+        // tạo bản đồ nền
+        var baseMap = new ArcGISDynamicMapServiceLayer(configs.basemap.url, {
+            "opacity": 0.9,
+            "imageParameters": imageParameters
+        });
+        map.addLayer(baseMap);
+        layerGroups.push([{
+            layer: baseMap, // required unless featureCollection.
+            subLayers: true, // optional
+            visibility: true, // optional
+            title: configs.basemap.title,
+            id: configs.basemap.id
+        }]);
 
-        var layers = [];
-        for (const key in configs.gisMapServerLayers) {
-            let layercf = configs.gisMapServerLayers[key];
-            var arcGISDynamicMapServiceLayer = new ArcGISDynamicMapServiceLayer(layercf.url, {
-                "imageParameters": imageParameters,
-                "id": layercf.id
-            });
-            var layer = {
-                layer: arcGISDynamicMapServiceLayer, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                title: layercf.title
-            };
-            layers.push(layer);
-            map.addLayer(arcGISDynamicMapServiceLayer);
-
-
-        }
-
-        var featureLayers = [];
-        var polySymbolRed = new SimpleFillSymbol(
+        var selectionSymbol = new SimpleFillSymbol(
             SimpleFillSymbol.STYLE_SOLID,
             new SimpleLineSymbol(
                 SimpleLineSymbol.STYLE_SOLID,
@@ -119,6 +95,43 @@
             ),
             new Color([255, 0, 0, 0.25])
         );
+        var featureLayers = [];
+        for (const layercf of configs.chuyenDeLayers) {
+            var maxLayerIndex = layercf.maxLayerIndex;
+            if (maxLayerIndex) {
+                var layerGroup = {
+                    title: layercf.title,
+                    layers: [],
+                    id: layercf.id
+                };
+                var subLayers = layercf.subLayers;
+                for (var index = maxLayerIndex; index >= 0; index--) {
+                    let featureLayer = new esri.layers.FeatureLayer(layercf.url + "/" + index, {
+                        mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                        outFields: ["*"],
+                        "opacity": 0.9,
+                    });
+                    featureLayer.setSelectionSymbol(selectionSymbol);
+                    var layer = {
+                        layer: featureLayer, // required unless featureCollection.
+                        subLayers: true, // optional
+                        visibility: true, // optional
+                    };
+                    for (const subLayer of subLayers) {
+                        if (subLayer.layerIds == index) {
+                            featureLayer.id = subLayer.id + "_" + layercf.id;
+                        }
+                        if (subLayer.displayFields) {
+                            featureLayer.displayFields = subLayer.displayFields;
+                        }
+                    }
+                    featureLayers.push(featureLayer);
+                    layerGroup.layers.push(layer);
+                }
+
+                layerGroups.push(layerGroup);
+            }
+        }
         for (const key in configs.layers) {
             let layercf = configs.layers[key];
             let featureLayer = new esri.layers.FeatureLayer(layercf.url, {
@@ -130,79 +143,11 @@
             if (layercf.displayFields) {
                 featureLayer.displayFields = layercf.displayFields;
             }
-            featureLayer.typeSelectFeature = layercf.typeSelectFeature;
-            featureLayer.setSelectionSymbol(polySymbolRed);
+            featureLayer.setSelectionSymbol(selectionSymbol);
             featureLayers.push(featureLayer);
-            var layer = {
-                layer: featureLayer, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-                title: layercf.title
-            };
-            layers.push(layer);
-
-
-        }
-        var qhvt_layers = [];
-        for (var index = 18; index >= 0; index--) {
-            let featureLayer = new esri.layers.FeatureLayer(configs.urlQHVT + index, {
-                mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
-                outFields: ["*"],
-                "opacity": 0.9,
-            });
-            featureLayer.setSelectionSymbol(polySymbolRed);
-            featureLayers.push(featureLayer);
-            var layer = {
-                layer: featureLayer, // required unless featureCollection.
-                subLayers: true, // optional
-                visibility: true, // optional
-            };
-            qhvt_layers.push(layer);
         }
         map.addLayers(featureLayers);
-        var widget_qhvt = new LayerList({
-            map: map,
-            layers: qhvt_layers,
-            showLegend: true,
-        }, "listLayer_QHVT");
-        widget_qhvt.startup();
-        on(widget_qhvt, 'load', function (evtWidget) {
-            $("#toogleLayerList_QHVT").attr('checked', 'checked');
-            $("#toogleLayerList_QHVT").change(function () {
-                var isVisileLayer = this.checked;
-                var layers = evtWidget.detail.widget.layers;
-                for (const index in layers) {
-                    layers[index].layer.setVisibility(isVisileLayer)
-                }
-            });
-            $("#listLayer_QHVT").toggleClass("hidden");
-            $(".toggle-qhvt").click((evt) => {
-                $("#listLayer_QHVT").toggleClass("hidden");
-                $("#open-layer-list-qhvt").toggleClass("esri-icon-down esri-icon-right");
-            });
-        })
-        var widget_layerlist = new LayerList({
-            map: map,
-            layers: layers,
-            showLegend: true,
-        }, "listLayer");
-        widget_layerlist.startup();
-
-        on(widget_layerlist, 'load', function (evtWidget) {
-            $("#toogleLayerList").attr('checked', 'checked');
-            $("#toogleLayerList").click((evt) => {
-                var isVisileLayer = evt.currentTarget.checked;
-                var layers = evtWidget.detail.widget.layers;
-                for (const index in layers) {
-                    layers[index].layer.setVisibility(isVisileLayer)
-                }
-                $("#toogleLayerList_QHVT").prop("checked", isVisileLayer);
-                var qhvt_layers = widget_qhvt.layers;
-                for (const index in qhvt_layers) {
-                    qhvt_layers[index].layer.setVisibility(isVisileLayer)
-                }
-            });
-        })
+        new LayerList({ map, layerGroups });
         var homeButton = new HomeButton({
             theme: "HomeButton",
             map: map,
@@ -221,10 +166,10 @@
         }
 
 
-        if (layers.length > 0) {
+        if (layerGroups.length > 0) {
             var legendDijit = new Legend({
                 map: map,
-                layerInfos: layers
+                layerInfos: layerGroups
             }, "legendDiv");
             legendDijit.startup();
         }
@@ -390,7 +335,7 @@
             measurement.setTool("distance", false);
         });
         map.on("key-down", function (evt) {
-            if(evt.code == "Escape"){
+            if (evt.code == "Escape") {
                 measurement.clearResult();
                 measurement.setTool("distance", false);
             }
@@ -653,9 +598,6 @@
 
         $("#TraCuuDoAnQuyHoach_tim").click(function () {
             $("#loadingpageDiv").css("display", "inline-block");
-
-
-
             var maQuanHuyen, maPhuongXa, loaiQuyHoach, tenDoAn;
 
             maQuanHuyen = $("#TraCuuDoAnQuyHoach_quanhuyen").val();
@@ -862,32 +804,47 @@
                         }).appendTo(panel_group);
 
                     }
-
                     for (const item of results) {
-                        var link = "https://docs.google.com/gview?url=" + item.DuongDan + "&embedded=true";
                         var panel_group = qhc.find("#" + item.LoaiHoSo);
                         var li = $('<li/>', {
                             class: "list-group-item"
                         }).appendTo(panel_group);
-                        $('<span/>', {
+                        var span_LayYKien = $('<span/>', {
                             text: item.TenHoSo,
                             title: item.id,
-                            alt: link,
-                            class: "viewLayYKien"
+                            alt: item.DuongDan,
+                            class: "viewLayYKien",
+                            dinhDang: item.DinhDangHoSo
                         }).appendTo(li);
-                        $(".viewLayYKien").on("click", function () {
-                            var link = $(this).attr("alt");
-                            idDoc = $(this).attr("title");
-                            $("#viewDocFormData").attr("src", link);
-                            $("#viewDocFormData").attr("idDoc", idDoc);
+                        span_LayYKien.on("click", function () {
+                            let link = $(this).attr("alt");
+                            let idDoc = $(this).attr("title");
+                            let dinhDang = $(this).attr("dinhDang");
+                            var viewDocFormData = $("#viewDocFormData").empty();
+                            var viewForm;
+                            if(dinhDang == "JPG"){
+                                viewForm = $('<img/>', {
+                                    src: link,
+                                }).appendTo(viewDocFormData);
+                            }
+                            else{
+                                if(dinhDang == "doc" || dinhDang == "docx"){
+                                    link = "https://docs.google.com/gview?url=" + link + "&embedded=true";
+                                }
+                                viewForm = $('<iframe/>', {
+                                    src: link,
+                                    idDoc: idDoc
+                                }).appendTo(viewDocFormData);
+                            }
+                            
                             $("#loadIdealForm").css("display", "block");
                             if (maCode) {
-                                $("#viewDocFormData").css({ "position": "inherit" });
+                                viewForm.css({ "position": "inherit" });
                                 $(".yKienGroup").css("display", "block");
                             }
                             else {
                                 $(".yKienGroup").css("display", "none");
-                                $("#viewDocFormData").css({ "position": "absolute" });
+                                viewForm.css({ "position": "absolute" });
                             }
                         });
 
@@ -924,92 +881,20 @@
 
 
         function zoomThongTinDoAn(maDoAn) {
-
             var mada = maDoAn.split('#')[0];
-
             var loaimada = maDoAn.split('#')[1];
-
             var query = new Query();
             query.where = "MaDoAn = N'" + mada + "'";
-
             map.graphics.clear();
-
             if (map.infoWindow.isShowing) {
                 map.infoWindow.hide();
             }
-
-            if (loaimada === "QHCT") {
-                var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAn_QHCT"
-                });
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "ThongTinDoAn_" + loaimada
+            });
+            if (featureLayer) {
                 featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                     if (results.length > 0) {
-
-                        var statesLayer = results[0].geometry;
-                        zoomData(statesLayer);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                    }
-                });
-            }
-
-            if (loaimada === "QHPK") {
-                var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAn_QHPK"
-                });
-                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                    if (results.length > 0) {
-
-                        var statesLayer = results[0].geometry;
-                        zoomData(statesLayer);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                    }
-                });
-            }
-
-            if (loaimada === "QHC") {
-                var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAn_QHC"
-                });
-                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-
-                    if (results.length > 0) {
-
-                        var statesLayer = results[0].geometry;
-                        zoomData(statesLayer);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                    }
-                });
-            }
-
-            if (loaimada === "QHNT") {
-                var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAn_QHNT"
-                });
-                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                    if (results.length > 0) {
-
-                        var statesLayer = results[0].geometry;
-                        zoomData(statesLayer);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                    }
-                });
-            }
-
-            if (loaimada === "QHV") {
-                var featureLayer = featureLayers.find(function (element) {
-                    return element.id == "ThongTinDoAn_QHV"
-                });
-                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                    if (results.length > 0) {
-
                         var statesLayer = results[0].geometry;
                         zoomData(statesLayer);
                     }
@@ -1044,10 +929,6 @@
                     var statesLayer = results[0].geometry;
                     var stateExtent = results[0].geometry.getExtent().expand(2.0);
                     map.setExtent(stateExtent);
-
-                    //var myPolygonCenterLatLon = results[0].geometry.getExtent().getCenter();
-                    //map.centerAt(myPolygonCenterLatLon);
-                    // map.setExtent(esri.geometry.getExtentForScale(map, 2500));
                 }
                 else {
                     $("#messageBox").css("display", "inline-block");
@@ -1056,7 +937,6 @@
 
         }
         function zoomQHPK(objectid) {
-
             var query = new Query();
             query.where = " objectid = '" + objectid + "'";
 
@@ -1070,13 +950,8 @@
             });
             featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
                 if (results.length > 0) {
-                    var statesLayer = results[0].geometry;
                     var stateExtent = results[0].geometry.getExtent().expand(5.0);
                     map.setExtent(stateExtent);
-                    //var myPolygonCenterLatLon = results[0].geometry.getExtent().getCenter();
-                    //map.centerAt(myPolygonCenterLatLon);
-                    // map.setExtent(esri.geometry.getExtentForScale(map, 5000));
-
                 }
                 else {
                     $("#messageBox").css("display", "inline-block");
@@ -1084,8 +959,6 @@
             });
 
         }
-
-
 
         function getHanhChinhXa(maQuanHuyen, cbb) {
             $("#loadingpageDiv").css("display", "inline-block");

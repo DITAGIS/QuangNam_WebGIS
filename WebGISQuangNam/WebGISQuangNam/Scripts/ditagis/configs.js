@@ -2,49 +2,104 @@ define(["require", "exports"], function (require, exports) {
     "use strict";
     var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
     return {
-        urlQHVT: baseurl + '/QuangNamQHV_Tinh/FeatureServer/',
-        gisMapServerLayers: {
-            basemap: {
-                title: 'Bản đồ nền',
-                id: 'bandonen',
-                url: baseurl + '/QuangNamBasemap/MapServer',
-            },
-            // QuangNamSDD: {
-            //     id: 'QuangNamSDD',
-            //     url:baseurl+'/QuangNamSDD/MapServer',
-            // },
-            QuangNamQHC: {
-                title: "Bản đồ chuyên đề QH Chung",
-                id: 'QHC',
-                url: baseurl + '/QuangNamQHC/MapServer'
-            },
-            QuangNamQHPK: {
-                title: "Bản đồ chuyên đề QH Phân Khu",
-                id: 'QuangNamQHPK',
-                url: baseurl + '/QuangNamQHPK/MapServer'
-            },
-            QuangNamQHCT: {
-                title: "Bản đồ chuyên đề QH Chi Tiết",
-                id: 'QuangNamQHCT',
-                url: baseurl + '/QuangNamQHCT/MapServer'
-            },
-            QuangNamQHV: {
-                title: "Bản đồ chuyên đề QH Vùng",
-                id: 'QuangNamQHV',
-                url: baseurl + '/QuangNamQHV/MapServer'
-            },
-            QuangNamQHV_Tinh: {
-                title: "Bản đồ chuyên đề QH Vùng Tỉnh",
-                id: 'QuangNamQHV_Tinh',
-                url: baseurl + '/QuangNamQHV_Tinh/MapServer'
-            },
-            QuangNamQHNT: {
-                title: "Bản đồ chuyên đề QH Nông Thôn",
-                id: 'QuangNamQHNT',
-                url: baseurl + '/QuangNamQHNT/MapServer'
-            }
+        basemap: {
+            title: 'BẢN ĐỒ NỀN',
+            id: 'basemap',
+            url: baseurl + '/QuangNamBasemap/MapServer',
         },
-
+        chuyenDeLayers: [{
+            title: "QUY HOẠCH VÙNG TỈNH THỔNG HỢP",
+            id: 'QHV_Tinh',
+            url: baseurl + '/QuangNamQHV_Tinh/MapServer',
+            maxLayerIndex: 18,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 16
+                },
+                {
+                    id: 'ThongTinDoAn',
+                    layerIds: 17
+                }
+            ]
+        }, {
+            title: "QUY HOẠCH VÙNG",
+            id: 'QHV',
+            url: baseurl + '/QuangNamQHV/MapServer',
+            maxLayerIndex: 13,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 12
+                },
+                {
+                    layerIds: 13,
+                    id: "ThongTinDoAn",
+                }
+            ]
+        },{
+            title: "QUY HOẠCH CHUNG",
+            id: 'QHC',
+            url: baseurl + '/QuangNamQHC/MapServer',
+            maxLayerIndex: 15,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 14
+                },
+                {
+                    id: 'ThongTinDoAn',
+                    layerIds: 15
+                }
+            ]
+        }, {
+            title: "QUY HOẠCH PHÂN KHU",
+            id: 'QHPK',
+            url: baseurl + '/QuangNamQHPK/MapServer',
+            maxLayerIndex: 14,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 13,
+                    displayFields: ['TenDoAn', 'LoaiDat', 'DienTich', 'KiHieuKhuDat']
+                },
+                {
+                    id: 'ThongTinDoAn',
+                    layerIds: 14
+                }
+            ]
+        }, {
+            title: "QUY HOẠCH CHI TIẾT",
+            id: 'QHCT',
+            url: baseurl + '/QuangNamQHCT/MapServer',
+            maxLayerIndex: 14,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 13,
+                    displayFields: ['TenDoAn', 'KiHieuLoDat', 'LoaiDat', 'DienTichLoDat']
+                },
+                {
+                    id: 'ThongTinDoAn',
+                    layerIds: 14
+                }
+            ]
+        }, {
+            title: "QUY HOẠCH NÔNG THÔN",
+            id: 'QHNT',
+            url: baseurl + '/QuangNamQHNT/MapServer',
+            maxLayerIndex: 14,
+            subLayers: [
+                {
+                    id: 'SDD',
+                    layerIds: 13
+                },
+                {
+                    id: 'ThongTinDoAn',
+                    layerIds: 14
+                }
+            ]
+        }],
         layers: {
             ThongTinDoAn: {
                 url: baseurl + "/QuangNamSDD/MapServer/2",
@@ -52,75 +107,6 @@ define(["require", "exports"], function (require, exports) {
                 title: "Thông tin đồ án",
                 displayFields: ['TenDoAn', 'DiaDiem']
             },
-            ThongTinDoAn_QHV: {
-                url: baseurl + "/QuangNamQHV/MapServer/13",
-                id: "ThongTinDoAn_QHV",
-                title: "Xem thông tin đồ án QH Vùng",
-                typeSelectFeature: "ThongTin"
-            },
-            ThongTinDoAn_QHPK: {
-                url: baseurl + "/QuangNamQHPK/MapServer/14",
-                id: "ThongTinDoAn_QHPK",
-                title: "Xem thông tin đồ án QH Phân Khu",
-                typeSelectFeature: "ThongTin"
-            },
-            ThongTinDoAn_QHNT: {
-                url: baseurl + "/QuangNamQHNT/MapServer/14",
-                id: "ThongTinDoAn_QHNT",
-                title: "Xem thông tin đồ án QH Nông Thôn",
-                typeSelectFeature: "ThongTin"
-            },
-            ThongTinDoAn_QHC: {
-                url: baseurl + "/QuangNamQHC/MapServer/15",
-                id: "ThongTinDoAn_QHC",
-                title: "Xem thông tin đồ án QH Chung",
-                typeSelectFeature: "ThongTin",
-                displayFields: ['TenDoAn', 'DiaDiem']
-            },
-            ThongTinDoAn_QHCT: {
-                url: baseurl + "/QuangNamQHCT/MapServer/14",
-                id: "ThongTinDoAn_QHCT",
-                title: "Xem thông tin đồ án QH Chi tiết",
-                typeSelectFeature: "ThongTin",
-            },
-            SDD_QHV: {
-                url: baseurl + "/QuangNamQHV/MapServer/12",
-                id: "SDD_QHV",
-                title: "Xem thông tin QHV Sử dụng đất",
-                typeSelectFeature: "SDD"
-            },
-            SDD_QHNT: {
-                url: baseurl + "/QuangNamQHNT/MapServer/13",
-                id: "SDD_QHNT",
-                title: "Xem thông tin QHNT Sử dụng đất",
-                typeSelectFeature: "SDD"
-            },
-            SDD_QHC: {
-                url: baseurl + "/QuangNamQHC/MapServer/14",
-                id: "SDD_QHC",
-                title: "QHC_Sử dụng đất",
-                typeSelectFeature: "SDD"
-            },
-            SDD_QHPK: {
-                url: baseurl + "/QuangNamQHPK/MapServer/13",
-                id: "SDD_QHPK",
-                title: "Xem thông tin QHPK Sử dụng đất",
-                typeSelectFeature: "SDD",
-                displayFields: ['TenDoAn', 'LoaiDat', 'DienTich', 'KiHieuKhuDat']
-            },
-            SDD_QHCT: {
-                url: baseurl + "/QuangNamQHCT/MapServer/13",
-                id: "SDD_QHCT",
-                title: "Xem thông tin QHCT Sử dụng đất",
-                typeSelectFeature: "SDD",
-                displayFields: ['TenDoAn', 'KiHieuLoDat', 'LoaiDat', 'DienTichLoDat']
-            },
-            // KhoangSan_2020: {
-            //     url: baseurl + "/QuangNamQHV_Tinh/MapServer/3",
-            //     id: "KhoangSan_2020",
-            //     title: "Quy hoạch vùng tỉnh - Khoảng sản",
-            // },
-           
         },
         tables: {
         },
