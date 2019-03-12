@@ -146,9 +146,20 @@ textarea{
 }
 #btnSubmitYKien {
     float: right;
-    margin: 4px 2px;
-    margin-right: 6px;
+    margin-right: 90px;
+    margin-bottom: 20px;
 }
 #open-layer-list-qhvt{
     display: block;
+}
+#note-image{
+    position: fixed;
+    bottom: 5px;
+    left: 5px;
+    font-style: italic;
+    font-size: 11pt;
+    font-family: 'Times New Roman';
+    background-color: #F9F7B7;
+    padding: 5px;
+    border: 1px solid #ccc;
 }

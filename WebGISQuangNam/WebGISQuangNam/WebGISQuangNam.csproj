@@ -203,6 +203,9 @@
     <Compile Include="Models\HoSoLuuTruModel.cs" />
     <Compile Include="Models\htmlHelper.cs" />
     <Compile Include="Models\YKienQuyHoachModel.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
+    <Compile Include="obj\Release\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +277,7 @@
     <Content Include="FileManagers\BienBan01\THUYETMINH\Thuyết minh QHC Điện Bàn.doc" />
     <Content Include="FileManagers\BienBan01\THUYETMINH\Thuyết minh QHC Điện Bàn.pdf" />
     <Content Include="FileManagers\DienAn01\BANVE\3. Bản vẽ QHCT KDC TT Điện An.jpg" />
+    <Content Include="FileManagers\DienAn01\THUYETMINH\4. Thuyết minh QHCT KDC TT Điện An.pdf" />
     <Content Include="FileManagers\NamGiang01\BANVE\Bản vẽ QHC kinh tế cửa khẩu Nam Giang.jpg" />
     <Content Include="FileManagers\QHNTM_DM\BANVE\Bản vẽ NTM Điện Minh.jpg" />
     <Content Include="FileManagers\QHV01\BANVE\Bản vẽ QHV tỉnh Quảng Nam.jpg" />
@@ -353,7 +357,6 @@
     <Content Include="Content\fonts\VHELVEN.TTF" />
     <Content Include="FileManagers\DienAn01\PHAPLY\1. Quyết định phê duyệt QHCT KDC TT Điện An.doc" />
     <Content Include="FileManagers\DienAn01\PHAPLY\2. Quy định quản lý QHCT KDC TT Điện An.doc" />
-    <Content Include="FileManagers\DienAn01\THUYETMINH\4. Thuyết minh QHCT KDC TT Điện An.docx" />
     <Content Include="FileManagers\NamGiang01\THUYETMINH\Thuyết minh QHC Khu kinh tế cửa khẩu Nam Giang.doc" />
     <Content Include="FileManagers\QHNTM_DM\PHAPLY\Quyết định phê duyệt NV-DT NTM Điện Minh.doc" />
     <Content Include="FileManagers\QHNTM_DM\THUYETMINH\Thuyết minh QH NTM xã Điện Minh.doc" />
@@ -370,7 +373,7 @@
     <Content Include="FileManagers\NamGiang01\THUYETMINH\Thuyết minh QHC Khu kinh tế cửa khẩu Nam Giang.pdf" />
     <Content Include="FileManagers\QHV01\THUYETMINH\Thuyết minh QHV tỉnh.pdf" />
     <Content Include="FileManagers\VenBien01\THUYETMINH\Thuyết minh QHC khu vực ven biển từ TX Điện Bàn đến TP Hội An.pdf" />
-    <Content Include="FileManagers\DienAn01\THUYETMINH\4. Thuyết minh QHCT KDC TT Điện An.pdf" />
+    <Content Include="FileManagers\DATA\CTPTDT_Quang_Nam.pdf" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\FTP.pubxml" />
     <None Include="Properties\PublishProfiles\QuangNamGIS.pubxml" />
@@ -423,6 +426,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="obj\Release\TempPE\" />
     <Folder Include="QuanLyHoSo\" />
     <Folder Include="Views\HoSoDoAn\" />
     <Folder Include="Views\ThongTinQHCT\" />

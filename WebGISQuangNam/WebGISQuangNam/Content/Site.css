@@ -520,8 +520,17 @@ a.item {
     list-style: none;
 }
 
-
-
+ul.sub_menu3:hover{
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+.sub_menu3 > li > span{
+    text-decoration: underline;
+}
+.sub_menu3:hover > li > a,.sub_menu3:hover > li > span{
+     color: #262626;
+     text-decoration: none;
+}
 .panel {
     margin: 0;
 }
@@ -1146,7 +1155,7 @@ input.esriCheckbox.list_item {
     background-color: #fff;
 }
 
-#loadIdealForm iframe,#loadIdealForm img, #loadIdealReviewForm iframe {
+#loadIdealForm iframe, #loadIdealReviewForm iframe {
     padding: 0;
     margin: 0;
     width: 100%;
@@ -1154,6 +1163,9 @@ input.esriCheckbox.list_item {
     min-height: 795px;
 }
 #loadIdealForm img{
+    padding: 0;
+    margin: 0;
+    width: 100%;
     border-width: 2px;
     border-style: inset;
     border-color: initial;
@@ -1198,8 +1210,8 @@ span.viewLayYKien {
 #backMapPage, #backMapOK {
     position: fixed;
     right: 15px;
-    bottom: 50%;
-    padding: 10px;
+    bottom: 2%;
+    padding: 7px 13px;
     cursor: pointer;
 }
 

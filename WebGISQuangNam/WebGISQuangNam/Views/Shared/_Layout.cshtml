@@ -64,8 +64,9 @@
                             listLoaiQuyHoach = ViewBag.DMLoaiQuyHoach;
                         List<THONGTINDOAN> listThongtinDoAn;
                         EFGISRepository gISRepository = new EFGISRepository();
-                      string  DomainName = System.Web.HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
 
+                        string DomainName = System.Web.HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority);
+                      
                     }
 
 
@@ -77,38 +78,68 @@
 
                             @for (int d = 0; d < listQuanHuyen.Count; d++)
                             {
+                                string code_QuanHuyen = @listQuanHuyen[d].code;
 
-                                <li class="dropdown-submenu">
-                                    <a class="TTQH_control" alt="@listQuanHuyen[d].code">@listQuanHuyen[d].value</a>
+                                
+                            <li class="dropdown-submenu">
+                                <a class="TTQH_control" alt="@code_QuanHuyen">@listQuanHuyen[d].value</a>
 
-                                    <ul class="dropdown-menu menu_c3">
+                                <ul class="dropdown-menu menu_c3">
 
-                                        <li class="dropdown-header">Danh mục tra cứu thông tin quy hoạch</li>
+                                    <li class="dropdown-header">Danh mục tra cứu thông tin quy hoạch</li>
 
-                                        @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
+                                    @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
+                                    {
+                                        string value_LoaiQuyHoach;
+                                        if (@code_QuanHuyen.Equals("500"))
                                         {
-                                            <li>
-                                                <a tabindex="-1" href="#@listLoaiQuyHoach[i].code">@listLoaiQuyHoach[i].value</a>
-                                                @{
-                                                    listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "ThucTe");
-                                                    if (listThongtinDoAn.Count > 0)
-                                                    {
-                                                        <ul class="sub_menu3">
-                                                            @for (int y = 0; y < listThongtinDoAn.Count; y++)
-                                                            {
-                                                                string maCode = @listThongtinDoAn[y].MaDoAn + "#" +listLoaiQuyHoach[i].code;
-                                                                string mdoan = @listThongtinDoAn[y].MaDoAn;
-                                                                <li>
-                                                                    <a class="call_bandoquyhoach" mdoan="@mdoan" href="#" maCode="@maCode">@listThongtinDoAn[y].TenDoAn</a>
-                                                                </li>
-                                                            }
-                                                        </ul>
-                                                    }
-                                                }
-                                            </li>
+                                            string code_LoaiQuyHoach = @listLoaiQuyHoach[i].code;
+                                            if (code_LoaiQuyHoach.Equals("QHV")) value_LoaiQuyHoach = "Quy hoạch vùng tổng hợp";
+                                            else if (code_LoaiQuyHoach.Equals("QHC")) value_LoaiQuyHoach = "Quy hoạch chung cấp tỉnh";
+                                            else if (code_LoaiQuyHoach.Equals("QHPK")) value_LoaiQuyHoach = "Quy hoạch vùng liên huyện";
+                                            else if (code_LoaiQuyHoach.Equals("KHAC")) value_LoaiQuyHoach = "Khác";
+                                            else continue;
+                                            
                                         }
-                                    </ul>
-                                </li>
+                                        else
+                                        {
+                                            value_LoaiQuyHoach = @listLoaiQuyHoach[i].value;
+                                        }
+
+
+                                    <li>
+                                        <a tabindex="-1" href="#@listLoaiQuyHoach[i].code">@value_LoaiQuyHoach</a>
+                                        @{
+                                            listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "ThucTe");
+                                            if (listThongtinDoAn.Count > 0)
+                                            {
+                                                <ul class="sub_menu3">
+                                                    @for (int y = 0; y < listThongtinDoAn.Count; y++)
+                                                    {
+                                                        string maCode = @listThongtinDoAn[y].MaDoAn + "#" + listLoaiQuyHoach[i].code;
+                                                        string mdoan = @listThongtinDoAn[y].MaDoAn;
+                                                        <li>
+                                                            <a class="call_bandoquyhoach" mdoan="@mdoan" href="#" maCode="@maCode">@listThongtinDoAn[y].TenDoAn</a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                             if (@code_QuanHuyen.Equals("500"))
+                                            {
+                                                if (@listLoaiQuyHoach[i].code.Equals("KHAC"))
+                                                {
+                                                    <ul class="sub_menu3">
+                                                        <li>
+                                                            <span title="CTPTDT_Quang_Nam" alt="https://quangnam.ditagis.com/FileManagers/DATA/CTPTDT_Quang_Nam.pdf" id="viewFileQuangNam">Chương trình PTĐT tỉnh Quảng Nam</span>
+                                                        </li>
+                                                    </ul>
+                                                }
+                                            }
+                                        }
+                                    </li>
+                                    }
+                                </ul>
+                            </li>
                             }
                         </ul>
                     </li>
@@ -121,35 +152,35 @@
 
                             @for (int d = 0; d < listQuanHuyen.Count; d++)
                             {
-                             
-                            <li class="dropdown-submenu">
-                                <a class="TTQH_control" alt="@listQuanHuyen[d].code">@listQuanHuyen[d].value</a>
-                                
-                                <ul class="dropdown-menu menu_c3">
-                                    <li class="dropdown-header">Danh mục các đồ án lấy ý kiến</li>
 
-                                    @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
-                                    {
-                                        listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "LayYKien");
-                                        if (listThongtinDoAn.Count > 0)
+                                <li class="dropdown-submenu">
+                                    <a class="TTQH_control" alt="@listQuanHuyen[d].code">@listQuanHuyen[d].value</a>
+
+                                    <ul class="dropdown-menu menu_c3">
+                                        <li class="dropdown-header">Danh mục các đồ án lấy ý kiến</li>
+
+                                        @for (int i = 0; i < listLoaiQuyHoach.Count; i++)
                                         {
-                                            for (int y = 0; y < listThongtinDoAn.Count; y++)
+                                            listThongtinDoAn = gISRepository.getThongTinDoAn(listLoaiQuyHoach[i].code, listQuanHuyen[d].code, "LayYKien");
+                                            if (listThongtinDoAn.Count > 0)
                                             {
-                                                string mdoan = listThongtinDoAn[y].MaDoAn;
-                                                string maCode = mdoan + "#" + listLoaiQuyHoach[i].code;
-                                                <li>
-                                                    <a tabindex="-1" mdoan="@mdoan" maCode="@maCode" class="call_bandoquyhoach_layykien" href="#" title="@maCode">@listThongtinDoAn[y].TenDoAn</a>
-                                                   
-                                                </li>
+                                                for (int y = 0; y < listThongtinDoAn.Count; y++)
+                                                {
+                                                    string mdoan = listThongtinDoAn[y].MaDoAn;
+                                                    string maCode = mdoan + "#" + listLoaiQuyHoach[i].code;
+                                                    <li>
+                                                        <a tabindex="-1" mdoan="@mdoan" maCode="@maCode" class="call_bandoquyhoach_layykien" href="#" title="@maCode">@listThongtinDoAn[y].TenDoAn</a>
+
+                                                    </li>
+                                                }
                                             }
                                         }
-                                    }
 
 
-                                </ul>
-                            </li>
+                                    </ul>
+                                </li>
 
-                                                                        }
+                            }
 
 
 
@@ -190,13 +221,13 @@
                                                     }
                                                 }
                                             </li>
-                                                    }
+                                        }
 
 
                                     </ul>
                                 </li>
 
-                                                    }
+                            }
 
                         </ul>
                     </li>
@@ -224,7 +255,7 @@
             </div>
         </div>
     </div>
-   
+
 
     @RenderBody()
 
@@ -233,7 +264,7 @@
     <script>
         var URL_SCRIPTS = "@Url.Content("~/Scripts")";
     </script>
-  
+
     <script src="~/Content/fancyBox/jquery.fancybox.min.js"></script>
     <script type="text/javascript">
         var package_path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
@@ -243,9 +274,9 @@
                 location: package_path + '/bootstrap-map-js/src/js'
             }]
         };
-    </script> 
+    </script>
     <script src="~/Scripts/dojoConfig.js"></script>
-    
+
     <script src="https://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>
     <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js"></script>

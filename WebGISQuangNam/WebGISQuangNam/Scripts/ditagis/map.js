@@ -726,7 +726,18 @@
                 zoomQHCT(objectID);
             }
         });
-
+        $("#viewFileQuangNam").on("click", function () {
+            let link = $(this).attr("alt");
+            let idDoc = $(this).attr("title");
+            var viewDocFormData = $("#viewDocFormData").empty();
+            $("#loadIdealForm").css("display", "block");
+            viewForm = $('<iframe/>', {
+                src: link,
+                idDoc: idDoc
+            }).appendTo(viewDocFormData);
+            $(".yKienGroup").css("display", "none");
+            viewForm.css({ "position": "absolute" });
+        });
 
 
 
@@ -826,6 +837,7 @@
                                 viewForm = $('<img/>', {
                                     src: link,
                                 }).appendTo(viewDocFormData);
+                                $("#note-image").css("display", "block");
                             }
                             else{
                                 if(dinhDang == "doc" || dinhDang == "docx"){
@@ -835,6 +847,7 @@
                                     src: link,
                                     idDoc: idDoc
                                 }).appendTo(viewDocFormData);
+                                $("#note-image").css("display", "none");
                             }
                             
                             $("#loadIdealForm").css("display", "block");
