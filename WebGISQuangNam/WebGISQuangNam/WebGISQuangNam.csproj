@@ -272,6 +272,7 @@
     <Content Include="Content\modelBox\Modal.css" />
     <Content Include="Content\modelBox\model.js" />
     <Content Include="favicon.ico" />
+<<<<<<< HEAD
     <Content Include="FileManagers\BienBan01\BANVE\Bản vẽ QHC Điện Bàn.jpg" />
     <Content Include="FileManagers\BienBan01\PHAPLY\Quyết định phê duyệt NV-DT QHC ĐT Điện Bàn.doc" />
     <Content Include="FileManagers\BienBan01\THUYETMINH\Thuyết minh QHC Điện Bàn.doc" />
@@ -283,6 +284,8 @@
     <Content Include="FileManagers\QHV01\BANVE\Bản vẽ QHV tỉnh Quảng Nam.jpg" />
     <Content Include="FileManagers\VenBien01\BANVE\Bản vẽ QHC ven biển.jpg" />
     <Content Include="FileManagers\ĐB_QHPK_PHUONGAN\BANVE\Bản vẽ QHPK Phương An.jpg" />
+=======
+>>>>>>> 7711a2609ac493075e63a0c76f5ad9b4d7575f34
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -355,6 +358,7 @@
     <Content Include="Content\fonts\VHELVEBI.TTF" />
     <Content Include="Content\fonts\VHELVEI.TTF" />
     <Content Include="Content\fonts\VHELVEN.TTF" />
+<<<<<<< HEAD
     <Content Include="FileManagers\DienAn01\PHAPLY\1. Quyết định phê duyệt QHCT KDC TT Điện An.doc" />
     <Content Include="FileManagers\DienAn01\PHAPLY\2. Quy định quản lý QHCT KDC TT Điện An.doc" />
     <Content Include="FileManagers\NamGiang01\THUYETMINH\Thuyết minh QHC Khu kinh tế cửa khẩu Nam Giang.doc" />
@@ -374,7 +378,10 @@
     <Content Include="FileManagers\QHV01\THUYETMINH\Thuyết minh QHV tỉnh.pdf" />
     <Content Include="FileManagers\VenBien01\THUYETMINH\Thuyết minh QHC khu vực ven biển từ TX Điện Bàn đến TP Hội An.pdf" />
     <Content Include="FileManagers\DATA\CTPTDT_Quang_Nam.pdf" />
+=======
+>>>>>>> 7711a2609ac493075e63a0c76f5ad9b4d7575f34
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\deploy product server.pubxml" />
     <None Include="Properties\PublishProfiles\FTP.pubxml" />
     <None Include="Properties\PublishProfiles\QuangNamGIS.pubxml" />
     <Content Include="Resources\MauPhieu\MauPhieuThongTin_GIS.xlsx" />
