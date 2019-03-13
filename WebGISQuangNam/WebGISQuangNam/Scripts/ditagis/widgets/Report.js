@@ -3,9 +3,10 @@ define(["dojo/dom-construct",
     "esri/tasks/query",
     "esri/layers/FeatureLayer",
     "esri/geometry/Point", "esri/geometry/Extent",
+    "ditagis/configs",
 ],
     function (domConstruct, Query, FeatureLayer,
-        Point, Extent, ) {
+        Point, Extent,configs ) {
         "use strict";
         class Report {
             constructor(map) {
@@ -251,8 +252,10 @@ define(["dojo/dom-construct",
                     if (!model[key])
                         model[key] = value;
                 }
-                var ImageLayer = this.map._layers['QuangNamQHCT'];
-                model.url = ImageLayer.url;
+                var imageLayerConfig = configs.chuyenDeLayers.find(function(element) {
+                    return element.id == 'QHCT';
+                  });
+                model.url = imageLayerConfig.url;
                 if (thongTinDoAn["NgayPheDuyet"]) {
                     model["NgayPheDuyet"] = this.getDate(thongTinDoAn["NgayPheDuyet"]);
                 }

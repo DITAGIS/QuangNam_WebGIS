@@ -1,6 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
+    var baseurl = 'http://103.104.119.99:6080/arcgis/rest/services/QuangNam';
+    // var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
     return {
         basemap: {
             title: 'BẢN ĐỒ NỀN',
@@ -10,7 +11,7 @@ define(["require", "exports"], function (require, exports) {
         chuyenDeLayers: [{
             title: "QUY HOẠCH VÙNG TỈNH THỔNG HỢP",
             id: 'QHV_Tinh',
-            url: baseurl + '/QuangNamQHV_Tinh/MapServer',
+            url: baseurl + '/QuangNamQHV_Tinh/FeatureServer',
             maxLayerIndex: 18,
             subLayers: [
                 {

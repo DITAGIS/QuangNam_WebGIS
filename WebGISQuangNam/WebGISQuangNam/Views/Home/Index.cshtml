@@ -326,7 +326,7 @@
 
             $("#btnSubmitYKien").click(function () {
                 var yKien = $("#txtYKien").val();
-                var idDoc = $("#viewDocFormData").attr("idDoc");
+                var idDoc = $("#viewDocFormData > iframe").attr("idDoc");
                 if (yKien) {
                     if (yKien.trim().length > 0) {
                         var url = "/Home/addYKienNguoiDan";
