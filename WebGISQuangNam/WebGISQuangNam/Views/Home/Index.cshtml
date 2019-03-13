@@ -27,16 +27,6 @@
         <div id="LocateButton"><i class="fa fa-bullseye" aria-hidden="true"></i></div>
         <div id="layerMapData"><i class="fa fa-server" aria-hidden="true"></i></div>
         <div id="maxMapData"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
-        <div class="panel panel-info panel_control" id="legendDiv_panel">
-            <div class="panel-header">
-                <h3 class="panel-title">Chú giải</h3>
-                <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
-            </div>
-            <div class="panel-body">
-                <div id="legendDiv"></div>
-            </div>
-        </div>
-
         <div class="panel panel-info panel_control" id="basemapGalleryDiv_panel">
             <div class="panel-header">
                 <h3 class="panel-title">Bản đồ nền</h3>
@@ -219,7 +209,6 @@
                         }
                     }
                 </select>
-                <input id="LuaChonDiaDiemDauTu_kyhieulodat" placeholder="Kí hiệu lô đất" class="input-textbox"/>
                 <div class="clearfix"></div>
                 <div style="clear:both;width:99%">
                     <div style="width:49%; float:left">
@@ -231,24 +220,6 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div style="clear:both;width:99%">
-                    <div style="width:49%; float:left">
-                        <input id="LuaChonDiaDiemDauTu_khoangcachtu" placeholder="Khoảng cách từ (Km)" class="input-textbox"/>
-                    </div>
-
-                    <div style="width:49%; float:right">
-                        <input id="LuaChonDiaDiemDauTu_khoangcachden" placeholder="Không quá (Km)" class="input-textbox"/>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <select id="LuaChonDiaDiemDauTu_sovoi"  class="input-select">
-                    <option value="sbDaNang">Sân bay Đà nẵng</option>
-                    <option value="sbChuLai">Sân bay Chu lai</option>
-                    <option value="cangKyHa">Cảng kỳ Hà </option>
-                    <option value="tpHoiAn">Tp Hội An</option>
-                    <option value="ckNamGiang">Cửa khẩu Nam Giang</option>
-                </select>
-
                 <button type="button" title="Tìm" id="LuaChonDiaDiemDauTu_tim" class="k-primary input-button">Tìm</button>
             </div>
         </div>
@@ -326,7 +297,7 @@
 
             $("#btnSubmitYKien").click(function () {
                 var yKien = $("#txtYKien").val();
-                var idDoc = $("#viewDocFormData > iframe").attr("idDoc");
+                var idDoc = $("#viewDocFormData > iframe").attr("idDoc")|| $("#viewDocFormData > img").attr("idDoc");
                 if (yKien) {
                     if (yKien.trim().length > 0) {
                         var url = "/Home/addYKienNguoiDan";
@@ -385,9 +356,6 @@
             }).data("kendoDropDownList").select(0);
             $("#LuaChonDiaDiemDauTu_loaidat").kendoDropDownList({
                 optionLabel: "Loại đất"
-            }).data("kendoDropDownList").select(0);
-            $("#LuaChonDiaDiemDauTu_sovoi").kendoDropDownList({
-                optionLabel: "So với"
             }).data("kendoDropDownList").select(0);
             $(".input-button").kendoButton({
             });

@@ -9,7 +9,7 @@
     "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ImageParameters",// 2
     "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color",  // 3
     "esri/tasks/query", "dojo/parser", "esri/tasks/GeometryService", // 4
-    "esri/SpatialReference", "esri/dijit/HomeButton", "esri/dijit/Legend",//5
+    "esri/SpatialReference", "esri/dijit/HomeButton",//5
     "dojo/_base/array", "dojo/dom", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/config", // 6
     "esri/dijit/LocateButton", "esri/dijit/BasemapGallery",//7
     "esri/dijit/Measurement", "esri/units", "dijit/Menu", "dijit/MenuItem",//8
@@ -25,7 +25,7 @@
     Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
     SimpleLineSymbol, SimpleFillSymbol, Color,//3
     Query, parser, GeometryService,//4
-    SpatialReference, HomeButton, Legend,//5
+    SpatialReference, HomeButton,//5
     array, dom, Print, PrintTemplate, esriConfig,//6
     LocateButton, BasemapGallery,//7
     Measurement, Units, Menu, MenuItem,//8
@@ -164,19 +164,6 @@
         if (width <= 767) {
             $("#searchButton").css('top', '60px');
         }
-
-
-        if (layerGroups.length > 0) {
-            var legendDijit = new Legend({
-                map: map,
-                layerInfos: layerGroups
-            }, "legendDiv");
-            legendDijit.startup();
-        }
-
-        $("#legendDiv_panel").slideUp();
-
-
         var basemapGallery = new BasemapGallery({
             showArcGISBasemaps: true,
             map: map
@@ -446,14 +433,6 @@
                     $("#measurementDiv_panel").toggle("slide");
                 }
             }));
-            ctxMenuForMap.addChild(new MenuItem({
-                label: "Chú giải bản đồ",
-                onClick: function (evt) {
-                    $(".panel_control").slideUp();
-                    $("#legendDiv_panel").toggle("slide");
-                }
-            }));
-
             ctxMenuForMap.startup();
             ctxMenuForMap.bindDomNode(map.container);
         }
@@ -672,18 +651,14 @@
             var featureLayer = featureLayers.find(function (element) {
                 return element.id == "SDD_QHPK"
             });
-            var maQuanHuyen = "", maPhuongXa = "", loaiDat = "", kiHieuLoDat = "", dienTichTu = -1,
-                dienTichDen = -1, kcTu = -1, kcDen = -1, soVoi = "";
+            var maQuanHuyen = "", maPhuongXa = "", loaiDat = "", kiHieuLoDat = "", dienTichTu = "",
+                dienTichDen = "", kcTu = "", kcDen = "", soVoi = "";
 
             maQuanHuyen = $("#LuaChonDiaDiemDauTu_quanhuyen").val();
             maPhuongXa = $("#LuaChonDiaDiemDauTu_phuongxa").val();
             loaiDat = $("#LuaChonDiaDiemDauTu_loaidat").val();
-            kiHieuLoDat = $("#LuaChonDiaDiemDauTu_kyhieulodat").val();
             dienTichTu = $("#LuaChonDiaDiemDauTu_dientichtu").val();
             dienTichDen = $("#LuaChonDiaDiemDauTu_dientichden").val();
-            kcTu = $("#LuaChonDiaDiemDauTu_khoangcachtu").val();
-            kcDen = $("#LuaChonDiaDiemDauTu_khoangcachden").val();
-            soVoi = $("#LuaChonDiaDiemDauTu_sovoi").val();
 
             var check = maQuanHuyen.trim() + loaiDat.trim() + kiHieuLoDat.trim() + dienTichTu.trim() + dienTichDen.trim() + kcTu.trim() + kcDen.trim() + soVoi.trim();
 
@@ -833,14 +808,15 @@
                             let dinhDang = $(this).attr("dinhDang");
                             var viewDocFormData = $("#viewDocFormData").empty();
                             var viewForm;
-                            if(dinhDang == "JPG"){
+                            if (dinhDang == "JPG") {
                                 viewForm = $('<img/>', {
                                     src: link,
+                                    idDoc: idDoc
                                 }).appendTo(viewDocFormData);
                                 $("#note-image").css("display", "block");
                             }
-                            else{
-                                if(dinhDang == "doc" || dinhDang == "docx"){
+                            else {
+                                if (dinhDang == "doc" || dinhDang == "docx") {
                                     link = "https://docs.google.com/gview?url=" + link + "&embedded=true";
                                 }
                                 viewForm = $('<iframe/>', {
@@ -849,7 +825,7 @@
                                 }).appendTo(viewDocFormData);
                                 $("#note-image").css("display", "none");
                             }
-                            
+
                             $("#loadIdealForm").css("display", "block");
                             if (maCode) {
                                 viewForm.css({ "position": "inherit" });
