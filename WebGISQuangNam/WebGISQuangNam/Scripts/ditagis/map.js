@@ -178,7 +178,6 @@
             console.log("basemap gallery error:  ", msg);
         });
 
-        $("#basemapGalleryDiv_panel").slideUp();
         $("#choiceMapData").on("click", function () {
             $(".panel_control").slideUp();
             $("#basemapGalleryDiv_panel").toggle("slide");
@@ -291,8 +290,6 @@
 
         });
 
-
-        $("#listLayer_panel").slideUp();
         $("#layerMapData").on("click", function () {
             $(".panel_control").slideUp();
             $("#listLayer_panel").toggle("slide");
@@ -368,22 +365,14 @@
             $(".panel_control").slideUp();
             $("#TraCuuDoAnQuyHoach_panel").toggle("slide");
         });
-        $("#TraCuuDoAnQuyHoach_panel").slideUp();
-
-
         $("#TraCuuHoTroCapPhep").on("click", function () {
             $(".panel_control").slideUp();
             $("#TraCuuHoTroCapPhep_panel").toggle("slide");
         });
-        $("#TraCuuHoTroCapPhep_panel").slideUp();
-
-
         $("#LuaChonDiaDiemDauTu").on("click", function () {
             $(".panel_control").slideUp();
             $("#LuaChonDiaDiemDauTu_panel").toggle("slide");
         });
-        $("#LuaChonDiaDiemDauTu_panel").slideUp();
-
         /// tra cứu ////
 
 
@@ -406,7 +395,6 @@
             defaultAreaUnit: Units.SQUARE_METERS,
         }, dom.byId("measurementDiv"));
         measurement.startup();
-        $("#measurementDiv_panel").slideUp();
 
 
         //// menu ////
@@ -446,8 +434,7 @@
         createPrintDijit("Test ok");
 
         function createPrintDijit(printTitle) {
-            var layoutTemplate, templateNames, mapOnlyIndex, templates;
-
+            var templates;
             // create an array of objects that will be used to create print templates
             var layouts = [{
                 name: "Letter ANSI A Landscape",
@@ -485,7 +472,6 @@
                 url: printUrl
             }, dom.byId("print_button"));
             printer.startup();
-            $("#printDiv_panel").slideUp();
         }
 
 

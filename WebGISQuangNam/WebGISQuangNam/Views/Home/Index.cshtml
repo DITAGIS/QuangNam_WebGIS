@@ -27,7 +27,7 @@
         <div id="LocateButton"><i class="fa fa-bullseye" aria-hidden="true"></i></div>
         <div id="layerMapData"><i class="fa fa-server" aria-hidden="true"></i></div>
         <div id="maxMapData"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
-        <div class="panel panel-info panel_control" id="basemapGalleryDiv_panel">
+        <div class="panel panel-info panel_control" style="display: none;"id="basemapGalleryDiv_panel">
             <div class="panel-header">
                 <h3 class="panel-title">Bản đồ nền</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" id="measurementDiv_panel">
+        <div class="panel panel-info panel_control" id="measurementDiv_panel" style="display: none;">
             <div class="panel-header">
                 <h3 class="panel-title">Công cụ đo đạc</h3>
                 <span id="close-measure" class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" style="width:180px;" id="printDiv_panel">
+        <div class="panel panel-info panel_control" style="width:180px;display: none;" id="printDiv_panel">
             <div class="panel-header">
                 <h3 class="panel-title">In bản đồ</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" id="listLayer_panel">
+        <div class="panel panel-info panel_control" id="listLayer_panel" style="display: none;">
             <div class="panel-header">
                 <h3 class="panel-title">Các lớp dữ liệu</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -75,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-info panel_control" id="TraCuuDoAnQuyHoach_panel">
+        <div class="panel panel-info panel_control" id="TraCuuDoAnQuyHoach_panel" style="display: none;">
             <div class="panel-header">
                 <h3 class="panel-title">Tra cứu theo đồ án quy hoạch</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -129,7 +129,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" id="TraCuuHoTroCapPhep_panel">
+        <div class="panel panel-info panel_control" id="TraCuuHoTroCapPhep_panel" style="display:none;">
             <div class="panel-header">
                 <h3 class="panel-title">Hỗ trợ xin/cấp phép xây dựng</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -179,7 +179,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" id="LuaChonDiaDiemDauTu_panel">
+        <div class="panel panel-info panel_control" id="LuaChonDiaDiemDauTu_panel" style="display:none;">
             <div class="panel-header">
                 <h3 class="panel-title">Lựa chọn địa điểm đầu tư</h3>
                 <span class="btn-danger label pull-right closePanel" title="Đóng"><i class="fa fa-times" aria-hidden="true"></i></span>
@@ -224,7 +224,7 @@
             </div>
         </div>
 
-        <div class="panel panel-info panel_control" id="ResultDataSearch">
+        <div class="panel panel-info panel_control" id="ResultDataSearch" style="display: none;">
             <div class="panel-body" id="ResultDataSearchContent">
             </div>
         </div>
@@ -282,12 +282,9 @@
 {
     <script src="/Scripts/ditagis/map.js"></script> 
     <script type="text/javascript">
-
         $(document).ready(function () {
             var height = $("#loadIdealReviewForm").height() - 10;
-
             $("#loadIdealReviewFormData").css("height", height + "px");
-
             var hei = $(window).height() - 10;
             $("#viewDocFormData2").css("height", hei + "px");
             var idDoc = 0;
