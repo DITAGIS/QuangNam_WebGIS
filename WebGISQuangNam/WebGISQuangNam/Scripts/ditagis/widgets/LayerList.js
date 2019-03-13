@@ -50,6 +50,7 @@ define([
                             let input = $('<input/>', {
                                 type: 'checkbox',
                                 class: 'esriCheckbox list_item',
+                                id: "input_" + layerGroup.id,
                                 checked: true
                             }).appendTo(label);
 
@@ -99,6 +100,34 @@ define([
                         }
                     }
                 });
+            }
+            visibleLayerGroup(layerGroupID) {
+                $(".list_item").prop("checked", false);
+                if (this.layerGroups && this.layerGroups.length > 0) {
+                    for (const layerGroup of this.layerGroups) {
+                        if (layerGroup[0] && layerGroup[0].id == "basemap") {
+                            layerGroup[0].layer.setVisibility(false)
+                        }
+                        else {
+                            var layers = layerGroup.layers;
+                            for (const item of layers) {
+                                item.layer.setVisibility(false)
+                            }
+                        }
+                    }
+                    for (const layerGroup of this.layerGroups) {
+                        if (layerGroup.id == layerGroupID) {
+                            $(".list_item#input_" + layerGroupID).prop("checked", true);
+                            var layers = layerGroup.layers;
+                            for (const item of layers) {
+                                item.layer.setVisibility(true)
+                            }
+                            break;
+                        }
+
+                    }
+                }
+
             }
         }
 

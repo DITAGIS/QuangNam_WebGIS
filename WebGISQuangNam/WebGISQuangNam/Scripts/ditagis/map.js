@@ -147,7 +147,7 @@
             featureLayers.push(featureLayer);
         }
         map.addLayers(featureLayers);
-        new LayerList({ map, layerGroups });
+        var layerList = new LayerList({ map, layerGroups });
         var homeButton = new HomeButton({
             theme: "HomeButton",
             map: map,
@@ -671,22 +671,6 @@
                 });
 
         });
-
-
-        $("#ResultDataSearchContent").on("click", "span.itemSearch", function () {
-            var objectID = $(this).attr('alt');
-            var type = $("#ResultDataSearchContentType").val();
-            // alert(objectID);
-            if (type == "ThongTinDoAn") {
-                zoomThongTinDoAn(objectID);
-            }
-            if (type == "QHPK") {
-                zoomQHPK(objectID);
-            }
-            if (type == "QHCT") {
-                zoomQHCT(objectID);
-            }
-        });
         $("#viewFileQuangNam").on("click", function () {
             let link = $(this).attr("alt");
             let idDoc = $(this).attr("title");
@@ -878,63 +862,13 @@
                     }
                 });
             }
+            layerList.visibleLayerGroup(loaimada);
         }
 
         function zoomData(geometryData) {
             var stateExtent = geometryData.getExtent().expand(1.0);
             map.setExtent(stateExtent);
         }
-
-
-        function zoomQHCT(objectid) {
-
-            var query = new Query();
-            query.where = " objectid = '" + objectid + "'";
-
-            map.graphics.clear();
-
-            if (map.infoWindow.isShowing) {
-                map.infoWindow.hide();
-            }
-            var featureLayer = featureLayers.find(function (element) {
-                return element.id == "SDD_QHCT"
-            });
-            featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                if (results.length > 0) {
-                    var statesLayer = results[0].geometry;
-                    var stateExtent = results[0].geometry.getExtent().expand(2.0);
-                    map.setExtent(stateExtent);
-                }
-                else {
-                    $("#messageBox").css("display", "inline-block");
-                }
-            });
-
-        }
-        function zoomQHPK(objectid) {
-            var query = new Query();
-            query.where = " objectid = '" + objectid + "'";
-
-            map.graphics.clear();
-
-            if (map.infoWindow.isShowing) {
-                map.infoWindow.hide();
-            }
-            var featureLayer = featureLayers.find(function (element) {
-                return element.id == "SDD_QHPK"
-            });
-            featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                if (results.length > 0) {
-                    var stateExtent = results[0].geometry.getExtent().expand(5.0);
-                    map.setExtent(stateExtent);
-                }
-                else {
-                    $("#messageBox").css("display", "inline-block");
-                }
-            });
-
-        }
-
         function getHanhChinhXa(maQuanHuyen, cbb) {
             $("#loadingpageDiv").css("display", "inline-block");
             var url = "/Home/getXaByQuanHuyen";
