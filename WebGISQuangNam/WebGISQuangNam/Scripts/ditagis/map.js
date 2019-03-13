@@ -672,18 +672,14 @@
             var featureLayer = featureLayers.find(function (element) {
                 return element.id == "SDD_QHPK"
             });
-            var maQuanHuyen = "", maPhuongXa = "", loaiDat = "", kiHieuLoDat = "", dienTichTu = -1,
-                dienTichDen = -1, kcTu = -1, kcDen = -1, soVoi = "";
+            var maQuanHuyen = "", maPhuongXa = "", loaiDat = "", kiHieuLoDat = "", dienTichTu = "",
+                dienTichDen = "", kcTu = "", kcDen = "", soVoi = "";
 
             maQuanHuyen = $("#LuaChonDiaDiemDauTu_quanhuyen").val();
             maPhuongXa = $("#LuaChonDiaDiemDauTu_phuongxa").val();
             loaiDat = $("#LuaChonDiaDiemDauTu_loaidat").val();
-            kiHieuLoDat = $("#LuaChonDiaDiemDauTu_kyhieulodat").val();
             dienTichTu = $("#LuaChonDiaDiemDauTu_dientichtu").val();
             dienTichDen = $("#LuaChonDiaDiemDauTu_dientichden").val();
-            kcTu = $("#LuaChonDiaDiemDauTu_khoangcachtu").val();
-            kcDen = $("#LuaChonDiaDiemDauTu_khoangcachden").val();
-            soVoi = $("#LuaChonDiaDiemDauTu_sovoi").val();
 
             var check = maQuanHuyen.trim() + loaiDat.trim() + kiHieuLoDat.trim() + dienTichTu.trim() + dienTichDen.trim() + kcTu.trim() + kcDen.trim() + soVoi.trim();
 
@@ -833,14 +829,15 @@
                             let dinhDang = $(this).attr("dinhDang");
                             var viewDocFormData = $("#viewDocFormData").empty();
                             var viewForm;
-                            if(dinhDang == "JPG"){
+                            if (dinhDang == "JPG") {
                                 viewForm = $('<img/>', {
                                     src: link,
+                                    idDoc: idDoc
                                 }).appendTo(viewDocFormData);
                                 $("#note-image").css("display", "block");
                             }
-                            else{
-                                if(dinhDang == "doc" || dinhDang == "docx"){
+                            else {
+                                if (dinhDang == "doc" || dinhDang == "docx") {
                                     link = "https://docs.google.com/gview?url=" + link + "&embedded=true";
                                 }
                                 viewForm = $('<iframe/>', {
@@ -849,7 +846,7 @@
                                 }).appendTo(viewDocFormData);
                                 $("#note-image").css("display", "none");
                             }
-                            
+
                             $("#loadIdealForm").css("display", "block");
                             if (maCode) {
                                 viewForm.css({ "position": "inherit" });
