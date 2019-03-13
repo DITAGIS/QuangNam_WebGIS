@@ -273,11 +273,11 @@ define(["dojo/dom-construct",
                 this.map.graphics.clear();
                 var query = new Query();
                 query.objectIds = [id];
-                layerClass.selectFeatures(query, FeatureLayer.SELECTION_NEW, (features) => {
+                layerClass.queryExtent(query, (result) => {
                     //zoom to the selected feature
-                    layerClass.selectFeatures[features[0]];
-                    var stateExtent = features[0].geometry.getExtent();
-                    this.map.setExtent(stateExtent);
+                    layerClass.selectFeatures(query, FeatureLayer.SELECTION_NEW);
+                    //var stateExtent = features[0].geometry.getExtent();
+                    this.map.setExtent(result.extent.expand(1.0));
                 });
             }
             getDate(value) {
