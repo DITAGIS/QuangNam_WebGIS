@@ -9,7 +9,7 @@
     "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ImageParameters",// 2
     "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color",  // 3
     "esri/tasks/query", "dojo/parser", "esri/tasks/GeometryService", // 4
-    "esri/SpatialReference", "esri/dijit/HomeButton", "esri/dijit/Legend",//5
+    "esri/SpatialReference", "esri/dijit/HomeButton",//5
     "dojo/_base/array", "dojo/dom", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/config", // 6
     "esri/dijit/LocateButton", "esri/dijit/BasemapGallery",//7
     "esri/dijit/Measurement", "esri/units", "dijit/Menu", "dijit/MenuItem",//8
@@ -25,7 +25,7 @@
     Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
     SimpleLineSymbol, SimpleFillSymbol, Color,//3
     Query, parser, GeometryService,//4
-    SpatialReference, HomeButton, Legend,//5
+    SpatialReference, HomeButton,//5
     array, dom, Print, PrintTemplate, esriConfig,//6
     LocateButton, BasemapGallery,//7
     Measurement, Units, Menu, MenuItem,//8
@@ -107,7 +107,7 @@
                 var subLayers = layercf.subLayers;
                 for (var index = maxLayerIndex; index >= 0; index--) {
                     let featureLayer = new esri.layers.FeatureLayer(layercf.url + "/" + index, {
-                        mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                        mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
                         outFields: ["*"],
                         "opacity": 0.9,
                     });
@@ -164,19 +164,6 @@
         if (width <= 767) {
             $("#searchButton").css('top', '60px');
         }
-
-
-        if (layerGroups.length > 0) {
-            var legendDijit = new Legend({
-                map: map,
-                layerInfos: layerGroups
-            }, "legendDiv");
-            legendDijit.startup();
-        }
-
-        $("#legendDiv_panel").slideUp();
-
-
         var basemapGallery = new BasemapGallery({
             showArcGISBasemaps: true,
             map: map
@@ -446,14 +433,6 @@
                     $("#measurementDiv_panel").toggle("slide");
                 }
             }));
-            ctxMenuForMap.addChild(new MenuItem({
-                label: "Chú giải bản đồ",
-                onClick: function (evt) {
-                    $(".panel_control").slideUp();
-                    $("#legendDiv_panel").toggle("slide");
-                }
-            }));
-
             ctxMenuForMap.startup();
             ctxMenuForMap.bindDomNode(map.container);
         }
