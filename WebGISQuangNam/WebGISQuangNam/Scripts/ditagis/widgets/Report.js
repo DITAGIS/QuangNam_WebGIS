@@ -137,7 +137,6 @@ define(["dojo/dom-construct",
                     change: (e) => {
                         let selectedRows = e.sender.select();
                         let objectID = e.sender.dataItem(selectedRows)['OBJECTID'];
-                        console.log(e.sender.dataItem(selectedRows));
                         var featureLayer;
                         if (layer.id == "ThongTinDoAn") {
                             let loaiQuyHoach = e.sender.dataItem(selectedRows)['LoaiQuyHoach'];

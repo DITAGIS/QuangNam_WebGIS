@@ -1,7 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    var baseurl = 'http://103.104.119.99:6080/arcgis/rest/services/QuangNam';
-    // var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
+    //var baseurl = 'http://103.104.119.99:6080/arcgis/rest/services/QuangNam';
+     var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
     return {
         basemap: {
             title: 'BẢN ĐỒ NỀN',

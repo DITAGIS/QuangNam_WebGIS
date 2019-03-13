@@ -107,7 +107,7 @@
                 var subLayers = layercf.subLayers;
                 for (var index = maxLayerIndex; index >= 0; index--) {
                     let featureLayer = new esri.layers.FeatureLayer(layercf.url + "/" + index, {
-                        mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
+                        mode: esri.layers.FeatureLayer.MODE_SNAPSHOT,
                         outFields: ["*"],
                         "opacity": 0.9,
                     });
