@@ -1,7 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
-    // var baseurl = 'http://103.104.119.99:6080/arcgis/rest/services/QuangNam';
-    var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
+    var baseurl = 'http://103.104.119.99:6080/arcgis/rest/services/QuangNam';
+    // var baseurl = 'https://ditagis.com/arcgis/rest/services/QuangNam';
     return {
         basemap: {
             title: 'BẢN ĐỒ NỀN',
@@ -38,7 +38,7 @@ define(["require", "exports"], function (require, exports) {
                     id: "ThongTinDoAn",
                 }
             ]
-        },{
+        }, {
             title: "QUY HOẠCH CHUNG",
             id: 'QHC',
             url: baseurl + '/QuangNamQHC/MapServer',
@@ -101,14 +101,20 @@ define(["require", "exports"], function (require, exports) {
                 }
             ]
         }],
-        layers: {
-            ThongTinDoAn: {
+        layers: [
+            {
                 url: baseurl + "/QuangNamSDD/MapServer/2",
                 id: "ThongTinDoAn",
                 title: "Thông tin đồ án",
                 displayFields: ['TenDoAn', 'DiaDiem']
             },
-        },
+            {
+                url: baseurl + "/QuangNamSDD/MapServer/3",
+                id: "DauTu",
+                title: "ĐẦU TƯ",
+                displayFields: ['OBJECTID', 'TenDuAn']
+            },
+        ],
         tables: {
         },
         fields: {

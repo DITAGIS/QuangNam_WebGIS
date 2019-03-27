@@ -1,13 +1,15 @@
 ﻿require([
     // ditagis require
     "ditagis/widgets/Report",
+    "ditagis/widgets/Popup",
     "ditagis/widgets/LayerList",
     "ditagis/configs",
     "ditagis/api/TimKiemThongTin",
 
     "esri/toolbars/navigation", "dijit/registry", "dojo/on",//1
     "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ImageParameters",// 2
-    "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color",  // 3
+    "esri/graphic", "esri/geometry/Point",// geometry
+    "esri/symbols/SimpleMarkerSymbol", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleFillSymbol", "esri/Color",  // 3
     "esri/tasks/query", "dojo/parser", "esri/tasks/GeometryService", // 4
     "esri/SpatialReference", "esri/dijit/HomeButton",//5
     "dojo/_base/array", "dojo/dom", "esri/dijit/Print", "esri/tasks/PrintTemplate", "esri/config", // 6
@@ -19,11 +21,12 @@
 
 ], function (
     // ditagis function
-    Report, LayerList, configs, TimKiemThongTin,
+    Report, Popup, LayerList, configs, TimKiemThongTin,
 
     Navigation, registry, on,//1
     Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
-    SimpleLineSymbol, SimpleFillSymbol, Color,//3
+    Graphic, Point,
+    SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, Color,//3
     Query, parser, GeometryService,//4
     SpatialReference, HomeButton,//5
     array, dom, Print, PrintTemplate, esriConfig,//6
@@ -86,14 +89,18 @@
             title: configs.basemap.title,
             id: configs.basemap.id
         }]);
-
+        var style_point = new SimpleMarkerSymbol(SimpleMarkerSymbol.STYLE_CIRCLE, 12,
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([0, 0, 0]), 1),
+            new Color([174, 12, 229, 0.5]));
         var selectionSymbol = new SimpleFillSymbol(
-            SimpleFillSymbol.STYLE_SOLID,
-            new SimpleLineSymbol(
-                SimpleLineSymbol.STYLE_SOLID,
-                new Color([127, 255, 255, 255]), 3
-            ),
-            new Color([255, 0, 0, 0.25])
+            SimpleFillSymbol.STYLE_NULL, new SimpleLineSymbol("solid", new Color([13, 213, 252, 1]), 6), null
+        );
+
+        // var style_polygon = new SimpleFillSymbol().setColor(new Color([174, 12, 229, 0.5]));
+        var style_polygon = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+            new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID,
+                new Color([13, 213, 252]), 3), new Color([174, 12, 229, 0.2])
         );
         var featureLayers = [];
         for (const layercf of configs.chuyenDeLayers) {
@@ -111,7 +118,7 @@
                         outFields: ["*"],
                         "opacity": 0.9,
                     });
-                    featureLayer.setSelectionSymbol(selectionSymbol);
+                    // featureLayer.setSelectionSymbol(selectionSymbol);
                     var layer = {
                         layer: featureLayer, // required unless featureCollection.
                         subLayers: true, // optional
@@ -127,24 +134,42 @@
                     }
                     featureLayers.push(featureLayer);
                     layerGroup.layers.push(layer);
+                    featureLayer.on('load', (result) => {
+                        featureLayer.setSelectionSymbol(featureLayer.geometryType === "esriGeometryPoint" ? style_point :
+                            featureLayer.geometryType === "esriGeometryPolygon" ? style_polygon : selectionSymbol);
+                    });
                 }
 
                 layerGroups.push(layerGroup);
             }
         }
-        for (const key in configs.layers) {
-            let layercf = configs.layers[key];
+        for (const layercf of configs.layers) {
             let featureLayer = new esri.layers.FeatureLayer(layercf.url, {
                 mode: esri.layers.FeatureLayer.MODE_ONDEMAND,
                 outFields: ["*"],
                 "opacity": 0.9,
                 id: layercf.id,
             });
-            featureLayer.setVisibility(false);
             if (layercf.displayFields) {
                 featureLayer.displayFields = layercf.displayFields;
             }
             featureLayers.push(featureLayer);
+            if (layercf.id == "DauTu") {
+                var layer = {
+                    layer: featureLayer, // required unless featureCollection.
+                    subLayers: true, // optional
+                    visibility: true, // optional
+                    title:layercf.title
+                };
+                var layerGroup = {
+                    title: layercf.title,
+                    layers: [layer],
+                    id: layercf.id,
+                };
+                layerGroups.push(layerGroup);
+            } else {
+                featureLayer.setVisibility(false);
+            }
         }
         map.addLayers(featureLayers);
         var layerList = new LayerList({ map, layerGroups });
@@ -345,7 +370,6 @@
             }
             getHoSoDoAn(mdoan);
         });
-
         /// end thông tin quy hoạch ///
 
         /// công bố lấy ý kiến
@@ -360,7 +384,35 @@
             getHoSoDoAn(mdoan, maCode);
         });
 
-
+        $(".keugoidautu").on("click", function () {
+            var objectID = $(this).attr('objectID');
+            var query = new Query();
+            query.where = "OBJECTID = " + objectID;
+            map.graphics.clear();
+            if (map.infoWindow.isShowing) {
+                map.infoWindow.hide();
+            }
+            var featureLayer = featureLayers.find(function (element) {
+                return element.id == "DauTu";
+            });
+            if (featureLayer) {
+                featureLayer.queryFeatures(query, function (result) {
+                    var features = result.features;
+                    if (features.length > 0) {
+                        featUpdate = features[0];
+                        popup.show(featUpdate, featureLayer);
+                        var query = new Query();
+                        query.geometry = featUpdate.geometry;
+                        featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW);
+                    }
+                    else {
+                        $("#messageBox").css("display", "inline-block");
+                        map.infoWindow.hide();
+                    }
+                });
+            }
+            layerList.visibleLayerGroup("DauTu");
+        });
         $("#TraCuuDoAnQuyHoach").on("click", function () {
             $(".panel_control").slideUp();
             $("#TraCuuDoAnQuyHoach_panel").toggle("slide");
@@ -477,16 +529,18 @@
 
         map.on("layers-add-result", initEditor);
 
-
+        var report, popup;
         function initEditor(evt) {
 
             var map = this;
             var layers = array.map(evt.layers, function (result) {
                 return result.layer;
             });
+            map.layers = layers;
             //display read-only info window when user clicks on feature 
             var query = new esri.tasks.Query();
-
+            popup = new Popup({ map });
+            report = new Report({ map, popup, layerList });
             dojo.forEach(layers, (layer) => {
                 dojo.connect(layer, "onClick", (feature) => {
                     if (measurement.getTool()) return;
@@ -499,15 +553,10 @@
                     else {
                         return;
                     }
-
                     layer.selectFeatures(query, esri.layers.FeatureLayer.SELECTION_NEW, function (features) {
                         if (features.length > 0) {
                             featUpdate = features[0];
-                            var inforContent = getInforPopup(layer, featUpdate);
-                            map.infoWindow.setTitle("Kết quả tra cứu");
-                            map.infoWindow.setContent(inforContent);
-                            map.infoWindow.resize(310, 300);
-                            map.infoWindow.show(feature.screenPoint, map.getInfoWindowAnchor(feature.screenPoint));
+                            popup.show(featUpdate, layer);
                         }
                         else {
                             map.infoWindow.hide();
@@ -523,9 +572,6 @@
 
             });
         }
-
-
-
         $(".closePanelmessageBox").on("click", function () {
             $("#messageBox").css("display", "none");
         });
@@ -631,7 +677,6 @@
                     $("#loadingpageDiv").css("display", "none");
                 });
         });
-        var report = new Report(map);
         $("#LuaChonDiaDiemDauTu_tim").click(() => {
             $("#loadingpageDiv").css("display", "inline-block");
             var featureLayer = featureLayers.find(function (element) {
@@ -683,65 +728,6 @@
             $(".yKienGroup").css("display", "none");
             viewForm.css({ "position": "absolute" });
         });
-
-
-
-        /////////////////////////////////////////////////////////////////////////////////////////
-
-        function getInforPopup(featureLayer, feature) {
-            var html = "<div class='contentPopup' >";
-            var fields = featureLayer.fields;
-            var hiddenFields = configs.fields['hidden'];
-            for (const field of fields) {
-                var name = field.name;
-                var isHiddenField = false;
-                for (const hiddenField of hiddenFields) {
-                    if (name == hiddenField) {
-                        isHiddenField = true;
-                        break;
-                    }
-                }
-                if (!isHiddenField) {
-                    let value = feature.attributes[name];
-                    if (field.domain != null) {
-                        var domain = field.domain;
-                        value = getValueDomain(domain, value);
-                    }
-                    if (field.type == "esriFieldTypeDate") {
-                        value = getDate(value);
-                    }
-                    if (value)
-                        html += "<div> <span class='lableColName'> " + field.alias +
-                            " : </span><span class='lableColValue' > " + value + "</span></div>";
-                }
-            }
-            html += "</div>";
-            return html;
-        }
-        function getDate(value) {
-            var date = new Date(value);
-            var dd = date.getDate();
-            var mm = date.getMonth() + 1;
-
-            var yyyy = date.getFullYear();
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-            return dd + '/' + mm + '/' + yyyy;
-        }
-        function getValueDomain(domain, code) {
-            var domainData = domain.toJson();
-            var codedValues = domainData.codedValues;
-            for (var i = 0; i < codedValues.length; i++) {
-                if (codedValues[i].code == code) {
-                    return codedValues[i].name;
-                }
-            }
-            return null;
-        }
         function getHoSoDoAn(maDoAn, maCode) {
             TimKiemThongTin.HoSoDoAn(maDoAn)
                 .then((results) => {
@@ -852,22 +838,32 @@
                 return element.id == "ThongTinDoAn_" + loaimada
             });
             if (featureLayer) {
-                featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW, function (results) {
-                    if (results.length > 0) {
-                        var statesLayer = results[0].geometry;
-                        zoomData(statesLayer);
+                featureLayer.queryFeatures(query, function (result) {
+                    var features = result.features;
+                    if (features.length > 0) {
+                        featUpdate = features[0];
+                        popup.show(featUpdate, featureLayer);
+                        zoomData(featUpdate);
+                        var query = new Query();
+                        query.geometry = featUpdate.geometry;
+                        featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW);
                     }
                     else {
                         $("#messageBox").css("display", "inline-block");
+                        map.infoWindow.hide();
                     }
                 });
             }
             layerList.visibleLayerGroup(loaimada);
         }
 
-        function zoomData(geometryData) {
-            var stateExtent = geometryData.getExtent().expand(1.0);
+        function zoomData(featUpdate) {
+            var geometryData = featUpdate.geometry;
+            var stateExtent = geometryData.getExtent();
             map.setExtent(stateExtent);
+            map.setScale(featUpdate._layer.maxScale * 2);
+            var center = stateExtent.getCenter();
+            map.centerAt(center);
         }
         function getHanhChinhXa(maQuanHuyen, cbb) {
             $("#loadingpageDiv").css("display", "inline-block");

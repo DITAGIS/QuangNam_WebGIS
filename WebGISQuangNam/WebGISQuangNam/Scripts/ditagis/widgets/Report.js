@@ -6,17 +6,14 @@ define(["dojo/dom-construct",
     "ditagis/configs",
 ],
     function (domConstruct, Query, FeatureLayer,
-        Point, Extent,configs ) {
+        Point, Extent, configs) {
         "use strict";
         class Report {
-            constructor(map) {
-                this.map = map;
+            constructor(params) {
+                this.map = params.map;
+                this.layerList = params.layerList;
+                this.popup = params.popup;
                 this.displayFields = {
-                    // CongThoatNuoc: [
-                    //     { width: 60, title: "STT", field: "STT" },
-                    //     { width: 60, title: "ChieuDai", field: "ChieuDai" },
-                    //     { width: 60, title: "DoDoc", field: "DoDoc" },
-                    // ],
                     BeChua: [
                         { width: 60, title: "STT", field: "STT" },
                         { width: 60, title: "DienTich", field: "DienTich" },
@@ -251,9 +248,9 @@ define(["dojo/dom-construct",
                     if (!model[key])
                         model[key] = value;
                 }
-                var imageLayerConfig = configs.chuyenDeLayers.find(function(element) {
+                var imageLayerConfig = configs.chuyenDeLayers.find(function (element) {
                     return element.id == 'QHCT';
-                  });
+                });
                 model.url = imageLayerConfig.url;
                 if (thongTinDoAn["NgayPheDuyet"]) {
                     model["NgayPheDuyet"] = this.getDate(thongTinDoAn["NgayPheDuyet"]);
@@ -268,17 +265,88 @@ define(["dojo/dom-construct",
                 return layer.queryFeatures(query);
             }
 
-            zoomRowPolygon(id, layerClass) {
-                layerClass.clearSelection();
+            zoomRowPolygon(id, layer) {
+                layer.clearSelection();
                 this.map.graphics.clear();
                 var query = new Query();
+                query.spatialReference = this.map.spatialReference;
                 query.objectIds = [id];
-                layerClass.queryExtent(query, (result) => {
+                var loaimada = layer.id.split("_")[1];
+                this.layerList.visibleLayerGroup(loaimada);
+                layer.queryExtent(query, (result) => {
                     //zoom to the selected feature
-                    layerClass.selectFeatures(query, FeatureLayer.SELECTION_NEW);
-                    //var stateExtent = features[0].geometry.getExtent();
                     this.map.setExtent(result.extent.expand(1.0));
+                    // this.map.setScale(layer.maxScale * 2);
+                    var center = result.extent.getCenter();
+                    this.map.centerAt(center);
+                    // this.map.setScale(layer.maxScale * 2);
+                    layer.selectFeatures(query, esri.layers.FeatureLayer.SELECTION_NEW, (features) => {
+                        if (features.length > 0) {
+                            var feature = features[0];
+                            this.popup.show(feature,layer);
+                        }
+                        else {
+                            this.map.infoWindow.hide();
+                        }
+                    });
+                    // layer.selectFeatures(query, FeatureLayer.SELECTION_NEW);
+                   
+
                 });
+            }
+            getCenter(geometry) {
+                if (geometry != null) {
+                    if (geometry.type == "polyline") {
+                        var paths = featUpdate.geometry.paths[0];
+                        var centerPath = paths[Math.round(paths.length / 2)];
+                        return new Point(centerPath[0], centerPath[1], featUpdate.geometry.spatialReference);
+    
+                    }
+                    if (geometry.type == "polygon") {
+                        return featUpdate.geometry.getCentroid();
+                    }
+                    if (geometry.type == "point") {
+                        return featUpdate.geometry;
+                    }
+                }
+            }
+            getInforPopup(featureLayer, feature) {
+                var html = "<div class='contentPopup' >";
+                var fields = featureLayer.fields;
+                var hiddenFields = configs.fields['hidden'];
+                for (const field of fields) {
+                    var name = field.name;
+                    var isHiddenField = false;
+                    for (const hiddenField of hiddenFields) {
+                        if (name == hiddenField) {
+                            isHiddenField = true;
+                            break;
+                        }
+                    }
+                    if (!isHiddenField) {
+                        let value = feature.attributes[name];
+                        if (field.domain != null) {
+                            var domain = field.domain;
+                            value = getValueDomain(domain, value);
+                        }
+                        if (field.type == "esriFieldTypeDate") {
+                            value = getDate(value);
+                        }
+                        if (value)
+                            html += "<div> <span class='lableColName'> " + field.alias +
+                                " : </span><span class='lableColValue' > " + value + "</span></div>";
+                    }
+                }
+                html += "</div>";
+                return html;
+            }
+            zoomData(featUpdate) {
+                var geometryData = featUpdate.geometry;
+                var stateExtent = geometryData.getExtent();
+                this.map.setExtent(stateExtent);
+                this.map.setScale(featUpdate._layer.maxScale * 2);
+                var center = stateExtent.getCenter();
+                this.map.centerAt(center);
             }
             getDate(value) {
                 var datetime = new Date(parseInt(value));
