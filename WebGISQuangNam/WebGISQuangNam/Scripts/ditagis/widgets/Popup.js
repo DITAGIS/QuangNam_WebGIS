@@ -6,16 +6,31 @@ define([
             this.map = params.map;
             this.initWidget();
         }
-        initWidget(){
+        initWidget() {
             this.map.infoWindow.setTitle("Kết quả tra cứu");
             this.map.infoWindow.resize(310, 300);
         }
-        show(feature,layer) {
+        show(feature, layer) {
             var inforContent = this.getInforPopup(layer, feature);
             this.map.infoWindow.setContent(inforContent);
             var location = this.getCenter(feature.geometry);
             this.map.infoWindow.show(location, "upperright");
             this.map.centerAt(location);
+            $(".linkThuyetMinh").on('click', function() {
+                let alt = window.location.origin + $(this).attr("alt");
+                let idDoc = $(this).attr("title");
+                var viewDocFormData = $("#viewDocFormData").empty();
+                var viewForm;
+                var linkView = "https://docs.google.com/gview?url=" + alt + "&embedded=true";
+                viewForm = $('<iframe/>', {
+                    src: linkView,
+                    idDoc: idDoc
+                }).appendTo(viewDocFormData);
+                $("#note-image").css("display", "none");
+                $("#loadIdealForm").css("display", "block");
+                $(".yKienGroup").css("display", "none");
+                viewForm.css({ "position": "absolute" });
+            });
         }
         getCenter(geometry) {
             if (geometry != null) {
@@ -57,9 +72,12 @@ define([
             return null;
         }
         getInforPopup(featureLayer, feature) {
-            var html = "<div class='contentPopup' >";
+            var content = $('<li/>', {
+                class: 'contentPopup'
+            });
             var fields = featureLayer.fields;
             var hiddenFields = configs.fields['hidden'];
+            var linkThuyetMinh = null;
             for (const field of fields) {
                 var name = field.name;
                 var isHiddenField = false;
@@ -78,13 +96,31 @@ define([
                     if (field.type == "esriFieldTypeDate") {
                         value = this.getDate(value);
                     }
-                    if (value)
-                        html += "<div> <span class='lableColName'> " + field.alias +
-                            " : </span><span class='lableColValue' > " + value + "</span></div>";
+                    if (value) {
+                        if (name == "LinkFileThuyetMinh") {
+                            linkThuyetMinh = $('<a/>', {
+                                text: "Xem chi tiết",
+                                alt: value,
+                                title: feature.attributes["TenDuAn"],
+                                class: "linkThuyetMinh"
+                            }).appendTo(content);
+                        }
+                        else {
+                            var fieldDiv = $('<div/>', {
+                            }).appendTo(content);
+                            $('<span/>', {
+                                class: 'lableColName',
+                                text: field.alias + ": "
+                            }).appendTo(fieldDiv);;
+                            $('<span/>', {
+                                class: 'lableColValue',
+                                text: value
+                            }).appendTo(fieldDiv);
+                        }
+                    }
                 }
             }
-            html += "</div>";
-            return html;
+            return content.html();
         }
     }
 

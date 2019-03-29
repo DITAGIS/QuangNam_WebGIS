@@ -5,6 +5,8 @@
     "ditagis/widgets/LayerList",
     "ditagis/configs",
     "ditagis/api/TimKiemThongTin",
+    "ditagis/query/DauTu",
+
 
     "esri/toolbars/navigation", "dijit/registry", "dojo/on",//1
     "esri/map", "esri/layers/FeatureLayer", "esri/layers/ArcGISDynamicMapServiceLayer", "esri/layers/ImageParameters",// 2
@@ -21,7 +23,7 @@
 
 ], function (
     // ditagis function
-    Report, Popup, LayerList, configs, TimKiemThongTin,
+    Report, Popup, LayerList, configs, TimKiemThongTin,DauTu,
 
     Navigation, registry, on,//1
     Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
@@ -384,35 +386,6 @@
             getHoSoDoAn(mdoan, maCode);
         });
 
-        $(".keugoidautu").on("click", function () {
-            var objectID = $(this).attr('objectID');
-            var query = new Query();
-            query.where = "OBJECTID = " + objectID;
-            map.graphics.clear();
-            if (map.infoWindow.isShowing) {
-                map.infoWindow.hide();
-            }
-            var featureLayer = featureLayers.find(function (element) {
-                return element.id == "DauTu";
-            });
-            if (featureLayer) {
-                featureLayer.queryFeatures(query, function (result) {
-                    var features = result.features;
-                    if (features.length > 0) {
-                        featUpdate = features[0];
-                        popup.show(featUpdate, featureLayer);
-                        var query = new Query();
-                        query.geometry = featUpdate.geometry;
-                        featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                        map.infoWindow.hide();
-                    }
-                });
-            }
-            layerList.visibleLayerGroup("DauTu");
-        });
         $("#TraCuuDoAnQuyHoach").on("click", function () {
             $(".panel_control").slideUp();
             $("#TraCuuDoAnQuyHoach_panel").toggle("slide");
@@ -530,6 +503,7 @@
         map.on("layers-add-result", initEditor);
 
         var report, popup;
+        var dautu;
         function initEditor(evt) {
 
             var map = this;
@@ -541,6 +515,7 @@
             var query = new esri.tasks.Query();
             popup = new Popup({ map });
             report = new Report({ map, popup, layerList });
+            new DauTu({map,featureLayers,popup});
             dojo.forEach(layers, (layer) => {
                 dojo.connect(layer, "onClick", (feature) => {
                     if (measurement.getTool()) return;

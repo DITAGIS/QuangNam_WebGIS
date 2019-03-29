@@ -100,7 +100,6 @@
     <Compile Include="GIS\HoSoDoAnDB.cs" />
     <Compile Include="GIS\Models\Model.cs" />
     <Compile Include="GIS\.cs" />
-    <Compile Include="GIS\Models\ThongTinDoAn.cs" />
     <Compile Include="GIS\ThongTinDoAnDB.cs" />
     <Compile Include="GIS\ThongTinQHCTDB.cs" />
     <Compile Include="GIS\ThongTinQHPKDB.cs" />

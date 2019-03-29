@@ -282,6 +282,7 @@
     <Content Include="Scripts\ditagis\api\TimKiemThongTin.js" />
     <Content Include="Scripts\ditagis\configs.js" />
     <Content Include="Scripts\ditagis\map.js" />
+    <Content Include="Scripts\ditagis\query\DauTu.js" />
     <Content Include="Scripts\ditagis\widgets\LayerList.js" />
     <Content Include="Scripts\ditagis\widgets\Popup.js" />
     <Content Include="Scripts\ditagis\widgets\Report.js" />

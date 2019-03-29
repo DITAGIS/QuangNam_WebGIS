@@ -163,3 +163,6 @@ textarea{
     padding: 5px;
     border: 1px solid #ccc;
 }
+a.linkThuyetMinh {
+    cursor: pointer;
+}
