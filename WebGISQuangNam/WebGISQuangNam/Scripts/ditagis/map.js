@@ -23,7 +23,7 @@
 
 ], function (
     // ditagis function
-    Report, Popup, LayerList, configs, TimKiemThongTin,DauTu,
+    Report, Popup, LayerList, configs, TimKiemThongTin, DauTu,
 
     Navigation, registry, on,//1
     Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
@@ -161,7 +161,7 @@
                     layer: featureLayer, // required unless featureCollection.
                     subLayers: true, // optional
                     visibility: true, // optional
-                    title:layercf.title
+                    title: layercf.title
                 };
                 var layerGroup = {
                     title: layercf.title,
@@ -183,8 +183,9 @@
         }, "HomeButton");
         homeButton.startup();
 
-        $("#home").click(function () {
+        $("#home").click(function (){
             homeButton.home();
+            layerList.visibleAllLayers(true);
         });
 
         var width = $(window).width();
@@ -515,7 +516,7 @@
             var query = new esri.tasks.Query();
             popup = new Popup({ map });
             report = new Report({ map, popup, layerList });
-            new DauTu({map,featureLayers,popup});
+            new DauTu({ map, featureLayers, popup, layerList });
             dojo.forEach(layers, (layer) => {
                 dojo.connect(layer, "onClick", (feature) => {
                     if (measurement.getTool()) return;
@@ -790,55 +791,46 @@
                             });
                         });
                     }
-
                 })
                 .catch(function (reponse) {
                     alert("error : " + reponse);
                     $("#loadingpageDiv").css("display", "none");
                 });
-
         }
-
-
         function zoomThongTinDoAn(maDoAn) {
             var mada = maDoAn.split('#')[0];
             var loaimada = maDoAn.split('#')[1];
-            var query = new Query();
-            query.where = "MaDoAn = N'" + mada + "'";
-            map.graphics.clear();
             if (map.infoWindow.isShowing) {
                 map.infoWindow.hide();
+            }
+            if(maDoAn == "QHV01#QHV"){
+                loaimada = "QHV_Tinh";
             }
             var featureLayer = featureLayers.find(function (element) {
                 return element.id == "ThongTinDoAn_" + loaimada
             });
             if (featureLayer) {
-                featureLayer.queryFeatures(query, function (result) {
-                    var features = result.features;
-                    if (features.length > 0) {
-                        featUpdate = features[0];
-                        popup.show(featUpdate, featureLayer);
-                        zoomData(featUpdate);
-                        var query = new Query();
-                        query.geometry = featUpdate.geometry;
-                        featureLayer.selectFeatures(query, FeatureLayer.SELECTION_NEW);
-                    }
-                    else {
-                        $("#messageBox").css("display", "inline-block");
-                        map.infoWindow.hide();
-                    }
-                });
+                zoomRowPolygon(mada,featureLayer);
             }
             layerList.visibleLayerGroup(loaimada);
         }
-
-        function zoomData(featUpdate) {
-            var geometryData = featUpdate.geometry;
-            var stateExtent = geometryData.getExtent();
-            map.setExtent(stateExtent);
-            map.setScale(featUpdate._layer.maxScale * 2);
-            var center = stateExtent.getCenter();
-            map.centerAt(center);
+        function zoomRowPolygon(mada, layer) {
+            layer.clearSelection();
+            map.graphics.clear();
+            var query = new Query();
+            query.spatialReference = map.spatialReference;
+            query.where = "MaDoAn = N'" + mada + "'";
+            layer.queryExtent(query, (result) => {
+                map.setExtent(result.extent.expand(1.0));
+                var center = result.extent.getCenter();
+                map.centerAt(center);
+                layer.selectFeatures(query, esri.layers.FeatureLayer.SELECTION_NEW, (features) => {
+                    if (features.length > 0) {
+                        var feature = features[0];
+                        popup.show(feature,layer);
+                    }
+                });
+            });
         }
         function getHanhChinhXa(maQuanHuyen, cbb) {
             $("#loadingpageDiv").css("display", "inline-block");

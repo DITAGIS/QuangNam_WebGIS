@@ -101,6 +101,22 @@ define([
                     }
                 });
             }
+            visibleAllLayers(isVisileLayer){
+                $(".list_item").prop("checked", isVisileLayer);
+                if (this.layerGroups && this.layerGroups.length > 0) {
+                    for (const layerGroup of this.layerGroups) {
+                        if (layerGroup[0] && layerGroup[0].id == "basemap") {
+                            layerGroup[0].layer.setVisibility(isVisileLayer);
+                        }
+                        else {
+                            var layers = layerGroup.layers;
+                            for (const item of layers) {
+                                item.layer.setVisibility(isVisileLayer)
+                            }
+                        }
+                    }
+                }
+            }
             visibleLayerGroup(layerGroupID) {
                 $(".list_item").prop("checked", false);
                 if (this.layerGroups && this.layerGroups.length > 0) {

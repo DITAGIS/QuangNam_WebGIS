@@ -1,6 +1,7 @@
 define([
     "ditagis/configs",
-], function (configs) {
+    "esri/geometry/Point",
+], function (configs,Point) {
     class Popup {
         constructor(params) {
             this.map = params.map;
@@ -77,7 +78,6 @@ define([
             });
             var fields = featureLayer.fields;
             var hiddenFields = configs.fields['hidden'];
-            var linkThuyetMinh = null;
             for (const field of fields) {
                 var name = field.name;
                 var isHiddenField = false;
@@ -98,7 +98,7 @@ define([
                     }
                     if (value) {
                         if (name == "LinkFileThuyetMinh") {
-                            linkThuyetMinh = $('<a/>', {
+                            $('<a/>', {
                                 text: "Xem chi tiết",
                                 alt: value,
                                 title: feature.attributes["TenDuAn"],

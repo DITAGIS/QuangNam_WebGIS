@@ -10,6 +10,7 @@ define([
                     return element.id == "DauTu";
                 });
                 this.popup = params.popup;
+                this.layerList = params.layerList;
                 this.init();
             }
             init() {
@@ -21,17 +22,19 @@ define([
                         var features = result.features;
                         if (features.length > 0) {
                             for (let i = 0; i < features.length; i++) {
-                                var feature = features[i];
+                                let feature = features[i];
                                 var attributes = feature.attributes;
                                 let li = $('<li/>', {
                                 }).appendTo(this.container);
                                 var element = $('<a/>', {
-                                    text: attributes["TenDauTu"]
+                                    text: attributes["TenDauTu"],
+
                                 }).appendTo(li);
                                 element.on('click', (evt) => {
+                                    this.layerList.visibleLayerGroup("DauTu");
+                                    this.map.setScale(72223);
                                     this.popup.show(feature, this.layerDauTu);
                                 });
-
                             }
                         }
                         else {
