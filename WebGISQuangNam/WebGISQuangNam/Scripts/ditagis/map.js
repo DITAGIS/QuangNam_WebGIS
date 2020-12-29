@@ -327,6 +327,12 @@
             $(".panel_control").slideUp();
             $("#messageBoxInforMap").slideDown();
         });
+
+        if (!localStorage.getItem("FIRST_VISIT")) {
+            $("#inforMapData").click();
+            localStorage.setItem("FIRST_VISIT","true")
+        }
+      
         $(".closemessageBoxInforMap").on("click", function () {
             $(".panel_control").slideUp();
             $("#messageBoxInforMap").slideUp();
@@ -704,6 +710,8 @@
             $(".yKienGroup").css("display", "none");
             viewForm.css({ "position": "absolute" });
         });
+
+      
         function getHoSoDoAn(maDoAn, maCode) {
             TimKiemThongTin.HoSoDoAn(maDoAn)
                 .then((results) => {
