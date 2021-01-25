@@ -26,7 +26,7 @@
     Report, Popup, LayerList, configs, TimKiemThongTin, DauTu,
 
     Navigation, registry, on,//1
-    Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
+        Map, FeatureLayer, ArcGISDynamicMapServiceLayer, ImageParameters,//2
     Graphic, Point,
     SimpleMarkerSymbol, SimpleLineSymbol, SimpleFillSymbol, Color,//3
     Query, parser, GeometryService,//4
@@ -65,7 +65,7 @@
             }];
 
         var map = new Map("mapDiv", {
-            spatialReference: sr,
+         
             center: [108.0599533, 15.6474107],
             zoom: 9,
             logo: false,
@@ -84,6 +84,8 @@
             "imageParameters": imageParameters
         });
         map.addLayer(baseMap);
+        map.addLayer(new ArcGISDynamicMapServiceLayer('http://ditagis.com/arcgis/rest/services/NenBienDong/BienDong_OSM/MapServer'));
+ 
         layerGroups.push([{
             layer: baseMap, // required unless featureCollection.
             subLayers: true, // optional
